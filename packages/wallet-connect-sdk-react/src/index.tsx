@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {RpcCallResult, WcSdk} from "wallet-connect-sdk-core/lib";
+import {RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@json-rpc-tools/types";
 
