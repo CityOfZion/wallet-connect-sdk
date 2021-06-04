@@ -1,0 +1,35 @@
+{
+  "name": "@cityofzion/wallet-connect-sdk-core",
+  "version": "0.0.11",
+  "description": "Wallet-Connect-SDK Core functionality",
+  "keywords": [
+    "wallet",
+    "wallet-connect",
+    "javascript",
+    "typescript",
+    "libraries"
+  ],
+  "author": "Gil Lopes Bueno <melanke.hc@gmail.com>",
+  "homepage": "https://github.com/CityOfZion/wallet-connect-sdk#readme",
+  "license": "MIT",
+  "main": "lib/wallet-connect-sdk-core.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityOfZion/wallet-connect-sdk.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
+  },
+  "gitHead": "675a22457e2c967c68f0e2450359e6e687536655"
+}
