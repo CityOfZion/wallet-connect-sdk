@@ -1,6 +1,6 @@
 {
   "name": "wallet-connect-sdk-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Wallet-Connect-SDK to be used on React Apps",
   "keywords": [
     "wallet",
