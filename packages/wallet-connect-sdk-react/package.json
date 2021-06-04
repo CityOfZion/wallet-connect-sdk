@@ -13,7 +13,9 @@
   "author": "Gil Lopes Bueno <melanke.hc@gmail.com>",
   "homepage": "https://github.com/CityOfZion/wallet-connect-sdk#readme",
   "license": "MIT",
-  "main": "lib/wallet-connect-sdk-react.js",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -26,7 +28,9 @@
     "url": "git+https://github.com/CityOfZion/wallet-connect-sdk.git"
   },
   "scripts": {
-    "tsc": "tsc",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -37,6 +41,8 @@
   },
   "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
   "devDependencies": {
+    "@types/pino": "^6.3.8",
+    "@types/react": "^17.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

@@ -9,8 +9,9 @@ interface IWalletConnectContext {
     wcClient: Client | undefined,
     setWcClient: React.Dispatch<React.SetStateAction<Client | undefined>>,
     session: SessionTypes.Created | undefined,
-    loadingSession: boolean,
     setSession: React.Dispatch<React.SetStateAction<SessionTypes.Created | undefined>>,
+    loadingSession: boolean,
+    setLoadingSession: React.Dispatch<React.SetStateAction<boolean>>,
     pairings: string[],
     setPairings: React.Dispatch<React.SetStateAction<string[]>>,
     isPairing: boolean,
@@ -23,7 +24,7 @@ interface IWalletConnectContext {
     setAccounts: React.Dispatch<React.SetStateAction<string[]>>,
 
     openPairing: () => Promise<void>,
-    connect: (pairing?: { topic: string }) => Promise<void>,
+    connect: (topic: string) => Promise<void>,
     sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
     invokeFunction: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
@@ -171,7 +172,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return await handleRequest(async () => await WcSdk.invokeFunction(wcClient, session, options.chainId, scripthash, method, params))
     };
 
-    const contextValue = {
+    const contextValue: IWalletConnectContext = {
         wcClient,
         setWcClient,
         session,

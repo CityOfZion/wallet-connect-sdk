@@ -25,7 +25,7 @@
     "url": "git+https://github.com/CityOfZion/wallet-connect-sdk.git"
   },
   "scripts": {
-    "tsc": "tsc",
+    "build": "tsc",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
