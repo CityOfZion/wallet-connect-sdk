@@ -32,10 +32,8 @@
   "bugs": {
     "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
   },
-  "devDependencies": {
-    "react": "^17.0.2"
-  },
   "dependencies": {
+    "react": "^17.0.2",
     "wallet-connect-sdk-core": "^0.0.0"
   }
 }

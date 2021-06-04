@@ -29,7 +29,7 @@ interface IWalletConnectContext {
     disconnect: () => Promise<void>,
 }
 
-interface CtxOptions {
+export interface CtxOptions {
     appMetadata: AppMetadata,
     chainId: string,
     logger: string,
@@ -37,9 +37,9 @@ interface CtxOptions {
     relayServer: string
 }
 
-export const WalletConnectContext = React.createContext<IWalletConnectContext | null>(null)
+export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
 
-export const WalletConnectContextProvider: React.FC = ({ options, children }: { options: CtxOptions, children: any }) => {
+export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, children: any }> = ({ options, children }) => {
     const [wcClient, setWcClient] = useState<Client | undefined>(undefined)
     const [session, setSession] = useState<SessionTypes.Created | undefined>(undefined)
     const [loadingSession, setLoadingSession] = useState(true)
@@ -70,7 +70,6 @@ export const WalletConnectContextProvider: React.FC = ({ options, children }: { 
             subscribeToEvents()
             checkPersistedState()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wcClient])
 
     const initWcClient = async () => {
@@ -81,9 +80,7 @@ export const WalletConnectContextProvider: React.FC = ({ options, children }: { 
         WcSdk.subscribeToEvents(wcClient, {
             onProposal: uri => {
                 setUri(uri)
-                QRCodeModal.open(uri, () => {
-                    console.log("Modal callback")
-                })
+                QRCodeModal.open(uri, () => {})
             },
             onCreated: topics => setPairings(topics),
             onDeleted: async () => await resetApp()
@@ -142,7 +139,6 @@ export const WalletConnectContextProvider: React.FC = ({ options, children }: { 
     }
 
     const openPairing = async () => {
-        console.log('ON CONNECT')
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized")
         }
