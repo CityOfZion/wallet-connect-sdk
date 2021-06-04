@@ -1,10 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
-    "jsx": "react"
+    "outDir": "./lib/esm",
+    "module": "esnext",
+    "jsx": "react",
+    "moduleResolution": "node"
   },
   "include": [
     "./src"
-  ]
+  ],
+  "exclude": ["lib"]
 }

@@ -37,9 +37,11 @@
   },
   "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
   "devDependencies": {
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "peerDependencies": {
-    "react": "17.x"
+    "react": "17.x",
+    "react-dom": "17.x"
   }
 }
