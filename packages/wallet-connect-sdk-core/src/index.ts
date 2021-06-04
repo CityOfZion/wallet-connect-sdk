@@ -102,7 +102,7 @@ export class WcSdk {
     static async connect(wcClient: Client, options?: WcConnectOptions) {
         return await wcClient.connect({
             metadata: getAppMetadata() || options.appMetadata,
-            pairing: {topic: options.topic},
+            pairing: options.topic ? {topic: options.topic} : undefined,
             permissions: {
                 blockchain: {
                     chains: [options.chainId],
