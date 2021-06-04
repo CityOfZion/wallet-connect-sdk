@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-react",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Wallet-Connect-SDK to be used on React Apps",
   "keywords": [
     "wallet",
@@ -33,7 +33,7 @@
     "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "^0.0.6"
+    "@cityofzion/wallet-connect-sdk-core": "^0.0.7"
   },
   "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
   "devDependencies": {
