@@ -143,7 +143,7 @@ export class WcSdk {
 
     static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method,
+            method: "invokefunction",
             params: [scripthash, method, params],
         })
     }
