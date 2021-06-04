@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
 import {RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
@@ -24,7 +24,7 @@ interface IWalletConnectContext {
     setAccounts: React.Dispatch<React.SetStateAction<string[]>>,
 
     openPairing: () => Promise<void>,
-    connect: (topic: string) => Promise<void>,
+    connect: (topic?: string) => Promise<void>,
     sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
     invokeFunction: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
@@ -50,7 +50,11 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
     const [uri, setUri] = useState("")
     const [accounts, setAccounts] = useState<string[]>([])
 
-    const resetApp = async () => {
+    const initWcClient = useCallback(async () => {
+        setWcClient(await WcSdk.initClient(options.logger, options.relayServer))
+    }, [options.logger, options.relayServer])
+
+    const resetApp = useCallback(async () => {
         setWcClient(undefined)
         setSession(undefined)
         setLoadingSession(true)
@@ -60,24 +64,13 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         setUri("")
         setAccounts([])
         await initWcClient()
-    }
+    }, [initWcClient])
 
     useEffect(() => {
         initWcClient()
-    }, [])
+    }, [initWcClient])
 
-    useEffect(() => {
-        if (wcClient) {
-            subscribeToEvents()
-            checkPersistedState()
-        }
-    }, [wcClient])
-
-    const initWcClient = async () => {
-        setWcClient(await WcSdk.initClient(options.logger, options.relayServer))
-    }
-
-    const subscribeToEvents = () => {
+    const subscribeToEvents = useCallback(() => {
         WcSdk.subscribeToEvents(wcClient, {
             onProposal: uri => {
                 setUri(uri)
@@ -86,9 +79,9 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
             onCreated: topics => setPairings(topics),
             onDeleted: async () => await resetApp()
         })
-    }
+    }, [resetApp, wcClient])
 
-    const checkPersistedState = async () => {
+    const checkPersistedState = useCallback(async () => {
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized")
         }
@@ -99,10 +92,17 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
 
         const s = await WcSdk.getSession(wcClient)
         if (s) {
-            onSessionConnected(session)
+            onSessionConnected(s)
         }
         setLoadingSession(false)
-    }
+    }, [session, wcClient])
+
+    useEffect(() => {
+        if (wcClient) {
+            subscribeToEvents()
+            checkPersistedState()
+        }
+    }, [wcClient, subscribeToEvents, checkPersistedState])
 
     const onSessionConnected = (session: SessionTypes.Settled) => {
         setSession(session)
@@ -150,7 +150,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         await connect()
     }
 
-    const handleRequest = async (caller: () => Promise<RpcCallResult>) => {
+    const handleRequest = async (caller: (wcClient: Client, session: SessionTypes.Created) => Promise<RpcCallResult>) => {
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized");
         }
@@ -159,17 +159,17 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         }
 
         setIsPendingApproval(true)
-        const resp = await caller()
+        const resp = await caller(wcClient, session)
         setIsPendingApproval(false)
         return resp
     }
 
     const sendRequest = async (request: RequestArguments) => {
-        return await handleRequest(async () => await WcSdk.sendRequest(wcClient, session, options.chainId, request))
+        return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, options.chainId, request))
     };
 
     const invokeFunction = async (scripthash: string, method: string, params: any[]) => {
-        return await handleRequest(async () => await WcSdk.invokeFunction(wcClient, session, options.chainId, scripthash, method, params))
+        return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, options.chainId, scripthash, method, params))
     };
 
     const contextValue: IWalletConnectContext = {
