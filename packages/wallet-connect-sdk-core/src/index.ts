@@ -86,7 +86,6 @@ export class WcSdk {
         if (callbacks && callbacks.onDeleted) {
             wcClient.on(CLIENT_EVENTS.session.deleted, async (session: SessionTypes.Settled) => {
                 if (session.topic !== session?.topic) return
-                console.log("EVENT", "session_deleted")
                 callbacks.onDeleted()
             })
         }
