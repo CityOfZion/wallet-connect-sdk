@@ -1,6 +1,6 @@
 {
   "name": "wallet-connect-sdk-core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wallet-Connect-SDK Core functionality",
   "keywords": [
     "wallet",
@@ -30,5 +30,6 @@
   },
   "bugs": {
     "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
-  }
+  },
+  "gitHead": "675a22457e2c967c68f0e2450359e6e687536655"
 }
