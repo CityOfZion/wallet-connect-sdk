@@ -23,9 +23,9 @@ not approved by the user.
 Wallet Connect is the most famous solution to avoid this problem, and it's already used by many dApps and users.
 
 ## Usage example video
-![Video](demo.mp4)
+![Video](demo.gif)
 
-This [example](demo.mp4) is showing [Crypsydra dApp](https://github.com/east-side-cryps/crypsydra-web) connecting with
+This example is showing [Crypsydra dApp](https://github.com/east-side-cryps/crypsydra-web) connecting with
 [Coz's Test Wallet](https://github.com/CityOfZion/web-wallet) 
 
 ## How does it work?
