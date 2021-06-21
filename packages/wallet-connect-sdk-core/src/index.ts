@@ -2,6 +2,8 @@ import Client, {CLIENT_EVENTS} from "@walletconnect/client";
 import {AppMetadata, PairingTypes, SessionTypes} from "@walletconnect/types";
 import {ERROR, getAppMetadata, getError} from "@walletconnect/utils";
 import {RequestArguments} from "@json-rpc-tools/types";
+import elliptic from 'elliptic'
+import * as crypto from 'crypto'
 
 export interface WcCallbacks {
     onProposal?: (uri: string) => void,
@@ -147,4 +149,55 @@ export class WcSdk {
             params: [scripthash, method, params],
         })
     }
+
+    // static encryptionp256ECIES(addresses: string[], message: string) {
+    //     // this is all wrong, I was just speculating, the method signatures doesn't match https://github.com/indutny/elliptic#ecdh
+    //     var ec = new elliptic.ec.EC('curve25519');
+    //     const k = ec.genKeyPair()
+    //     const shared = k.deriveKey(addresses[0])
+    //     return WcSdk.p256ECIESEncrypt(addresses[0], Buffer.from(message)).ciphertext
+    // }
+    //
+    // static p256ECIESEncrypt(publicKey: string, payload: Buffer, opts?: any) {
+    //     const curve = new elliptic.ec('p256')
+    //
+    //     const pub = curve.keyFromPublic(publicKey, 'hex').getPublic()
+    //
+    //     const op = opts || {}
+    //
+    //     const ephem = curve.genKeyPair()
+    //     const ephemPublicKey = ephem.getPublic(true, 'hex')
+    //
+    //     // create the shared ECHD secret
+    //     const px = ephem.derive(pub)
+    //
+    //     // hash the secret
+    //     const hash = crypto.createHash('sha512').update(px.toString('hex')).digest()
+    //
+    //     // define the initiation vector
+    //     const iv = op.iv || crypto.randomBytes(16)
+    //     const encryptionKey = hash.slice(0, 32)
+    //     const macKey = hash.slice(32)
+    //
+    //     const ciphertext = WcSdk.aes256CbcEncrypt(iv, encryptionKey, payload)
+    //
+    //     const dataToMac = Buffer.concat([iv, Buffer.from(ephemPublicKey, 'hex'), ciphertext])
+    //
+    //     const hmacSha = crypto.createHmac('sha256', macKey).update(dataToMac).digest()
+    //     const mac = Buffer.from(hmacSha)
+    //
+    //     return {
+    //         iv: iv.toString('hex'),
+    //         ephemPublicKey,
+    //         ciphertext: ciphertext.toString('hex'),
+    //         mac: mac.toString('hex'),
+    //     }
+    // }
+    //
+    // static aes256CbcEncrypt(iv: Buffer, key: Buffer, plaintext: Buffer) {
+    //     const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+    //     const firstChunk = cipher.update(plaintext)
+    //     const secondChunk = cipher.final()
+    //     return Buffer.concat([firstChunk, secondChunk])
+    // }
 }

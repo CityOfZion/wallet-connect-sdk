@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
   },
-  "gitHead": "675a22457e2c967c68f0e2450359e6e687536655"
+  "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
+  "dependencies": {
+    "elliptic": "6.5.3"
+  }
 }
