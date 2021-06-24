@@ -1,8 +1,10 @@
 # Wallet Connect SDK
-A Coz's [Wallet Connect](https://walletconnect.org/) 2.0 SDK for ecosystem tools.
+A Coz's Wallet Connect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built on
+top of [walletconnect](https://github.com/WalletConnect/walletconnect-monorepo).
 
-**Wallet Connect integration is a secure solution when creating a Decentralized Application that needs user's Account
-authentication. This SDK comes in handy to help on such integration.** 
+**Wallet Connect integration is a secure solution for signing transactions sent to a blockchain, such as are needed when
+creating Decentralized Applications that require the user's account authentication. This SDK comes in handy to help on
+such integration.**
 
 - [Why do I need Wallet Connect in my dApp?](#why-do-i-need-wallet-connect-in-my-dapp)
 - [Usage example video](#usage-example-video)
@@ -13,14 +15,16 @@ authentication. This SDK comes in handy to help on such integration.**
 - [How to test my dApp?](#how-to-test-my-dapp)
 
 ## Why do I need Wallet Connect in my dApp?
-Almost every dApp needs user's authentication to send a signed transaction to the blockchain, the most common scenery is
-when the client-side application needs to call a SmartContract method that needs the user's Account.
+Almost every dApp needs user's authentication to send a signed transaction to the blockchain. From minting tokens to
+making a simple transfer, users must always sign their transactions whenever the client-side application needs to call a
+SmartContract method that requires the user's Account.
 
-Without a solution like Wallet Connect's integration the user would need to trust his privateKey to the dApp, which is
-a huge security issue, the dApp could simply use it maliciously stealing the user's funds or signing something
-not approved by the user.
+Signing a transaction means that, without a solution like Wallet Connect's integration, the user would need to trust his
+privateKey to the dApp. For obvious reasons, outside of testing environments, this is a huge security issue, as the dApp
+could simply use it maliciously stealing funds or signing something not approved by the user.
 
-Wallet Connect is the most famous solution to avoid this problem, and it's already used by many dApps and users.
+[Wallet Connect](https://walletconnect.org/) is an established solution to tackle this issue, and it's already used by
+many dApps and users.
 
 ## Usage example video
 ![Video](demo.gif)
@@ -37,16 +41,16 @@ This example is showing [Crypsydra dApp](https://github.com/east-side-cryps/cryp
     - It will sign the transaction, make the call and respond back to the dApp with the response from the blockchain
   
 ## Installation and Setup Guide
-This repository contains multiple packages and for now on you need to choose your path. If you are planning to use it on
-a React.js application it's highly recommended using our [React SDK](packages/wallet-connect-sdk-react/README.md) that
-handles all state changes for you, but if you plan to use with a different technology we have all the same features on
-the [Core SDK](packages/wallet-connect-sdk-core/README.md).
+This repository contains multiple packages and from here on you need to choose your path. If you are planning to use it
+on a React.js application it's highly recommended using our [WC React SDK](packages/wallet-connect-sdk-react/README.md)
+that handles all state changes for you, but if you plan to use with a different technology we have all the same features
+on the [WC Core SDK](packages/wallet-connect-sdk-core/README.md).
 
 ## How to test my dApp?
 This SDK uses 
 [Wallet Connect 2.0](https://docs.walletconnect.org/v/2.0/) protocol, you will need a Wallet application that works with
 it, if you plan to connect with the 
 [Neo blockchain](https://neo.org/) we recommend
-[Coz's Web Wallet for testing](https://connect-dev.coz.io/). If you plan to connect with
+[Coz's Web Wallet for testing](https://connect.coz.io/). If you plan to connect with
 [Ethereum blockchain](https://ethereum.org/) there are
 [many wallets](https://registry.walletconnect.org/wallets) to work with.
