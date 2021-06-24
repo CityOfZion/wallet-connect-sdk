@@ -1,9 +1,12 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import Client, {CLIENT_EVENTS} from "@walletconnect/client";
+import Client from "@walletconnect/client";
+import {CLIENT_EVENTS} from "@walletconnect/client/dist/cjs/constants/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ERROR, getAppMetadata, getError} from "@walletconnect/utils";
+import {ERROR, getError} from "@walletconnect/utils/dist/cjs/error";
+import {getAppMetadata} from "@walletconnect/utils/dist/cjs/misc";
 import KeyValueStorage from "keyvaluestorage";
-import {formatJsonRpcError, JsonRpcRequest, JsonRpcResponse} from "@json-rpc-tools/utils";
+import {JsonRpcRequest, JsonRpcResponse} from "@json-rpc-tools/utils";
+import {formatJsonRpcError} from "@json-rpc-tools/utils/dist/cjs/format";
 
 type OnRequestCallback = (accountAddress: string, chainId: string, request: JsonRpcRequest) => Promise<JsonRpcResponse>
 
