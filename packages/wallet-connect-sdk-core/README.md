@@ -8,7 +8,7 @@ npm i @cityofzion/wallet-connect-sdk-core
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
 ## Setup
-Wrap WalletConnectContextProvider around your App passing by an options object as prop
+Wrap WalletConnectContextProvider around your App by passing an options object as prop:
 ```jsx
 import {WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
 
@@ -60,10 +60,12 @@ await WcSdk.disconnect(wcClient, session);
 ```
 
 ### Make an JSON-RPC call
-Every request is made via JSON-RPC, you need to provide a method name that is expected by the wallet and listed on
-the `methods` property of the [options object](#setup), and some additional `parameters`. The JSON-RPC format accepts
-parameters in many formats, but depending on the blockchain you are using it might need to follow some rules, check the
-next example to see a Neo
+Every request is made via JSON-RPC. You need to provide a method name that is expected by the wallet and listed on
+the `methods` property of the [options object](#setup), and some additional `parameters`.
+
+The JSON-RPC format accepts parameters in many formats. The rules on how to construct this request will depend
+entirely on the blockchain you are using. The code below is an example of a request constructed for the Neo Blockchain:
+
 ```js
 const chainId = "neo3:testnet"; // blockchain and network identifier
 const resp = await WcSdk.sendRequest(wcClient, session, chainId, {
@@ -85,7 +87,7 @@ has a shortcut: `WcSdk.invokeFunction`.
 On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
 `{ type, value }` format, and on `type` you should provide one of the types mentioned
 [here](https://github.com/neo-project/neo/blob/master/src/neo/SmartContract/ContractParameterType.cs).
-But WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
+WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
 
 Check it out:
 ```js
