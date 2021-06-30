@@ -36,7 +36,7 @@ ReactDOM.render(
 ```
 
 ## Usage
-For now on, everytime you need to use Wallet Connect, you simply import it and call a method:
+From now on, every time you need to use WalletConnect, you simply import it and call a method:
 ```ts
 import {useWalletConnect} from "@cityofzion/wallet-connect-sdk-react";
 
