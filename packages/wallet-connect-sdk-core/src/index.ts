@@ -42,29 +42,44 @@ export class WcSdk {
 
     async connect(options: WcConnectOptions) {
         if (!this.wcClient) {
-            return
+            throw 'The client was not initialized'
         }
         this.chainId = options?.chainId
         this.session = await WcSdk.connect(this.wcClient, options)
     }
 
     async disconnect() {
-        if (!this.wcClient || !this.session) {
-            return
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
         }
         await WcSdk.disconnect(this.wcClient, this.session)
     }
 
     async sendRequest(request: RequestArguments) {
-        if (!this.wcClient || !this.session || !this.chainId) {
-            return
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
+        if (!this.chainId) {
+            throw 'No chainId informed'
         }
         return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
     }
 
     async invokeFunction(scripthash: string, method: string, params: any[]) {
-        if (!this.wcClient || !this.session || !this.chainId) {
-            return
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
+        if (!this.chainId) {
+            throw 'No chainId informed'
         }
         return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, scripthash, method, params)
     }
@@ -78,7 +93,7 @@ export class WcSdk {
 
     static subscribeToEvents(wcClient?: Client, callbacks?: WcCallbacks) {
         if (!wcClient) {
-            return
+            throw 'The client was not initialized'
         }
 
         wcClient.on(
