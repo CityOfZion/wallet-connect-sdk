@@ -1,7 +1,7 @@
-import Client, {CLIENT_EVENTS} from "@walletconnect/client";
-import {AppMetadata, PairingTypes, SessionTypes} from "@walletconnect/types";
-import {ERROR, getAppMetadata, getError} from "@walletconnect/utils";
-import {RequestArguments} from "@json-rpc-tools/types";
+import Client, { CLIENT_EVENTS } from '@walletconnect/client'
+import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types'
+import { ERROR, getError } from '@walletconnect/utils'
+import { RequestArguments } from '@json-rpc-tools/types'
 
 export interface WcCallbacks {
     onProposal?: (uri: string) => void,
@@ -35,23 +35,52 @@ export class WcSdk {
     }
 
     async loadSession() {
-        this.session = await WcSdk.getSession(this.wcClient)
+        if (this.wcClient) {
+            this.session = await WcSdk.getSession(this.wcClient) || undefined
+        }
     }
 
-    async connect(options?: WcConnectOptions) {
+    async connect(options: WcConnectOptions) {
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
         this.chainId = options?.chainId
         this.session = await WcSdk.connect(this.wcClient, options)
     }
 
     async disconnect() {
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
         await WcSdk.disconnect(this.wcClient, this.session)
     }
 
     async sendRequest(request: RequestArguments) {
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
+        if (!this.chainId) {
+            throw 'No chainId informed'
+        }
         return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
     }
 
     async invokeFunction(scripthash: string, method: string, params: any[]) {
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
+        if (!this.chainId) {
+            throw 'No chainId informed'
+        }
         return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, scripthash, method, params)
     }
 
@@ -64,31 +93,33 @@ export class WcSdk {
 
     static subscribeToEvents(wcClient?: Client, callbacks?: WcCallbacks) {
         if (!wcClient) {
-            return
+            throw 'The client was not initialized'
         }
 
-        if (callbacks && callbacks.onProposal) {
-            wcClient.on(
-                CLIENT_EVENTS.pairing.proposal,
-                async (proposal: PairingTypes.Proposal) => {
-                    const {uri} = proposal.signal.params
-                    callbacks.onProposal(uri)
-                },
-            )
-        }
+        wcClient.on(
+          CLIENT_EVENTS.pairing.proposal,
+          async (proposal: PairingTypes.Proposal) => {
+              const { uri } = proposal.signal.params
 
-        if (callbacks && callbacks.onCreated) {
-            wcClient.on(CLIENT_EVENTS.pairing.created, async () => {
+              if (callbacks && callbacks.onProposal) {
+                  callbacks.onProposal(uri)
+              }
+          }
+        )
+
+        wcClient.on(CLIENT_EVENTS.pairing.created, async () => {
+            if (callbacks && callbacks.onCreated) {
                 callbacks.onCreated(wcClient.pairing.topics)
-            })
-        }
+            }
+        })
 
-        if (callbacks && callbacks.onDeleted) {
-            wcClient.on(CLIENT_EVENTS.session.deleted, async (session: SessionTypes.Settled) => {
-                if (session.topic !== session?.topic) return
+        wcClient.on(CLIENT_EVENTS.session.deleted, async (session: SessionTypes.Settled) => {
+            if (session.topic !== session?.topic) return
+
+            if (callbacks && callbacks.onDeleted) {
                 callbacks.onDeleted()
-            })
-        }
+            }
+        })
     }
 
     static async getSession(wcClient: Client) {
@@ -99,9 +130,9 @@ export class WcSdk {
         }
     }
 
-    static async connect(wcClient: Client, options?: WcConnectOptions) {
+    static async connect(wcClient: Client, options: WcConnectOptions) {
         return await wcClient.connect({
-            metadata: getAppMetadata() || options.appMetadata,
+            metadata: options.appMetadata,
             pairing: options.topic ? {topic: options.topic} : undefined,
             permissions: {
                 blockchain: {
@@ -127,7 +158,7 @@ export class WcSdk {
                 topic: session.topic,
                 chainId,
                 request,
-            });
+            })
 
             return {
                 method: request.method,
@@ -139,11 +170,11 @@ export class WcSdk {
                 result: {error},
             }
         }
-    };
+    }
 
     static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: "invokefunction",
+            method: 'invokefunction',
             params: [scripthash, method, params],
         })
     }
