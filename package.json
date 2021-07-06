@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "publish": "lerna run build && lerna publish"
+    "publish": "lerna publish"
   },
   "dependencies": {
     "@walletconnect/client": "2.0.0-alpha.42",
