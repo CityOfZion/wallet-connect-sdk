@@ -3,7 +3,7 @@
 ## Installation
 Install the dependency on your client-side application:
 ```
-npm i @cityofzion/wallet-connect-sdk-core
+npm i @cityofzion/wallet-connect-sdk-core @walletconnect/client@2.0.0-alpha.42 @walletconnect/qrcode-modal@2.0.0-alpha.20 @walletconnect/types@2.0.0-alpha.42 @walletconnect/utils@2.0.0-alpha.42
 ```
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
@@ -14,7 +14,7 @@ import {WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
 
 const wcClient = await WcSdk.initClient(
   "debug", // logger: use debug to show all log information on browser console
-  "wss://connect.coz.io:443" // relayServer: which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"  
+  "wss://connect.coz.io" // relayServer: which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"  
 );
 ```
 
@@ -32,13 +32,13 @@ if (session) {
 
 ### Connect to the Wallet
 ```js
+import { SessionTypes } from '@walletconnect/types'
+import Client from '@walletconnect/client'
+import QRCodeModal from '@walletconnect/qrcode-modal'
+
 WcSdk.subscribeToEvents(wcClient, {
   onProposal: uri => {
-    /*
-      Open a QRCode Modal using uri
-      It's recommended to use "@walletconnect/qrcode-modal"
-      calling QRCodeModal.open(uri) and QRCodeModal.close()
-     */
+    QRCodeModal.open(uri, () => { /* nothing */ })
   }
 });
 
@@ -70,13 +70,12 @@ entirely on the blockchain you are using. The code below is an example of a requ
 const chainId = "neo3:testnet"; // blockchain and network identifier
 const resp = await WcSdk.sendRequest(wcClient, session, chainId, {
   method: 'rpcMethod',
-  parameters: ['param', 3, true]
+  params: ['param', 3, true]
 });
 
 // the response format depends interely on the blockchain response format
 if (resp.result.error && resp.result.error.message) {
     window.alert(resp.result.error.message);
-    return null;
 }
 ```
 

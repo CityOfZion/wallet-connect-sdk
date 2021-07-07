@@ -3,7 +3,7 @@
 ## Installation
 Install the dependency on your client-side application:
 ```
-npm i @cityofzion/wallet-connect-sdk-react
+npm i @cityofzion/wallet-connect-sdk-react @walletconnect/client@2.0.0-alpha.42
 ```
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
@@ -16,7 +16,7 @@ const wcOptions = {
   chainId: "neo3:testnet", // blockchain and network identifier
   logger: "debug", // use debug to show all log information on browser console
   methods: ["invokefunction"], // which RPC methods do you plan to call
-  relayServer: "wss://connect.coz.io:443", // which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"
+  relayServer: "wss://connect.coz.io", // which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"
   appMetadata: {
     name: "MyApplicationName", // your application name to be displayed on the wallet
     description: "My Application description", // description to be shown on the wallet
@@ -86,13 +86,12 @@ entirely on the blockchain you are using. The code below is an example of a requ
 ```js
 const resp = await walletConnectCtx.sendRequest({
   method: 'rpcMethod',
-  parameters: ['param', 3, true]
+  params: ['param', 3, true]
 });
 
 // the response format depends interely on the blockchain response format
 if (resp.result.error && resp.result.error.message) {
     window.alert(resp.result.error.message);
-    return null;
 }
 ```
 
