@@ -3,7 +3,7 @@
 ## Installation
 Install the dependency on your client-side application:
 ```
-npm i @cityofzion/wallet-connect-sdk-react @walletconnect/client@2.0.0-alpha.42
+npm i @cityofzion/wallet-connect-sdk-react @walletconnect/client@2.0.0-alpha.42 @walletconnect/utils@2.0.0-alpha.42
 ```
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
