@@ -4,13 +4,8 @@
   "scripts": {
     "build": "lerna run build",
     "publish": "lerna publish --yes",
-    "clean": "lerna clean --yes"
-  },
-  "dependencies": {
-    "@walletconnect/client": "2.0.0-alpha.42",
-    "@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
-    "@walletconnect/types": "2.0.0-alpha.42",
-    "@walletconnect/utils": "2.0.0-alpha.42"
+    "clean": "lerna clean --yes",
+    "setup": "lerna init && lerna bootstrap && lerna exec npm install"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",

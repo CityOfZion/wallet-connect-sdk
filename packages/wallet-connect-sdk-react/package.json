@@ -37,7 +37,11 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "^0.0.14"
+    "@cityofzion/wallet-connect-sdk-core": "^0.0.14",
+    "@walletconnect/client": "2.0.0-alpha.42",
+    "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
+    "@walletconnect/types": "2.0.0-alpha.42",
+    "@walletconnect/utils": "2.0.0-alpha.42"
   },
   "peerDependencies": {
     "react": "*"
