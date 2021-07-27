@@ -146,9 +146,12 @@ export class WcSdk {
     }
 
     static async disconnect(wcClient: Client, session: SessionTypes.Created) {
+        console.log('disconnecting')
+        const reason = getError(ERROR.USER_DISCONNECTED)
+        console.log('disconnecting...')
         await wcClient.disconnect({
             topic: session.topic,
-            reason: getError(ERROR.USER_DISCONNECTED),
+            reason,
         })
     }
 
