@@ -152,6 +152,10 @@ export class WcSdk {
         })
     }
 
+    static logDisconnectedError() {
+        console.log(getError(ERROR.USER_DISCONNECTED))
+    }
+
     static async sendRequest(wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult> {
         try {
             const result = await wcClient.request({
