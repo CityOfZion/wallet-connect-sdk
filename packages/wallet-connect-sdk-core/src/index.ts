@@ -84,6 +84,19 @@ export class WcSdk {
         return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, scripthash, method, params)
     }
 
+    async testInvoke(scripthash: string, method: string, params: any[]) {
+        if (!this.wcClient) {
+            throw 'The client was not initialized'
+        }
+        if (!this.session) {
+            throw 'No session open'
+        }
+        if (!this.chainId) {
+            throw 'No chainId informed'
+        }
+        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, scripthash, method, params)
+    }
+
     static async initClient(logger: string, relayServer: string) {
         return await Client.init({
             logger,
@@ -146,17 +159,10 @@ export class WcSdk {
     }
 
     static async disconnect(wcClient: Client, session: SessionTypes.Created) {
-        console.log('disconnecting')
-        const reason = getError(ERROR.USER_DISCONNECTED)
-        console.log('disconnecting...')
         await wcClient.disconnect({
             topic: session.topic,
-            reason,
+            reason: getError(ERROR.USER_DISCONNECTED),
         })
-    }
-
-    static logDisconnectedError() {
-        console.log(getError(ERROR.USER_DISCONNECTED))
     }
 
     static async sendRequest(wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult> {
@@ -182,6 +188,13 @@ export class WcSdk {
     static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'invokefunction',
+            params: [scripthash, method, params],
+        })
+    }
+
+    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
+        return WcSdk.sendRequest(wcClient, session, chainId, {
+            method: 'testInvoke',
             params: [scripthash, method, params],
         })
     }

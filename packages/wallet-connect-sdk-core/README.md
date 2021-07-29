@@ -103,3 +103,24 @@ const args = {type: 'Array', value: []}
 const parameters = [from, recipient, value, args];
 const resp = await WcSdk.invokeFunction(wcClient, session, scripthash, methodName, parameters);
 ```
+
+### Calling TestInvoke will not require user acceptance
+To retrieve information from a SmartContract without persisting any information on the blockchain you can use `WcSdk.sendRequest` with `testInvoke` as method, but WcSdk
+has a shortcut: `walletConnectCtx.testInvoke`.
+
+On the example below we are invoking the `balanceOf` method of the `GAS` token.
+
+Is expected for the Wallets to not ask the user for authorization on testInvoke.
+
+Check it out:
+```js
+const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
+const methodName = 'balanceOf';
+
+const [address] = walletConnectCtx.accounts[0].split("@")
+
+const from = {type: 'Address', value: address};
+
+const parameters = [from];
+const resp = await WcSdk.testInvoke(wcClient, session, scripthash, methodName, parameters);
+```

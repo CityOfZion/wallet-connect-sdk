@@ -27,8 +27,8 @@ interface IWalletConnectContext {
     connect: (topic?: string) => Promise<void>,
     sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
     invokeFunction: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
+    testInvoke: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
-    logDisconnectedError: () => void,
 }
 
 export interface CtxOptions {
@@ -173,9 +173,9 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, options.chainId, scripthash, method, params))
     };
 
-    const logDisconnectedError = () => {
-        WcSdk.logDisconnectedError()
-    }
+    const testInvoke = async (scripthash: string, method: string, params: any[]) => {
+        return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, options.chainId, scripthash, method, params))
+    };
 
     const contextValue: IWalletConnectContext = {
         wcClient,
@@ -199,8 +199,8 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         connect,
         sendRequest,
         invokeFunction,
+        testInvoke,
         disconnect,
-        logDisconnectedError,
     }
 
     return (
