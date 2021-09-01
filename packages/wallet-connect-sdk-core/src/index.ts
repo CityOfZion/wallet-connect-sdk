@@ -1,7 +1,7 @@
 import Client, { CLIENT_EVENTS } from '@walletconnect/client'
 import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types'
-import { ERROR, getError } from '@walletconnect/utils'
-import { RequestArguments } from '@json-rpc-tools/types'
+import { ERROR } from '@walletconnect/utils'
+import { RequestArguments } from '@walletconnect/jsonrpc-utils'
 
 export interface WcCallbacks {
     onProposal?: (uri: string) => void,
@@ -42,71 +42,75 @@ export class WcSdk {
 
     async connect(options: WcConnectOptions) {
         if (!this.wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
         this.chainId = options?.chainId
         this.session = await WcSdk.connect(this.wcClient, options)
     }
 
+    getAccountAddress(accountIndex?: number) {
+        return this.session ? WcSdk.getAccountAddress(this.session, accountIndex) : null
+    }
+
     async disconnect() {
         if (!this.wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
         if (!this.session) {
-            throw 'No session open'
+            throw Error('No session open')
         }
         await WcSdk.disconnect(this.wcClient, this.session)
     }
 
     async sendRequest(request: RequestArguments) {
         if (!this.wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
         if (!this.session) {
-            throw 'No session open'
+            throw Error('No session open')
         }
         if (!this.chainId) {
-            throw 'No chainId informed'
+            throw Error('No chainId informed')
         }
         return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
     }
 
     async invokeFunction(scripthash: string, method: string, params: any[]) {
         if (!this.wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
         if (!this.session) {
-            throw 'No session open'
+            throw Error('No session open')
         }
         if (!this.chainId) {
-            throw 'No chainId informed'
+            throw Error('No chainId informed')
         }
         return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, scripthash, method, params)
     }
 
     async testInvoke(scripthash: string, method: string, params: any[]) {
         if (!this.wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
         if (!this.session) {
-            throw 'No session open'
+            throw Error('No session open')
         }
         if (!this.chainId) {
-            throw 'No chainId informed'
+            throw Error('No chainId informed')
         }
         return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, scripthash, method, params)
     }
 
-    static async initClient(logger: string, relayServer: string) {
+    static async initClient(logger: string, relayProvider: string) {
         return await Client.init({
             logger,
-            relayProvider: relayServer,
+            relayProvider
         })
     }
 
     static subscribeToEvents(wcClient?: Client, callbacks?: WcCallbacks) {
         if (!wcClient) {
-            throw 'The client was not initialized'
+            throw Error('The client was not initialized')
         }
 
         wcClient.on(
@@ -143,6 +147,15 @@ export class WcSdk {
         }
     }
 
+    static getAccountAddress(session: SessionTypes.Settled, accountIndex?: number) {
+        const index = accountIndex ?? 0
+        if (session.state.accounts.length <= index) {
+            return null
+        }
+        const [namespace, reference, senderAddress] = session.state.accounts[index].split(':')
+        return senderAddress
+    }
+
     static async connect(wcClient: Client, options: WcConnectOptions) {
         return await wcClient.connect({
             metadata: options.appMetadata,
@@ -161,7 +174,7 @@ export class WcSdk {
     static async disconnect(wcClient: Client, session: SessionTypes.Created) {
         await wcClient.disconnect({
             topic: session.topic,
-            reason: getError(ERROR.USER_DISCONNECTED),
+            reason: ERROR.USER_DISCONNECTED.format(),
         })
     }
 

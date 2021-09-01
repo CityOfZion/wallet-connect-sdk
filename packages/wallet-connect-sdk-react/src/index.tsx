@@ -3,7 +3,7 @@ import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
 import {RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {RequestArguments} from "@json-rpc-tools/types";
+import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
 interface IWalletConnectContext {
     wcClient: Client | undefined,
@@ -139,6 +139,10 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         await WcSdk.disconnect(wcClient, session)
         await resetApp()
     }
+
+    // const getAccountAddress = (accountIndex?: number) => {
+    //     return session ? WcSdk.getAccountAddress(session, accountIndex) : null
+    // }
 
     const openPairing = async () => {
         if (!wcClient) {
