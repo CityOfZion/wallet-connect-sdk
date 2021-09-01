@@ -16,7 +16,7 @@ const wcOptions = {
   chainId: "neo3:testnet", // blockchain and network identifier
   logger: "debug", // use debug to show all log information on browser console
   methods: ["invokefunction"], // which RPC methods do you plan to call
-  relayServer: "wss://connect.coz.io", // which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"
+  relayServer: "wss://relay.walletconnect.org", // we are using walletconnect's official relay server 
   appMetadata: {
     name: "MyApplicationName", // your application name to be displayed on the wallet
     description: "My Application description", // description to be shown on the wallet
@@ -63,7 +63,7 @@ return <>
         onClick={() => walletConnectCtx.connect()}>Connect your Wallet</a>
   : <ul>
             {walletConnectCtx.accounts.map((account) => {
-                const [address] = account.split("@");
+                const [namespace, reference, address] = account.split(":");
                 return <li key={address}>
                     <span>{walletConnectCtx.session?.peer.metadata.name}</span>
                     <span>{address}</span>
@@ -109,7 +109,7 @@ Check it out:
 const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
 const methodName = 'transfer';
 
-const [senderAddress] = walletConnectCtx.accounts[0].split("@")
+const senderAddress = WcSdk.getAccountAddress(session)
 
 const from = {type: 'Address', value: senderAddress};
 const recipient = {type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv'};
@@ -134,7 +134,7 @@ Check it out:
 const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
 const methodName = 'balanceOf';
 
-const [address] = walletConnectCtx.accounts[0].split("@")
+const address = WcSdk.getAccountAddress(session)
 
 const from = {type: 'Address', value: address};
 

@@ -3,7 +3,7 @@
 ## Installation
 Install the dependency on your client-side application:
 ```
-npm i @cityofzion/wallet-connect-sdk-core
+npm i @cityofzion/wallet-connect-sdk-core @walletconnect/client@2.0.0-beta.17 @walletconnect/qrcode-modal"@2.0.0-alpha.20 @walletconnect/types@2.0.0-beta.17 @walletconnect/utils@2.0.0-beta.17
 ```
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
@@ -14,7 +14,7 @@ import {WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
 
 const wcClient = await WcSdk.initClient(
   "debug", // logger: use debug to show all log information on browser console
-  "wss://connect.coz.io" // relayServer: which relay server do you want to use, alternatively you can use "wss://relay.walletconnect.org"  
+  "wss://relay.walletconnect.org" // we are using walletconnect's official relay server
 );
 ```
 
@@ -25,7 +25,8 @@ const wcClient = await WcSdk.initClient(
 const session = await WcSdk.getSession(wcClient);
 
 if (session) {
-  console.log(session.state.accounts); // print the accounts
+  console.log(WcSdk.getAccountAddress(session)) // print the account address
+  console.log(session.state.accounts); // print the accounts (with the chain info)
   console.log(session.peer.metadata); // print the wallet metadata 
 }
 ```
@@ -93,7 +94,7 @@ Check it out:
 const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
 const methodName = 'transfer';
 
-const [senderAddress] = session.state.accounts[0].split("@")
+const senderAddress = WcSdk.getAccountAddress(session)
 
 const from = {type: 'Address', value: senderAddress};
 const recipient = {type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv'};
@@ -117,7 +118,7 @@ Check it out:
 const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
 const methodName = 'balanceOf';
 
-const [address] = walletConnectCtx.accounts[0].split("@")
+const address = WcSdk.getAccountAddress(session)
 
 const from = {type: 'Address', value: address};
 

@@ -54,6 +54,4 @@ This SDK uses
 [WalletConnect 2.0](https://docs.walletconnect.org/v/2.0/) protocol, you will need a Wallet application that works with
 it, if you plan to connect with the 
 [Neo blockchain](https://neo.org/) we recommend
-[Aero Web Wallet for testing](https://aero.coz.io/). If you plan to connect with
-[Ethereum blockchain](https://ethereum.org/) there are
-[many wallets](https://registry.walletconnect.org/wallets) to work with.
+[Aero Web Wallet for testing](https://aero-dev.coz.io/).
