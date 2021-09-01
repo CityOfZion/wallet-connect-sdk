@@ -29,6 +29,7 @@ interface IWalletConnectContext {
     invokeFunction: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     testInvoke: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
+    getAccountAddress: (accountIndex?: number) => string | null
 }
 
 export interface CtxOptions {
@@ -140,9 +141,9 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         await resetApp()
     }
 
-    // const getAccountAddress = (accountIndex?: number) => {
-    //     return session ? WcSdk.getAccountAddress(session, accountIndex) : null
-    // }
+    const getAccountAddress = (accountIndex?: number) => {
+        return session ? WcSdk.getAccountAddress(session, accountIndex) : null
+    }
 
     const openPairing = async () => {
         if (!wcClient) {
@@ -205,6 +206,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         invokeFunction,
         testInvoke,
         disconnect,
+        getAccountAddress,
     }
 
     return (
