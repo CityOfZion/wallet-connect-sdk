@@ -34,7 +34,8 @@ interface IWalletConnectContext {
 
 export interface CtxOptions {
     appMetadata: AppMetadata,
-    chainId: string,
+    chainId?: string,
+    chains?: string[],
     logger: string,
     methods: string[],
     relayServer: string
@@ -145,6 +146,10 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return session ? WcSdk.getAccountAddress(session, accountIndex) : null
     }
 
+    const getChainId = (accountIndex?: number) => {
+        return session ? WcSdk.getChainId(session, accountIndex) : (options.chainId || options.chains?.[0] || '')
+    }
+
     const openPairing = async () => {
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized")
@@ -171,15 +176,15 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
     }
 
     const sendRequest = async (request: RequestArguments) => {
-        return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, options.chainId, request))
+        return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, getChainId(), request))
     };
 
     const invokeFunction = async (scripthash: string, method: string, params: any[]) => {
-        return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, options.chainId, scripthash, method, params))
+        return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, getChainId(), scripthash, method, params))
     };
 
     const testInvoke = async (scripthash: string, method: string, params: any[]) => {
-        return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, options.chainId, scripthash, method, params))
+        return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, getChainId(), scripthash, method, params))
     };
 
     const contextValue: IWalletConnectContext = {

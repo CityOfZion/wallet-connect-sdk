@@ -1,6 +1,6 @@
-import Client, { CLIENT_EVENTS } from '@walletconnect/client'
-import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types'
-import { ERROR } from '@walletconnect/utils'
+import Client, { CLIENT_EVENTS } from '@walletconnect/client/dist/cjs';
+import { ERROR } from '@walletconnect/utils/dist/cjs/error';
+import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types/dist/cjs'
 import { RequestArguments } from '@walletconnect/jsonrpc-utils'
 
 export interface WcCallbacks {
@@ -11,7 +11,8 @@ export interface WcCallbacks {
 
 export interface WcConnectOptions {
     topic?: string,
-    chainId: string,
+    chainId?: string,
+    chains?: string[],
     appMetadata: AppMetadata,
     methods: string[]
 }
@@ -24,14 +25,13 @@ export interface RpcCallResult {
 export class WcSdk {
     wcClient?: Client
     session?: SessionTypes.Created
-    chainId?: string
 
     async initClient(logger: string, relayServer: string) {
         this.wcClient = await WcSdk.initClient(logger, relayServer)
     }
 
     subscribeToEvents(callbacks?: WcCallbacks) {
-        WcSdk.subscribeToEvents(this.wcClient)
+        WcSdk.subscribeToEvents(this.wcClient, callbacks)
     }
 
     async loadSession() {
@@ -44,12 +44,19 @@ export class WcSdk {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
-        this.chainId = options?.chainId
         this.session = await WcSdk.connect(this.wcClient, options)
     }
 
     getAccountAddress(accountIndex?: number) {
         return this.session ? WcSdk.getAccountAddress(this.session, accountIndex) : null
+    }
+
+    get chainId() {
+        return WcSdk.getChainId(this.session)
+    }
+
+    get accountAddress() {
+        return WcSdk.getAccountAddress(this.session)
     }
 
     async disconnect() {
@@ -147,13 +154,22 @@ export class WcSdk {
         }
     }
 
-    static getAccountAddress(session: SessionTypes.Settled, accountIndex?: number) {
+    static getAccountInfo(session: SessionTypes.Settled, accountIndex?: number) {
         const index = accountIndex ?? 0
         if (session.state.accounts.length <= index) {
             return null
         }
-        const [namespace, reference, senderAddress] = session.state.accounts[index].split(':')
-        return senderAddress
+        return session.state.accounts[index].split(':')
+    }
+
+    static getAccountAddress(session: SessionTypes.Settled, accountIndex?: number) {
+        const info = WcSdk.getAccountInfo(session, accountIndex)
+        return info && info[2];
+    }
+
+    static getChainId(session: SessionTypes.Settled, accountIndex?: number) {
+        const info = WcSdk.getAccountInfo(session, accountIndex)
+        return info && `${info[0]}:${info[1]}`;
     }
 
     static async connect(wcClient: Client, options: WcConnectOptions) {
@@ -162,7 +178,7 @@ export class WcSdk {
             pairing: options.topic ? {topic: options.topic} : undefined,
             permissions: {
                 blockchain: {
-                    chains: [options.chainId],
+                    chains: options.chains ?? [options.chainId],
                 },
                 jsonrpc: {
                     methods: options.methods,
