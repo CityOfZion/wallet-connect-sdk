@@ -30,6 +30,7 @@ interface IWalletConnectContext {
     testInvoke: (scripthash: string, method: string, params: any[]) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
     getAccountAddress: (accountIndex?: number) => string | null
+    getChainId: (accountIndex?: number) => string | null
 }
 
 export interface CtxOptions {
@@ -212,6 +213,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         testInvoke,
         disconnect,
         getAccountAddress,
+        getChainId,
     }
 
     return (
