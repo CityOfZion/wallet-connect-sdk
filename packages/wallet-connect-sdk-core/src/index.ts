@@ -1,5 +1,5 @@
-import Client, { CLIENT_EVENTS } from '@walletconnect/client/dist/cjs';
-import { ERROR } from '@walletconnect/utils/dist/cjs/error';
+import Client, { CLIENT_EVENTS } from '@walletconnect/client/dist/cjs'
+import { ERROR } from '@walletconnect/utils/dist/cjs/error'
 import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types/dist/cjs'
 import { RequestArguments } from '@walletconnect/jsonrpc-utils'
 
@@ -20,6 +20,13 @@ export interface WcConnectOptions {
 export interface RpcCallResult {
     method: string,
     result: any,
+}
+
+export type ContractInvocation = {
+    scriptHash: string
+    operation: string
+    args: any[]
+    abortOnFail?: boolean
 }
 
 export class WcSdk {
@@ -52,11 +59,11 @@ export class WcSdk {
     }
 
     get chainId() {
-        return WcSdk.getChainId(this.session)
+        return this.session ? WcSdk.getChainId(this.session) : null
     }
 
     get accountAddress() {
-        return WcSdk.getAccountAddress(this.session)
+        return this.session ? WcSdk.getAccountAddress(this.session) : null
     }
 
     async disconnect() {
@@ -82,7 +89,7 @@ export class WcSdk {
         return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
     }
 
-    async invokeFunction(scripthash: string, method: string, params: any[]) {
+    async invokeFunction(request: ContractInvocation) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -92,10 +99,10 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, scripthash, method, params)
+        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, request)
     }
 
-    async testInvoke(scripthash: string, method: string, params: any[]) {
+    async testInvoke(request: ContractInvocation) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -105,7 +112,33 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, scripthash, method, params)
+        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, request)
+    }
+
+    async multiInvoke(request: ContractInvocation[]) {
+        if (!this.wcClient) {
+            throw Error('The client was not initialized')
+        }
+        if (!this.session) {
+            throw Error('No session open')
+        }
+        if (!this.chainId) {
+            throw Error('No chainId informed')
+        }
+        return await WcSdk.multiInvoke(this.wcClient, this.session, this.chainId, request)
+    }
+
+    async multiTestInvoke(request: ContractInvocation[]) {
+        if (!this.wcClient) {
+            throw Error('The client was not initialized')
+        }
+        if (!this.session) {
+            throw Error('No session open')
+        }
+        if (!this.chainId) {
+            throw Error('No chainId informed')
+        }
+        return await WcSdk.multiTestInvoke(this.wcClient, this.session, this.chainId, request)
     }
 
     static async initClient(logger: string, relayProvider: string) {
@@ -178,7 +211,7 @@ export class WcSdk {
             pairing: options.topic ? {topic: options.topic} : undefined,
             permissions: {
                 blockchain: {
-                    chains: options.chains ?? [options.chainId],
+                    chains: options.chains ?? (options.chainId ? [options.chainId] : [])
                 },
                 jsonrpc: {
                     methods: options.methods,
@@ -214,17 +247,31 @@ export class WcSdk {
         }
     }
 
-    static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
+    static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'invokefunction',
-            params: [scripthash, method, params],
+            params: [request],
         })
     }
 
-    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, scripthash: string, method: string, params: any[]) {
+    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'testInvoke',
-            params: [scripthash, method, params],
+            params: [request],
+        })
+    }
+
+    static async multiInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation[]) {
+        return WcSdk.sendRequest(wcClient, session, chainId, {
+            method: 'multiInvoke',
+            params: request,
+        })
+    }
+
+    static async multiTestInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation[]) {
+        return WcSdk.sendRequest(wcClient, session, chainId, {
+            method: 'multiTestInvoke',
+            params: request,
         })
     }
 }
