@@ -12,13 +12,13 @@
   "author": "Gil Lopes Bueno <melanke.hc@gmail.com>",
   "homepage": "https://github.com/CityOfZion/wallet-connect-sdk#readme",
   "license": "MIT",
-  "main": "lib/wallet-connect-sdk-core.js",
+  "main": "dist/index",
   "directories": {
-    "lib": "lib",
+    "dist": "dist",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -38,5 +38,8 @@
     "@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
     "@walletconnect/types": "^2.0.0-beta.17",
     "@walletconnect/utils": "^2.0.0-beta.17"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2"
   }
 }

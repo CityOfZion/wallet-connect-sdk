@@ -10,7 +10,7 @@ npm i @cityofzion/wallet-connect-sdk-core @walletconnect/client@2.0.0-beta.17 @w
 ## Setup
 Wrap WalletConnectContextProvider around your App by passing an options object as prop:
 ```jsx
-import {WcSdk} from "@cityofzion/wallet-connect-sdk-core/lib";
+import {WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 
 const wcClient = await WcSdk.initClient(
   "debug", // logger: use debug to show all log information on browser console
