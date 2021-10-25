@@ -10,19 +10,26 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+
       - restore_cache:
           key: dependency-cache-{{ checksum "common/config/rush/npm-shrinkwrap.json" }}
+
       - run:
           name: install rush
           command: npm install -g @microsoft/rush
+
       - run:
-          - rush update
+          name: rush update
+          command: rush update
+
       - save_cache:
           key: dependency-cache-{{ checksum "common/config/rush/npm-shrinkwrap.json" }}
           paths:
             - ./common/temp
+            -
       - run:
-          - rush rebuild
+          name: rebuild
+          command: rush rebuild
 
       - persist_to_workspace:
           root: ~/project
@@ -37,9 +44,11 @@ jobs:
       - run:
           name: Verify Change
           command: rush change --verify
+
       - run:
           name: Authenticate
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/dora-sdk-ts/.npmrc
+
       - run:
           name: Publish package
           command: rush publish --include-all --publish
