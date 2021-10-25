@@ -1,0 +1,66 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/project
+  docker:
+    - image: circleci/node:14.18.0
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "common/config/rush/npm-shrinkwrap.json" }}
+      - run:
+          name: install rush
+          command: npm install -g @microsoft/rush
+      - run:
+          - rush update
+      - save_cache:
+          key: dependency-cache-{{ checksum "common/config/rush/npm-shrinkwrap.json" }}
+          paths:
+            - ./common/temp
+      - run:
+          - rush rebuild
+
+      - persist_to_workspace:
+          root: ~/project
+          paths: .
+
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Verify Change
+          command: rush change --verify
+      - run:
+          name: Authenticate
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/dora-sdk-ts/.npmrc
+      - run:
+          name: Publish package
+          command: rush publish --include-all --publish
+
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - deploy:
+          context: npm_prod
+          requires:
+            - test
+          filters:
+            tags:
+              only:
+                - /^v.*/
+            branches:
+              ignore:
+                - /.*/
