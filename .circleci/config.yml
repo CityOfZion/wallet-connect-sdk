@@ -16,7 +16,7 @@ jobs:
 
       - run:
           name: install rush
-          command: npm install -g @microsoft/rush
+          command: sudo npm install -g @microsoft/rush
 
       - run:
           name: rush update
