@@ -1,19 +1,19 @@
 # Contributing to WalletConnect SDK
 Thanks for contributing to WcSdk :)
 
-This is a monorepository for WcSdk Core and WcSdk React managed with lerna.
+This is a monorepository for WcSdk Core and WcSdk React managed with rush.
 
 ## Setup
-1. Install Lerna globally:
+1. Install Rush globally:
 ```
-npm install --global lerna
+npm install @microsoft/rush -g
 ```
 2. Run the setup script
 ```
-npm run setup
+rush update
 ```
 
 ## Build
 ```
-npm run build
+rush build
 ```
