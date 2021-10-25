@@ -22,11 +22,20 @@ export interface RpcCallResult {
     result: any,
 }
 
+export enum WitnessScope {
+    None = 0,
+    CalledByEntry = 1,
+    CustomContracts = 16,
+    CustomGroups = 32,
+    Global = 128
+}
+
 export type ContractInvocation = {
     scriptHash: string
     operation: string
     args: any[]
     abortOnFail?: boolean
+    scopes?: WitnessScope
 }
 
 export class WcSdk {
