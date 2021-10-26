@@ -2,6 +2,18 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "1.3.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v1.3.0",
+      "date": "Tue, 26 Oct 2021 19:56:23 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "The format for declaring signers was modified, allowing to inform contracts and groups"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.2.1",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.2.1",
       "date": "Tue, 26 Oct 2021 17:25:29 GMT",
