@@ -31,7 +31,7 @@ export enum WitnessScope {
 }
 
 export type Signer = {
-    scopes: WitnessScope
+    scope: WitnessScope
     allowedContracts?: string[]
     allowedGroups?: string[]
 }
