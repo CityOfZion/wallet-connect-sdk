@@ -2,6 +2,18 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "1.2.1",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v1.2.1",
+      "date": "Tue, 26 Oct 2021 17:25:29 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Adds the signature scope parameter to the wallet connect sdk."
+          }
+        ]
+      }
+    },
+    {
       "version": "1.2.0",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.2.0",
       "date": "Mon, 25 Oct 2021 16:11:07 GMT",
