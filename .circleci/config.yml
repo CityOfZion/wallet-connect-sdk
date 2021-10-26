@@ -51,11 +51,16 @@ jobs:
 
       - run:
           name: install rush
-          command: sudo npm install -g @microsoft/rush
+          command: |
+          sudo npm install -g @microsoft/rush
+          rush update
+          rush rebuild
+
+
 
       - run:
           name: Authenticate
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/common/config/rush/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/common/config/rush/.npmrc-publish
 
       - run:
           name: Publish package
