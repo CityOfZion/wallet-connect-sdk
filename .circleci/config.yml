@@ -50,6 +50,10 @@ jobs:
           at: ~/project
 
       - run:
+          name: install rush
+          command: sudo npm install -g @microsoft/rush
+
+      - run:
           name: Authenticate
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/common/config/rush/.npmrc
 
