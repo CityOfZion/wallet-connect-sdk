@@ -62,7 +62,7 @@ await WcSdk.disconnect(wcClient, session);
 
 ### Make an JSON-RPC call
 Every request is made via JSON-RPC. You need to provide a method name that is expected by the wallet and listed on
-the `methods` property of the [options object](#setup), and some additional `parameters`.
+the `methods` property of the [options object](#setup) as well as some additional `parameters`.
 
 The JSON-RPC format accepts parameters in many formats. The rules on how to construct this request will depend
 entirely on the blockchain you are using. The code below is an example of a request constructed for the Neo Blockchain:

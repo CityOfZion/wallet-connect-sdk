@@ -8,7 +8,7 @@ npm i @cityofzion/wallet-connect-sdk-react
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
 ## Setup
-Wrap WalletConnectContextProvider around your App passing by an options object as prop
+Wrap WalletConnectContextProvider around your App by passing an options object as prop
 ```jsx
 import {WalletConnectContextProvider} from "@cityofzion/wallet-connect-sdk-react";
 
