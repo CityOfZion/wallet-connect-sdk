@@ -28,8 +28,16 @@ jobs:
             - ./common/temp
 
       - run:
+          name: Verify Change
+          command: rush change --verify
+
+      - run:
           name: rebuild
           command: rush rebuild
+
+      - run:
+          name: Publish Dry-Run
+          command: rush publish --include-all
 
       - persist_to_workspace:
           root: ~/project
@@ -40,10 +48,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-
-      - run:
-          name: Verify Change
-          command: rush change --verify
 
       - run:
           name: Authenticate

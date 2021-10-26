@@ -17,3 +17,7 @@ rush update
 ```
 rush build
 ```
+
+## Changes
+A change log is required for all PRs to develop.  Run `rush change` to update the log.
+
