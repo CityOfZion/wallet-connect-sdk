@@ -47,7 +47,7 @@ jobs:
 
       - run:
           name: Authenticate
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/dora-sdk-ts/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/common/config/rush/.npmrc
 
       - run:
           name: Publish package
