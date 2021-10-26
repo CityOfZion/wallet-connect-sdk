@@ -30,12 +30,18 @@ export enum WitnessScope {
     Global = 128
 }
 
+export type Signer = {
+    scopes: WitnessScope
+    allowedContracts?: string[]
+    allowedGroups?: string[]
+}
+
 export type ContractInvocation = {
     scriptHash: string
     operation: string
     args: any[]
     abortOnFail?: boolean
-    scopes?: WitnessScope
+    signer?: Signer
 }
 
 export class WcSdk {
