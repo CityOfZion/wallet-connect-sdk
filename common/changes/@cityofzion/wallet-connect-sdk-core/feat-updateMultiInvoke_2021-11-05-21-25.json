@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-core",
+      "comment": "updates type for multiinvoke to hoist the signers",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-core"
+}
