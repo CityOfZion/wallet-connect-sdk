@@ -41,7 +41,8 @@ export interface CtxOptions {
     chains?: string[],
     logger: string,
     methods: string[],
-    relayServer: string
+    relayServer: string,
+    qrCodeModal: boolean
 }
 
 export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
@@ -80,7 +81,9 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         WcSdk.subscribeToEvents(wcClient, {
             onProposal: uri => {
                 setUri(uri)
-                QRCodeModal.open(uri, () => {})
+                if (options.qrCodeModal) {
+                    QRCodeModal.open(uri, () => {})
+                }
             },
             onCreated: topics => setPairings(topics),
             onDeleted: async () => await resetApp()
@@ -130,6 +133,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         }
 
         // close modal in case it was open
+        setUri("")
         QRCodeModal.close()
     }
 
