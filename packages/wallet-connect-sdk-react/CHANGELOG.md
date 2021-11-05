@@ -1,6 +1,17 @@
 # Change Log - @cityofzion/wallet-connect-sdk-react
 
-This log was last generated on Tue, 26 Oct 2021 19:56:23 GMT and should not be manually modified.
+This log was last generated on Fri, 05 Nov 2021 21:39:16 GMT and should not be manually modified.
+
+## 1.3.0
+Fri, 05 Nov 2021 21:39:16 GMT
+
+### Minor changes
+
+- updates multi invoke type
+
+### Patches
+
+- Makes the QR code render optional
 
 ## 1.2.2
 Tue, 26 Oct 2021 19:56:23 GMT
