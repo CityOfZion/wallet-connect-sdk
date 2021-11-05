@@ -44,6 +44,11 @@ export type ContractInvocation = {
     signer?: Signer
 }
 
+export type ContractInvocationMulti = {
+    signer: Signer[]
+    invocations: ContractInvocation[]
+}
+
 export class WcSdk {
     wcClient?: Client
     session?: SessionTypes.Created
@@ -130,7 +135,7 @@ export class WcSdk {
         return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, request)
     }
 
-    async multiInvoke(request: ContractInvocation[]) {
+    async multiInvoke(request: ContractInvocationMulti) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -143,7 +148,7 @@ export class WcSdk {
         return await WcSdk.multiInvoke(this.wcClient, this.session, this.chainId, request)
     }
 
-    async multiTestInvoke(request: ContractInvocation[]) {
+    async multiTestInvoke(request: ContractInvocationMulti) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -276,14 +281,14 @@ export class WcSdk {
         })
     }
 
-    static async multiInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation[]) {
+    static async multiInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiInvoke',
             params: request,
         })
     }
 
-    static async multiTestInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation[]) {
+    static async multiTestInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiTestInvoke',
             params: request,
