@@ -1,10 +1,9 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ContractInvocation, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
+import {ContractInvocation, ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@walletconnect/jsonrpc-utils";
-import {ContractInvocationMulti} from "@cityofzion/wallet-connect-sdk-core/dist";
 
 interface IWalletConnectContext {
     wcClient: Client | undefined,
