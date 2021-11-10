@@ -33,7 +33,7 @@ many dApps and users.
 ![Video](demo.gif)
 
 This example is showing [Crypsydra dApp](https://github.com/east-side-cryps/crypsydra-web) connecting with
-[Aero Wallet](aero.coz.io)
+[Aero Wallet](https://aero.coz.io)
 
 ## How does it work?
 - The dApp shows a QRCode, so the user can use their wallet to establish a connection
