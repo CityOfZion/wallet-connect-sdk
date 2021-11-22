@@ -218,7 +218,7 @@ export class WcSdk {
      * @param logger the logger level, describes how much information to show on the log, use `debug` for more information or `error` for less information
      * @param relayServer the relayserver to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
      */
-    async initClient(logger: string, relayServer: string) {
+    async initClient (logger: string, relayServer: string): Promise<void> {
         this.wcClient = await WcSdk.initClient(logger, relayServer)
     }
 
@@ -239,14 +239,14 @@ export class WcSdk {
      * })
      * ```
      */
-    subscribeToEvents(callbacks?: WcCallbacks) {
+    subscribeToEvents (callbacks?: WcCallbacks): void {
         WcSdk.subscribeToEvents(this.wcClient, callbacks)
     }
 
     /**
      * Load any existing connection, it should be called after the initialization, to reestablish connections made previously
      */
-    async loadSession() {
+    async loadSession (): Promise<void> {
         if (this.wcClient) {
             this.session = await WcSdk.getSession(this.wcClient) || undefined
         }
@@ -256,7 +256,7 @@ export class WcSdk {
      * Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
      * @param options describes the options for the connection
      */
-    async connect(options: WcConnectOptions) {
+    async connect (options: WcConnectOptions): Promise<void> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -268,7 +268,7 @@ export class WcSdk {
      * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
      * @return the address of the connected account of the wallet
      */
-    getAccountAddress(accountIndex?: number) {
+    getAccountAddress (accountIndex?: number): string | null {
         return this.session ? WcSdk.getAccountAddress(this.session, accountIndex) : null
     }
 
@@ -276,7 +276,7 @@ export class WcSdk {
      * gets the chain id of the first connected account, to retrieve this information from another account use `WcSdk.getAccountInfo` static method.
      * @return a string that represents the blockchain
      */
-    get chainId() {
+    get chainId (): string | null {
         return this.session ? WcSdk.getChainId(this.session) : null
     }
 
@@ -284,14 +284,14 @@ export class WcSdk {
      * gets the address of the first connected account, to retrieve this information from another account use `getAccountAddress` method.
      * @return a string that represents the blockchain
      */
-    get accountAddress() {
+    get accountAddress (): string | null {
         return this.session ? WcSdk.getAccountAddress(this.session) : null
     }
 
     /**
      * Disconnects from the Wallet, use this method to logout
      */
-    async disconnect() {
+    async disconnect (): Promise<void> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -312,7 +312,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    async sendRequest(request: RequestArguments) {
+    async sendRequest (request: RequestArguments): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -344,7 +344,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction(request: ContractInvocation) {
+    async invokeFunction (request: ContractInvocation): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -372,7 +372,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    async testInvoke(request: ContractInvocation) {
+    async testInvoke (request: ContractInvocation): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -390,7 +390,7 @@ export class WcSdk {
      * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
      * ```
      * const resp = await wcInstance.multiInvoke({
-     *    signer: { scopes: WitnessScope.None }
+     *    signer: [{ scopes: WitnessScope.None }],
      *    invocations: [{
      *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
      *        operation: 'getStream',
@@ -406,7 +406,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    async multiInvoke(request: ContractInvocationMulti) {
+    async multiInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -425,7 +425,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    async multiTestInvoke(request: ContractInvocationMulti) {
+    async multiTestInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -444,7 +444,7 @@ export class WcSdk {
      * @param relayProvider the relayProvider to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
      * @return a wcClient
      */
-    static async initClient(logger: string, relayProvider: string) {
+    static async initClient (logger: string, relayProvider: string): Promise<Client> {
         return await Client.init({
             logger,
             relayProvider
@@ -468,7 +468,7 @@ export class WcSdk {
      * })
      * ```
      */
-    static subscribeToEvents(wcClient?: Client, callbacks?: WcCallbacks) {
+    static subscribeToEvents (wcClient?: Client, callbacks?: WcCallbacks): void {
         if (!wcClient) {
             throw Error('The client was not initialized')
         }
@@ -502,7 +502,7 @@ export class WcSdk {
     /**
      * Gets any existing connection, it should be called after the initialization, to retrieve the session of connections made previously
      */
-    static async getSession(wcClient: Client) {
+    static async getSession (wcClient: Client): Promise<SessionTypes.Settled | null> {
         if (wcClient?.session.topics.length) {
             return await wcClient.session.get(wcClient.session.topics[0])
         } else {
@@ -516,7 +516,7 @@ export class WcSdk {
      * @param accountIndex index of one of the connected accounts
      * @return an array that represents the address and chain
      */
-    static getAccountInfo(session: SessionTypes.Settled, accountIndex?: number) {
+    static getAccountInfo (session: SessionTypes.Settled, accountIndex?: number): string[] | null {
         const index = accountIndex ?? 0
         if (session.state.accounts.length <= index) {
             return null
@@ -530,9 +530,9 @@ export class WcSdk {
      * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
      * @return the address of the connected account of the wallet
      */
-    static getAccountAddress(session: SessionTypes.Settled, accountIndex?: number) {
+    static getAccountAddress (session: SessionTypes.Settled, accountIndex?: number): string | null {
         const info = WcSdk.getAccountInfo(session, accountIndex)
-        return info && info[2];
+        return info && info[2]
     }
 
     /**
@@ -541,9 +541,9 @@ export class WcSdk {
      * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
      * @return a string that represents the blockchain
      */
-    static getChainId(session: SessionTypes.Settled, accountIndex?: number) {
+    static getChainId (session: SessionTypes.Settled, accountIndex?: number): string | null {
         const info = WcSdk.getAccountInfo(session, accountIndex)
-        return info && `${info[0]}:${info[1]}`;
+        return info && `${info[0]}:${info[1]}`
     }
 
     /**
@@ -551,10 +551,10 @@ export class WcSdk {
      * @param wcClient
      * @param options describes the options for the connection
      */
-    static async connect(wcClient: Client, options: WcConnectOptions) {
+    static async connect (wcClient: Client, options: WcConnectOptions): Promise<SessionTypes.Settled> {
         return await wcClient.connect({
             metadata: options.appMetadata,
-            pairing: options.topic ? {topic: options.topic} : undefined,
+            pairing: options.topic ? { topic: options.topic } : undefined,
             permissions: {
                 blockchain: {
                     chains: options.chains ?? (options.chainId ? [options.chainId] : [])
@@ -571,7 +571,7 @@ export class WcSdk {
      * @param wcClient
      * @param session connected session
      */
-    static async disconnect(wcClient: Client, session: SessionTypes.Created) {
+    static async disconnect (wcClient: Client, session: SessionTypes.Created): Promise<void> {
         await wcClient.disconnect({
             topic: session.topic,
             reason: ERROR.USER_DISCONNECTED.format(),
@@ -592,7 +592,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    static async sendRequest(wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult> {
+    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult> {
         try {
             const result = await wcClient.request({
                 topic: session.topic,
@@ -607,7 +607,7 @@ export class WcSdk {
         } catch (error) {
             return {
                 method: request.method,
-                result: {error},
+                result: { error },
             }
         }
     }
@@ -634,7 +634,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
+    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'invokefunction',
             params: [request],
@@ -659,7 +659,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
+    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'testInvoke',
             params: [request],
@@ -669,13 +669,28 @@ export class WcSdk {
     /**
      * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
      * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
+     * ```
+     * const resp = await QcSdk.multiInvoke(wcClient, session, chainId, {
+     *    signer: [{ scopes: WitnessScope.None }],
+     *    invocations: [{
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'getStream',
+     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *        args: [{ type: 'Integer', value: 17 }],
+     *    }, {
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'transfer',
+     *        args: [from, recipient, value, args]
+     *    }]
+     * })
+     * ```
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    static async multiInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
+    static async multiInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiInvoke',
             params: request,
@@ -691,7 +706,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    static async multiTestInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
+    static async multiTestInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiTestInvoke',
             params: request,
