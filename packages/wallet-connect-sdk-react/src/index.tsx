@@ -5,43 +5,230 @@ import {ContractInvocation, ContractInvocationMulti, RpcCallResult, WcSdk} from 
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
+/**
+ * WalletConnect's context for React
+ */
 interface IWalletConnectContext {
+    /**
+     * Wallet Connect Client, used on most of the methods
+     */
     wcClient: Client | undefined,
     setWcClient: React.Dispatch<React.SetStateAction<Client | undefined>>,
+
+    /**
+     * The Session of the current connection
+     */
     session: SessionTypes.Created | undefined,
     setSession: React.Dispatch<React.SetStateAction<SessionTypes.Created | undefined>>,
+
+    /**
+     * An indicator if the session is loading
+     */
     loadingSession: boolean,
     setLoadingSession: React.Dispatch<React.SetStateAction<boolean>>,
-    pairings: string[],
-    setPairings: React.Dispatch<React.SetStateAction<string[]>>,
-    isPairing: boolean,
-    setIsPairing: React.Dispatch<React.SetStateAction<boolean>>,
+
+    /**
+     * An indicator for when there is any request that is pending for the wallet to approve, use this variable to ask the users to check their wallet to approve the request
+     */
     isPendingApproval: boolean,
     setIsPendingApproval: React.Dispatch<React.SetStateAction<boolean>>,
+
+    /**
+     * The Connection Proposal URI, use this variable to show a custom QRCode
+     *
+     * Note: The QRCodeModal is automatically shown by default, to disable this feature set `qrCodeModal` option as false
+     *
+     * ```
+     * useEffect(() => {
+     *     if (walletConnectCtx.uri.length) {
+     *         window.open(`https://neon.coz.io/connect?uri=${walletConnectCtx.uri}`, '_blank')?.focus();
+     *     }
+     * }, [walletConnectCtx.uri])
+     * ```
+     */
     uri: string,
     setUri: React.Dispatch<React.SetStateAction<string>>,
+
+    /**
+     * Connected Accounts, the string is composed by the format: `${chainName}:${chainEnvironment}:${accountAddress}`
+     *
+     * Use `walletConnectCtx.getAccountAddress()` to retrieve only the accountAddress
+     */
     accounts: string[],
     setAccounts: React.Dispatch<React.SetStateAction<string[]>>,
 
-    openPairing: () => Promise<void>,
+    /**
+     * Initialize the connection process
+     * @param topic optional pairing topic to reestablish an existing connection
+     */
     connect: (topic?: string) => Promise<void>,
+
+    /**
+     * Sends a request to the Wallet and it will call the RpcServer
+     * ```
+     * const result = await walletConnectCtx.sendRequest({
+     *   method: 'getapplicationlog',
+     *   params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
+     * })
+     * ```
+     * @param request the request information object containing the rpc method name and the parameters
+     * @return the call result promise
+     */
     sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
+
+    /**
+     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * ```
+     * const senderAddress = walletConnectCtx.getAccountAddress()
+     *
+     * const from = { type: 'Address', value: senderAddress }
+     * const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
+     * const value = { type: 'Integer', value: 100000000 }
+     * const args = { type: 'Array', value: [] }
+     *
+     * const resp = await walletConnectCtx.invokeFunction({
+     *    scriptHash: smartContractScripthash,
+     *    operation: 'transfer',
+     *    args: [from, recipient, value, args]
+     * })
+     * ```
+     * @param request the contract invocation options
+     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
+     */
     invokeFunction: (request: ContractInvocation) => Promise<RpcCallResult>,
+
+    /**
+     * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
+     * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
+     * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
+     * ```
+     * const resp = await walletConnectCtx.testInvoke({
+     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *     operation: 'getStream',
+     *     args: [{ type: 'Integer', value: 17 }],
+     *     signer: { scopes: WitnessScope.None }
+     * })
+     * ```
+     * @param request the contract invocation options
+     * @return the call result promise
+     */
     testInvoke: (request: ContractInvocation) => Promise<RpcCallResult>,
+
+    /**
+     * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
+     * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
+     * ```
+     * const resp = await walletConnectCtx.multiInvoke({
+     *    signer: { scopes: WitnessScope.None }
+     *    invocations: [{
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'getStream',
+     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *        args: [{ type: 'Integer', value: 17 }],
+     *    }, {
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'transfer',
+     *        args: [from, recipient, value, args]
+     *    }]
+     * })
+     * ```
+     * @param request an array of contract invocations
+     * @return the call result promise
+     */
     multiInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+
+    /**
+     * Sends a `multiTestInvoke` request to the Wallet.
+     * This method is the combination of `multiInvoke` and `testInvoke`
+     * @param request an array of contract invocations
+     * @return the call result promise
+     */
     multiTestInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+
+    /**
+     * Disconnects from the Wallet, use this method to logout
+     */
     disconnect: () => Promise<void>,
+
+    /**
+     * gets the address of the connected account
+     * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
+     * @return the address of the connected account of the wallet
+     */
     getAccountAddress: (accountIndex?: number) => string | null
+
+    /**
+     * gets the chain id of the first connected account.
+     * @return a string that represents the blockchain
+     */
     getChainId: (accountIndex?: number) => string | null
 }
 
+/**
+ * A simple interface used to define the options for the wallet connect interaction
+ */
 export interface CtxOptions {
+    /**
+     * the dApp metadata to be shown on the wallet
+     * ```
+     * {
+     *     name: "My dApp Name",
+     *     description: "This is the dApp description",
+     *     url: "https://mydappwebsite.com/",
+     *     icons: ["https://mydappwebsite.com/icon.png"]
+     * }
+     * ```
+     */
     appMetadata: AppMetadata,
+
+    /**
+     * @deprecated Use `chains` instead
+     */
     chainId?: string,
+
+    /**
+     * Defines with which chains the dApp accepts to connect to
+     * ```
+     * ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
+     * ```
+     * The wallet will decide which chain it will use and the dApp can check the choice by calling one of the methods below:
+     * ```
+     * // calling the static method passing a session as parameter
+     * const chain = WcSdk.getChainId(session)
+     * // calling the getter of an instance of WcSdk
+     * const chain = wcInstance.chainId
+     * ```
+     */
     chains?: string[],
+
+    /**
+     * the logger level, describes how much information to show on the log, use `debug` for more information or `error` for less information
+     */
     logger: string,
+
+    /**
+     * Which methods the dApp needs authorization to call
+     * ```
+     * [
+     *     'invokefunction', // makes real invocations that persists data on the blockchain
+     *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
+     *     'multiInvoke', // makes real invocations that will be concatenated and called on a single transaction
+     *     'multiTestInvoke', // makes test invocations that will be concatenated but don't require user authorization
+     *     // You can also provide any other method name present on the RpcServer, eg.:
+     *     'getversion'
+     * ]
+     * ```
+     */
     methods: string[],
+
+    /**
+     * the relayserver to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
+     */
     relayServer: string,
+
+    /**
+     * set it to true to automatically show the QRCode modal for the connection
+     */
     qrCodeModal: boolean
 }
 
@@ -51,8 +238,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
     const [wcClient, setWcClient] = useState<Client | undefined>(undefined)
     const [session, setSession] = useState<SessionTypes.Created | undefined>(undefined)
     const [loadingSession, setLoadingSession] = useState(true)
-    const [pairings, setPairings] = useState<string[]>([])
-    const [isPairing, setIsPairing] = useState(false)
     const [isPendingApproval, setIsPendingApproval] = useState(false)
     const [uri, setUri] = useState("")
     const [accounts, setAccounts] = useState<string[]>([])
@@ -65,8 +250,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         setWcClient(undefined)
         setSession(undefined)
         setLoadingSession(true)
-        setPairings([])
-        setIsPairing(false)
         setIsPendingApproval(false)
         setUri("")
         setAccounts([])
@@ -85,7 +268,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
                     QRCodeModal.open(uri, () => {})
                 }
             },
-            onCreated: topics => setPairings(topics),
             onDeleted: async () => await resetApp()
         })
     }, [resetApp, wcClient])
@@ -94,8 +276,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized")
         }
-
-        setPairings(wcClient.pairing.topics)
 
         if (session) return
 
@@ -122,8 +302,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized")
         }
-
-        setIsPairing(false)
 
         try {
             const session = await WcSdk.connect(wcClient, {topic, ...options})
@@ -159,17 +337,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
 
     const getChainIdOrOptionChainId = (accountIndex?: number) => {
         return session ? WcSdk.getChainId(session, accountIndex) : (options.chainId || options.chains?.[0] || '')
-    }
-
-    const openPairing = async () => {
-        if (!wcClient) {
-            throw new Error("WalletConnect is not initialized")
-        }
-        if (wcClient.pairing.topics.length) {
-            setIsPairing(true)
-            return
-        }
-        await connect()
     }
 
     const handleRequest = async (caller: (wcClient: Client, session: SessionTypes.Created) => Promise<RpcCallResult>) => {
@@ -213,10 +380,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         setSession,
         loadingSession,
         setLoadingSession,
-        pairings,
-        setPairings,
-        isPairing,
-        setIsPairing,
         isPendingApproval,
         setIsPendingApproval,
         uri,
@@ -224,7 +387,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         accounts,
         setAccounts,
 
-        openPairing,
         connect,
         sendRequest,
         invokeFunction,
