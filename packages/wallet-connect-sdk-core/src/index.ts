@@ -98,7 +98,7 @@ export interface WcConnectOptions {
 /**
  * The result format of a call of a method on the wallet
  */
-export interface RpcCallResult {
+export interface RpcCallResult<T> {
     /**
      * Which method was called
      */
@@ -106,7 +106,7 @@ export interface RpcCallResult {
     /**
      * The result object
      */
-    result: any,
+    result: T,
 }
 
 /**
@@ -184,6 +184,31 @@ export type ContractInvocationMulti = {
      * The array of invocations
      */
     invocations: ContractInvocation[]
+}
+
+/**
+ * A simple interface that defines the Signed Message format
+ */
+export type SignedMessage = {
+    /**
+     * signer's public key
+     */
+    publicKey: string
+
+    /**
+     * encrypted message
+     */
+    data: string
+
+    /**
+     * salt used to encrypt
+     */
+    salt: string
+
+    /**
+     * message hex
+     */
+    messageHex: string
 }
 
 /**
@@ -312,7 +337,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    async sendRequest (request: RequestArguments): Promise<RpcCallResult> {
+    async sendRequest (request: RequestArguments): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -344,7 +369,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction (request: ContractInvocation): Promise<RpcCallResult> {
+    async invokeFunction (request: ContractInvocation): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -372,7 +397,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    async testInvoke (request: ContractInvocation): Promise<RpcCallResult> {
+    async testInvoke (request: ContractInvocation): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -406,7 +431,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    async multiInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
+    async multiInvoke (request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -425,7 +450,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    async multiTestInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
+    async multiTestInvoke (request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -436,6 +461,44 @@ export class WcSdk {
             throw Error('No chainId informed')
         }
         return await WcSdk.multiTestInvoke(this.wcClient, this.session, this.chainId, request)
+    }
+
+    /**
+     * Sends a `signMessage` request to the Wallet.
+     * Signs a message
+     * @param message the message to be signed
+     * @return the signed message object
+     */
+    async signMessage (message: string): Promise<RpcCallResult<SignedMessage>> {
+        if (!this.wcClient) {
+            throw Error('The client was not initialized')
+        }
+        if (!this.session) {
+            throw Error('No session open')
+        }
+        if (!this.chainId) {
+            throw Error('No chainId informed')
+        }
+        return await WcSdk.signMessage(this.wcClient, this.session, this.chainId, message)
+    }
+
+    /**
+     * Sends a `verifyMessage` request to the Wallet.
+     * Checks if the signedMessage is true
+     * @param signedMessage an object that represents a signed message
+     * @return true if the signedMessage is acknowledged by the account
+     */
+    async verifyMessage (signedMessage: SignedMessage): Promise<RpcCallResult<boolean>> {
+        if (!this.wcClient) {
+            throw Error('The client was not initialized')
+        }
+        if (!this.session) {
+            throw Error('No session open')
+        }
+        if (!this.chainId) {
+            throw Error('No chainId informed')
+        }
+        return await WcSdk.verifyMessage(this.wcClient, this.session, this.chainId, signedMessage)
     }
 
     /**
@@ -592,7 +655,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult> {
+    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult<any>> {
         try {
             const result = await wcClient.request({
                 topic: session.topic,
@@ -634,7 +697,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
+    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult<any>> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'invokefunction',
             params: [request],
@@ -659,7 +722,7 @@ export class WcSdk {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
+    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult<any>> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'testInvoke',
             params: [request],
@@ -690,7 +753,7 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    static async multiInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
+    static async multiInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiInvoke',
             params: request,
@@ -706,10 +769,42 @@ export class WcSdk {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    static async multiTestInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
+    static async multiTestInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'multiTestInvoke',
             params: request,
+        })
+    }
+
+    /**
+     * Sends a `signMessage` request to the Wallet.
+     * Signs a message
+     * @param wcClient
+     * @param session connected session
+     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
+     * @param message the message to be signed
+     * @return the signed message object
+     */
+    static async signMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, message: string): Promise<RpcCallResult<SignedMessage>> {
+        return WcSdk.sendRequest(wcClient, session, chainId, {
+            method: 'signMessage',
+            params: message,
+        })
+    }
+
+    /**
+     * Sends a `verifyMessage` request to the Wallet.
+     * Checks if the signedMessage is true
+     * @param wcClient
+     * @param session connected session
+     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
+     * @param signedMessage an object that represents a signed message
+     * @return true if the signedMessage is acknowledged by the account
+     */
+    static async verifyMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, signedMessage: SignedMessage): Promise<RpcCallResult<boolean>> {
+        return WcSdk.sendRequest(wcClient, session, chainId, {
+            method: 'verifyMessage',
+            params: signedMessage,
         })
     }
 }

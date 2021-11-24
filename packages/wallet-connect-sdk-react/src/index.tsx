@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ContractInvocation, ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
+import {ContractInvocation, ContractInvocationMulti, RpcCallResult, SignedMessage, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
@@ -74,7 +74,7 @@ interface IWalletConnectContext {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
+    sendRequest: (request: RequestArguments) => Promise<RpcCallResult<any>>,
 
     /**
      * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
@@ -95,7 +95,7 @@ interface IWalletConnectContext {
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    invokeFunction: (request: ContractInvocation) => Promise<RpcCallResult>,
+    invokeFunction: (request: ContractInvocation) => Promise<RpcCallResult<any>>,
 
     /**
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
@@ -112,7 +112,7 @@ interface IWalletConnectContext {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    testInvoke: (request: ContractInvocation) => Promise<RpcCallResult>,
+    testInvoke: (request: ContractInvocation) => Promise<RpcCallResult<any>>,
 
     /**
      * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
@@ -135,7 +135,7 @@ interface IWalletConnectContext {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    multiInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+    multiInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult<any>>,
 
     /**
      * Sends a `multiTestInvoke` request to the Wallet.
@@ -143,7 +143,23 @@ interface IWalletConnectContext {
      * @param request an array of contract invocations
      * @return the call result promise
      */
-    multiTestInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+    multiTestInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult<any>>,
+
+    /**
+     * Sends a `signMessage` request to the Wallet.
+     * Signs a message
+     * @param message the message to be signed
+     * @return the signed message object
+     */
+    signMessage: (message: string) => Promise<RpcCallResult<SignedMessage>>,
+
+    /**
+     * Sends a `verifyMessage` request to the Wallet.
+     * Checks if the signedMessage is true
+     * @param signedMessage an object that represents a signed message
+     * @return true if the signedMessage is acknowledged by the account
+     */
+    verifyMessage: (signedMessage: SignedMessage) => Promise<RpcCallResult<boolean>>,
 
     /**
      * Disconnects from the Wallet, use this method to logout
@@ -339,38 +355,51 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return session ? WcSdk.getChainId(session, accountIndex) : (options.chainId || options.chains?.[0] || '')
     }
 
-    const handleRequest = async (caller: (wcClient: Client, session: SessionTypes.Created) => Promise<RpcCallResult>) => {
+    async function handleRequest<T>(caller: (wcClient: Client, session: SessionTypes.Created, chainId: string) => Promise<RpcCallResult<T>>) {
         if (!wcClient) {
             throw new Error("WalletConnect is not initialized");
         }
         if (!session) {
             throw new Error("Session is not connected");
         }
+        const chainId = getChainIdOrOptionChainId()
+        if (!chainId) {
+            throw new Error("Chain ID not found");
+        }
+
 
         setIsPendingApproval(true)
-        const resp = await caller(wcClient, session)
+        const resp = await caller(wcClient, session, chainId)
         setIsPendingApproval(false)
         return resp
     }
 
     const sendRequest = async (request: RequestArguments) => {
-        return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, getChainIdOrOptionChainId(), request))
+        return await handleRequest(async (w, s, c) => await WcSdk.sendRequest(w, s, c, request))
     };
 
     const invokeFunction = async (request: ContractInvocation) => {
-        return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, getChainIdOrOptionChainId(), request))
+        return await handleRequest(async (w, s, c) => await WcSdk.invokeFunction(w, s, c, request))
     };
 
     const testInvoke = async (request: ContractInvocation) => {
-        return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, getChainIdOrOptionChainId(), request))
+        return await handleRequest(async (w, s, c) => await WcSdk.testInvoke(w, s, c, request))
     };
 
     const multiInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiInvoke(c, s, getChainIdOrOptionChainId(), request))
+        return await handleRequest(async (w, s, c) => await WcSdk.multiInvoke(w, s, c, request))
     };
 
     const multiTestInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiTestInvoke(c, s, getChainIdOrOptionChainId(), request))
+        return await handleRequest(async (w, s, c) => await WcSdk.multiTestInvoke(w, s, c, request))
+    };
+
+    const signMessage = async (message: string) => {
+        return await handleRequest(async (w, s, c) => await WcSdk.signMessage(w, s, c, message))
+    };
+
+    const verifyMessage = async (signedMessage: SignedMessage) => {
+        return await handleRequest(async (w, s, c) => await WcSdk.verifyMessage(w, s, c, signedMessage))
     };
 
     const contextValue: IWalletConnectContext = {
@@ -393,6 +422,8 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         testInvoke,
         multiInvoke,
         multiTestInvoke,
+        signMessage,
+        verifyMessage,
         disconnect,
         getAccountAddress,
         getChainId,
