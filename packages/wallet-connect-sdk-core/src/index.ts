@@ -14,7 +14,7 @@ export interface WcCallbacks {
      *     onProposal: (uri: string) => {
      *         // show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
      *         QRCodeModal.open(uri, () => {})
-     *         // alternatively you can show Neon Wallet Connect's website, which is more welcoming
+     *         // alternatively you can show Neon Wallet's connection website, which is more welcoming
      *         window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
      *     }
      * })
@@ -28,7 +28,7 @@ export interface WcCallbacks {
      */
     onCreated?: (topics: string[]) => void,
     /**
-     * Defines a callback for when the wallet disconnected from the dApp
+     * Defines a callback for when the wallet disconnects from the dApp
      * ```
      * wcInstance.subscribeToEvents({
      *     onDeleted: () => {
@@ -42,11 +42,11 @@ export interface WcCallbacks {
 }
 
 /**
- * A simple interface used to define the options for the wallet connect interaction
+ * A simple interface used to define the options for wallet connect interaction
  */
 export interface WcConnectOptions {
     /**
-     * Only necessary if you already had a connection and wants to reconnect to it
+     * Only necessary if you've already had a connection and wants to reconnect to it
      */
     topic?: string,
     /**
@@ -83,7 +83,7 @@ export interface WcConnectOptions {
      * Which methods the dApp needs authorization to call
      * ```
      * [
-     *     'invokefunction', // makes real invocations that persists data on the blockchain
+     *     'invokefunction', // makes real invocations that persist data on the blockchain
      *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
      *     'multiInvoke', // makes real invocations that will be concatenated and called on a single transaction
      *     'multiTestInvoke', // makes test invocations that will be concatenated but don't require user authorization

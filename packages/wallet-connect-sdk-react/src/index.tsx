@@ -165,11 +165,11 @@ interface IWalletConnectContext {
 }
 
 /**
- * A simple interface used to define the options for the wallet connect interaction
+ * A simple interface used to define the options for wallet connect interaction
  */
 export interface CtxOptions {
     /**
-     * the dApp metadata to be shown on the wallet
+     * the dApp's metadata to be shown on the wallet
      * ```
      * {
      *     name: "My dApp Name",
@@ -187,7 +187,7 @@ export interface CtxOptions {
     chainId?: string,
 
     /**
-     * Defines with which chains the dApp accepts to connect to
+     * Defines which chains the dApp accepts to connect to
      * ```
      * ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
      * ```
@@ -210,7 +210,7 @@ export interface CtxOptions {
      * Which methods the dApp needs authorization to call
      * ```
      * [
-     *     'invokefunction', // makes real invocations that persists data on the blockchain
+     *     'invokefunction', // makes real invocations that persist data on the blockchain
      *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
      *     'multiInvoke', // makes real invocations that will be concatenated and called on a single transaction
      *     'multiTestInvoke', // makes test invocations that will be concatenated but don't require user authorization
@@ -222,7 +222,7 @@ export interface CtxOptions {
     methods: string[],
 
     /**
-     * the relayserver to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
+     * the relayserver to connect to. It needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
      */
     relayServer: string,
 
