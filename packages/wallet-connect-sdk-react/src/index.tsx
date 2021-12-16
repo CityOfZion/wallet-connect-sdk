@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ContractInvocation, ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
+import {ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
@@ -26,10 +26,8 @@ interface IWalletConnectContext {
     openPairing: () => Promise<void>,
     connect: (topic?: string) => Promise<void>,
     sendRequest: (request: RequestArguments) => Promise<RpcCallResult>,
-    invokeFunction: (request: ContractInvocation) => Promise<RpcCallResult>,
-    testInvoke: (request: ContractInvocation) => Promise<RpcCallResult>,
-    multiInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
-    multiTestInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+    invokeFunction: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+    testInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
     disconnect: () => Promise<void>,
     getAccountAddress: (accountIndex?: number) => string | null
     getChainId: (accountIndex?: number) => string | null
@@ -190,20 +188,12 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, getChainIdOrOptionChainId(), request))
     };
 
-    const invokeFunction = async (request: ContractInvocation) => {
+    const invokeFunction = async (request: ContractInvocationMulti) => {
         return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, getChainIdOrOptionChainId(), request))
     };
 
-    const testInvoke = async (request: ContractInvocation) => {
+    const testInvoke = async (request: ContractInvocationMulti) => {
         return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, getChainIdOrOptionChainId(), request))
-    };
-
-    const multiInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiInvoke(c, s, getChainIdOrOptionChainId(), request))
-    };
-
-    const multiTestInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiTestInvoke(c, s, getChainIdOrOptionChainId(), request))
     };
 
     const contextValue: IWalletConnectContext = {
@@ -229,8 +219,6 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         sendRequest,
         invokeFunction,
         testInvoke,
-        multiInvoke,
-        multiTestInvoke,
         disconnect,
         getAccountAddress,
         getChainId,

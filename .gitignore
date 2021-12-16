@@ -72,3 +72,6 @@ common/autoinstallers/*/.npmrc
 
 # jetbrains
 .idea
+
+
+common/config/rush/npm-shrinkwrap.json
