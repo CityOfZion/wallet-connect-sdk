@@ -118,7 +118,7 @@ type ArgType = typeof SUPPORTED_ARG_TYPES[number]
  */
 export interface Argument {
     type: ArgType,
-    value: string | number
+    value: string | number | boolean
 }
 
 /**
