@@ -105,6 +105,22 @@ export interface WcConnectOptions {
     methods: string[]
 }
 
+
+const SUPPORTED_ARG_TYPES = ["Any", "Signature", "Boolean", "Integer", "Hash160", "Address", "Null", "Hash256",
+    "ByteArray", "PublicKey", "String", "ByteString", "Array", "Buffer", "InteropInterface", "Void"] as const
+/**
+ * A list of types supported by wallets
+ */
+type ArgType = typeof SUPPORTED_ARG_TYPES[number]
+
+/**
+ * An argument for a contract invocation.
+ */
+export interface Argument {
+    type: ArgType,
+    value: string | number
+}
+
 /**
  * The result format of a call of a method on the wallet
  */
@@ -173,7 +189,7 @@ export type ContractInvocation = {
     /**
      * The parameters to be sent to the method
      */
-    args: any[]
+    args: Argument[]
     /**
      * When calling `multiInvoke`, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
      */
@@ -387,6 +403,7 @@ export class WcSdk {
      * ```
      *
      * @param request the contract invocation options
+     * @param signer: The contract signer. For multiple signers, pass an array.
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
     async invokeFunction (request: ContractInvocation | ContractInvocation[], signer: Signer  | Signer[]): Promise<RpcCallResult<any>> {
@@ -696,6 +713,7 @@ export class WcSdk {
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
     static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
+        WcSdk.certifyInvocationPayload(request)
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'invokeFunction',
             params: request,
@@ -730,6 +748,7 @@ export class WcSdk {
      * @return the call result promise
      */
     static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
+        WcSdk.certifyInvocationPayload(request)
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'testInvoke',
             params: request,
@@ -766,5 +785,29 @@ export class WcSdk {
             method: 'verifyMessage',
             params: signedMessage,
         })
+    }
+
+    /**
+     * Verifies a contract invocation payload
+     * @param request
+     */
+    static certifyInvocationPayload(request: ContractInvocationMulti): boolean {
+        //verify signers
+        request.signer.forEach( (signer: Signer) => {
+            if (!(signer.scope in WitnessScope)) {
+                throw new Error(`Invalid signature scope: ${signer.scope}`)
+            }
+        })
+        //verify argument types
+        request.invocations.forEach((invocation: ContractInvocation) => {
+            invocation.args.forEach( (arg: Argument) => {
+                if (typeof arg.type == 'string' && SUPPORTED_ARG_TYPES.includes(arg.type)) {
+                    return
+                }
+                throw new Error(`Invalid argument type: ${arg.type}`)
+            })
+        })
+
+        return true
     }
 }
