@@ -9,6 +9,7 @@ import { RequestArguments } from '@walletconnect/jsonrpc-utils'
 export interface WcCallbacks {
     /**
      * Defines the callback for when the proposal is built so the dApp can show a QRCode to start the connection.
+     *
      * ```
      * wcInstance.subscribeToEvents({
      *     onProposal: (uri: string) => {
@@ -19,6 +20,7 @@ export interface WcCallbacks {
      *     }
      * })
      * ```
+     *
      * @param uri the code that will be delivered to the wallet to establish a connection
      */
     onProposal?: (uri: string) => void,
@@ -29,6 +31,7 @@ export interface WcCallbacks {
     onCreated?: (topics: string[]) => void,
     /**
      * Defines a callback for when the wallet disconnects from the dApp
+     *
      * ```
      * wcInstance.subscribeToEvents({
      *     onDeleted: () => {
@@ -37,6 +40,7 @@ export interface WcCallbacks {
      *     }
      * })
      * ```
+     *
      */
     onDeleted?: () => void
 }
@@ -55,20 +59,25 @@ export interface WcConnectOptions {
     chainId?: string,
     /**
      * Defines with which chains the dApp accepts to connect to
+     *
      * ```
      * ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
      * ```
+     *
      * The wallet will decide which chain it will use and the dApp can check the choice by calling one of the methods below:
+     *
      * ```
      * // calling the static method passing a session as parameter
      * const chain = WcSdk.getChainId(session)
      * // calling the getter of an instance of WcSdk
      * const chain = wcInstance.chainId
      * ```
+     *
      */
     chains?: string[],
     /**
      * the dApp metadata to be shown on the wallet
+     *
      * ```
      * {
      *     name: "My dApp Name",
@@ -77,10 +86,12 @@ export interface WcConnectOptions {
      *     icons: ["https://mydappwebsite.com/icon.png"]
      * }
      * ```
+     *
      */
     appMetadata: AppMetadata,
     /**
      * Which methods the dApp needs authorization to call
+     *
      * ```
      * [
      *     'invokeFunction', // makes real invocations that persist data on the blockchain
@@ -89,6 +100,7 @@ export interface WcConnectOptions {
      *     'getversion'
      * ]
      * ```
+     *
      */
     methods: string[]
 }
@@ -122,12 +134,14 @@ export enum WitnessScope {
  * A simple interface that defines the signing options, which privileges the user needs to give for the SmartContract.
  * Usually the default signer is enough: `{ scope: WitnessScope.CalledByEntry }`
  * But you may need additional authorization, for instance, allow the SmartContract to invoke another specific contract:
+ *
  * ```
  * {
  *   scope: WitnessScope.CustomContracts,
  *   allowedContracts: ['0xf970f4ccecd765b63732b821775dc38c25d74f23']
  * }
  * ```
+ *
  */
 export type Signer = {
     /**
@@ -212,18 +226,20 @@ export type SignedMessage = {
 /**
  * The main class that exposes all Wallet Connect operations to allow such interaction.
  * It exposes static methods and instance methods, is up to the developer to choose which approach fits better it's needs.
- * ```
- *   // you can call the constructor to have an instance with it's own state
- *   const wcInstance = new WcSdk()
- *   // and call the methods directly from it, eg.:
- *   wcInstance.initClient(...)
- *   wcInstance.loadSession(...)
  *
- *   // Or alternatively you can use the static methods and store the wcClient and session by yourself, eg.:
- *   const wcClient = WcSdk.initClient(...)
- *   const session = wcInstance.loadSession(...)
- *   // the downside of this approach is that you will have to pass wcClient and session as parameter on most of the methods
  * ```
+ * // you can call the constructor to have an instance with it's own state
+ * const wcInstance = new WcSdk()
+ * // and call the methods directly from it, eg.:
+ * wcInstance.initClient(...)
+ * wcInstance.loadSession(...)
+ *
+ * // Or alternatively you can use the static methods and store the wcClient and session by yourself, eg.:
+ * const wcClient = WcSdk.initClient(...)
+ * const session = wcInstance.loadSession(...)
+ * // the downside of this approach is that you will have to pass wcClient and session as parameter on most of the methods
+ * ```
+ *
  */
 export class WcSdk {
     /**
@@ -247,6 +263,7 @@ export class WcSdk {
 
     /**
      * Subscribe to Wallet Connect events
+     *
      * ```
      * wcInstance.subscribeToEvents({
      *     onProposal: (uri: string) => {
@@ -261,6 +278,7 @@ export class WcSdk {
      *     }
      * })
      * ```
+     *
      */
     subscribeToEvents (callbacks?: WcCallbacks): void {
         WcSdk.subscribeToEvents(this.wcClient, callbacks)
@@ -326,12 +344,14 @@ export class WcSdk {
 
     /**
      * Sends a request to the Wallet and it will call the RpcServer
+     *
      * ```
      * const result = await wcInstance.sendRequest({
      *   method: 'getapplicationlog',
      *   params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
      * })
      * ```
+     *
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
@@ -350,6 +370,7 @@ export class WcSdk {
 
     /**
      * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     *
      * ```
      * const senderAddress = wcInstance.getAccountAddress()
      *
@@ -364,6 +385,7 @@ export class WcSdk {
      *    args: [from, recipient, value, args]
      * })
      * ```
+     *
      * @param request the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
@@ -389,6 +411,7 @@ export class WcSdk {
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
      * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
+     *
      * ```
      *
      * const signer = {
@@ -401,6 +424,7 @@ export class WcSdk {
      *     }, signer
      * )
      * ```
+     *
      * @param request The contract invocation options. For multiple invocations, pass an array.
      * @param signer: The contract signer. For multiple signers, pass an array.
      * @return the call result promise
@@ -476,6 +500,7 @@ export class WcSdk {
 
     /**
      * Subscribe to Wallet Connect events
+     *
      * ```
      * WcSdk.subscribeToEvents(wcClient, {
      *     onProposal: (uri: string) => {
@@ -490,6 +515,7 @@ export class WcSdk {
      *     }
      * })
      * ```
+     *
      */
     static subscribeToEvents (wcClient?: Client, callbacks?: WcCallbacks): void {
         if (!wcClient) {
@@ -603,12 +629,14 @@ export class WcSdk {
 
     /**
      * Sends a request to the Wallet and it will call the RpcServer
+     *
      * ```
      * const result = await WcSdk.sendRequest(wcClient, session, chainId, {
      *   method: 'getapplicationlog',
      *   params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
      * })
      * ```
+     *
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
@@ -637,6 +665,7 @@ export class WcSdk {
 
     /**
      * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     *
      * ```
      * const senderAddress = WcSdk.getAccountAddress(session)
      *
@@ -659,6 +688,7 @@ export class WcSdk {
      *    }]
      * })
      * ```
+     *
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
@@ -676,6 +706,7 @@ export class WcSdk {
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
      * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
+     *
      * ```
      * const resp = await WcSdk.testInvoke(wcClient, session, chainId, {
      *    signer: [{ scopes: WitnessScope.None }],
@@ -691,6 +722,7 @@ export class WcSdk {
      *    }]
      * })
      * ```
+     *
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet

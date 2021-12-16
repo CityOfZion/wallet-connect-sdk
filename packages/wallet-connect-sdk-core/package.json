@@ -26,6 +26,9 @@
   },
   "scripts": {
     "build": "tsc",
+    "docs": "typedoc",
+    "fmt": "eslint .",
+    "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/core --acl public-read",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -40,6 +43,7 @@
     "@walletconnect/utils": "2.0.0-beta.17"
   },
   "devDependencies": {
+    "typedoc": "^0.22.10",
     "typescript": "^4.3.2"
   }
 }
