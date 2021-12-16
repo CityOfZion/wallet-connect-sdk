@@ -197,7 +197,6 @@ export type ContractInvocation = {
     /**
      * the signing options
      */
-    signer?: Signer
 }
 
 /**
