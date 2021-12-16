@@ -41,7 +41,6 @@ export type ContractInvocation = {
     operation: string
     args: any[]
     abortOnFail?: boolean
-    signer?: Signer
 }
 
 export type ContractInvocationMulti = {
@@ -109,7 +108,7 @@ export class WcSdk {
         return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
     }
 
-    async invokeFunction(request: ContractInvocation) {
+    async invokeFunction(request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -119,10 +118,16 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, request)
+
+        const requestFormatted: ContractInvocationMulti = {
+            signer: Array.isArray(signer) ? signer : [signer],
+            invocations: Array.isArray(request) ? request : [request]
+        }
+
+        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, requestFormatted)
     }
 
-    async testInvoke(request: ContractInvocation) {
+    async testInvoke(request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]) {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -132,33 +137,12 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, request)
-    }
+        const requestFormatted: ContractInvocationMulti = {
+            signer: Array.isArray(signer) ? signer : [signer],
+            invocations: Array.isArray(request) ? request : [request]
+        }
 
-    async multiInvoke(request: ContractInvocationMulti) {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.multiInvoke(this.wcClient, this.session, this.chainId, request)
-    }
-
-    async multiTestInvoke(request: ContractInvocationMulti) {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.multiTestInvoke(this.wcClient, this.session, this.chainId, request)
+        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, requestFormatted)
     }
 
     static async initClient(logger: string, relayProvider: string) {
@@ -267,30 +251,16 @@ export class WcSdk {
         }
     }
 
-    static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
+    static async invokeFunction(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'invokefunction',
-            params: [request],
-        })
-    }
-
-    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation) {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'testInvoke',
-            params: [request],
-        })
-    }
-
-    static async multiInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'multiInvoke',
+            method: 'invokeFunction',
             params: request,
         })
     }
 
-    static async multiTestInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
+    static async testInvoke(wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti) {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'multiTestInvoke',
+            method: 'testInvoke',
             params: request,
         })
     }
