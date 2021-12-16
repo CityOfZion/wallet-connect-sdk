@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ContractInvocation, ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
+import {ContractInvocationMulti, RpcCallResult, WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
@@ -79,23 +79,24 @@ interface IWalletConnectContext {
     /**
      * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      * ```
-     * const senderAddress = walletConnectCtx.getAccountAddress()
-     *
-     * const from = { type: 'Address', value: senderAddress }
-     * const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
-     * const value = { type: 'Integer', value: 100000000 }
-     * const args = { type: 'Array', value: [] }
-     *
-     * const resp = await walletConnectCtx.invokeFunction({
-     *    scriptHash: smartContractScripthash,
-     *    operation: 'transfer',
-     *    args: [from, recipient, value, args]
+     * const resp = await walletConnectCtx.multiInvoke({
+     *    signer: { scopes: WitnessScope.None }
+     *    invocations: [{
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'getStream',
+     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *        args: [{ type: 'Integer', value: 17 }],
+     *    }, {
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'transfer',
+     *        args: [from, recipient, value, args]
+     *    }]
      * })
      * ```
-     * @param request the contract invocation options
-     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
+     * @param request The invocation request payload
+     * @return the call result promise
      */
-    invokeFunction: (request: ContractInvocation) => Promise<RpcCallResult>,
+    invokeFunction: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
 
     /**
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
@@ -112,38 +113,7 @@ interface IWalletConnectContext {
      * @param request the contract invocation options
      * @return the call result promise
      */
-    testInvoke: (request: ContractInvocation) => Promise<RpcCallResult>,
-
-    /**
-     * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
-     * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
-     * ```
-     * const resp = await walletConnectCtx.multiInvoke({
-     *    signer: { scopes: WitnessScope.None }
-     *    invocations: [{
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'getStream',
-     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *        args: [{ type: 'Integer', value: 17 }],
-     *    }, {
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'transfer',
-     *        args: [from, recipient, value, args]
-     *    }]
-     * })
-     * ```
-     * @param request an array of contract invocations
-     * @return the call result promise
-     */
-    multiInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
-
-    /**
-     * Sends a `multiTestInvoke` request to the Wallet.
-     * This method is the combination of `multiInvoke` and `testInvoke`
-     * @param request an array of contract invocations
-     * @return the call result promise
-     */
-    multiTestInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
+    testInvoke: (request: ContractInvocationMulti) => Promise<RpcCallResult>,
 
     /**
      * Disconnects from the Wallet, use this method to logout
@@ -212,8 +182,6 @@ export interface CtxOptions {
      * [
      *     'invokefunction', // makes real invocations that persist data on the blockchain
      *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
-     *     'multiInvoke', // makes real invocations that will be concatenated and called on a single transaction
-     *     'multiTestInvoke', // makes test invocations that will be concatenated but don't require user authorization
      *     // You can also provide any other method name present on the RpcServer, eg.:
      *     'getversion'
      * ]
@@ -262,7 +230,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
 
     const subscribeToEvents = useCallback(() => {
         WcSdk.subscribeToEvents(wcClient, {
-            onProposal: uri => {
+            onProposal: (uri: string) => {
                 setUri(uri)
                 if (options.qrCodeModal) {
                     QRCodeModal.open(uri, () => {})
@@ -357,20 +325,12 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return await handleRequest(async (c, s) => await WcSdk.sendRequest(c, s, getChainIdOrOptionChainId(), request))
     };
 
-    const invokeFunction = async (request: ContractInvocation) => {
+    const invokeFunction = async (request: ContractInvocationMulti) => {
         return await handleRequest(async (c, s) => await WcSdk.invokeFunction(c, s, getChainIdOrOptionChainId(), request))
     };
 
-    const testInvoke = async (request: ContractInvocation) => {
+    const testInvoke = async (request: ContractInvocationMulti) => {
         return await handleRequest(async (c, s) => await WcSdk.testInvoke(c, s, getChainIdOrOptionChainId(), request))
-    };
-
-    const multiInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiInvoke(c, s, getChainIdOrOptionChainId(), request))
-    };
-
-    const multiTestInvoke = async (request: ContractInvocationMulti) => {
-        return await handleRequest(async (c, s) => await WcSdk.multiTestInvoke(c, s, getChainIdOrOptionChainId(), request))
     };
 
     const contextValue: IWalletConnectContext = {
@@ -386,13 +346,10 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         setUri,
         accounts,
         setAccounts,
-
         connect,
         sendRequest,
         invokeFunction,
         testInvoke,
-        multiInvoke,
-        multiTestInvoke,
         disconnect,
         getAccountAddress,
         getChainId,

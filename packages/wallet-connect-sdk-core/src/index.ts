@@ -83,10 +83,8 @@ export interface WcConnectOptions {
      * Which methods the dApp needs authorization to call
      * ```
      * [
-     *     'invokefunction', // makes real invocations that persist data on the blockchain
+     *     'invokeFunction', // makes real invocations that persist data on the blockchain
      *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
-     *     'multiInvoke', // makes real invocations that will be concatenated and called on a single transaction
-     *     'multiTestInvoke', // makes test invocations that will be concatenated but don't require user authorization
      *     // You can also provide any other method name present on the RpcServer, eg.:
      *     'getversion'
      * ]
@@ -166,10 +164,6 @@ export type ContractInvocation = {
      * When calling `multiInvoke`, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
      */
     abortOnFail?: boolean
-    /**
-     * the signing options
-     */
-    signer?: Signer
 }
 
 /**
@@ -326,7 +320,7 @@ export class WcSdk {
     }
 
     /**
-     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      * ```
      * const senderAddress = wcInstance.getAccountAddress()
      *
@@ -334,17 +328,20 @@ export class WcSdk {
      * const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
      * const value = { type: 'Integer', value: 100000000 }
      * const args = { type: 'Array', value: [] }
-     *
+     * const signer = {
+     *     scope: 128
+     * }
      * const resp = await wcInstance.invokeFunction({
      *    scriptHash: smartContractScripthash,
      *    operation: 'transfer',
      *    args: [from, recipient, value, args]
-     * })
+     * }, signer)
      * ```
-     * @param request the contract invocation options
+     * @param request The contract invocation options. For multiple invocations, pass an array.
+     * @param signer: The contract signer. For multiple signers, pass an array.
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction (request: ContractInvocation): Promise<RpcCallResult> {
+    async invokeFunction (request: ContractInvocation | ContractInvocation[], signer: Signer  | Signer[]): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -354,7 +351,12 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, request)
+
+        const formattedRequest: ContractInvocationMulti = {
+            signer: Array.isArray(signer) ? signer : [signer],
+            invocations: Array.isArray(request) ? request : [request]
+        }
+        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, formattedRequest)
     }
 
     /**
@@ -362,17 +364,22 @@ export class WcSdk {
      * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
      * ```
+     *
+     * const signer = {
+     *     scope: 128
+     * }
      * const resp = await wcInstance.testInvoke({
      *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
      *     operation: 'getStream',
-     *     args: [{ type: 'Integer', value: 17 }],
-     *     signer: { scopes: WitnessScope.None }
-     * })
+     *     args: [{ type: 'Integer', value: 17 }]
+     *     }, signer
+     * )
      * ```
-     * @param request the contract invocation options
+     * @param request The contract invocation options. For multiple invocations, pass an array.
+     * @param signer: The contract signer. For multiple signers, pass an array.
      * @return the call result promise
      */
-    async testInvoke (request: ContractInvocation): Promise<RpcCallResult> {
+    async testInvoke (request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]): Promise<RpcCallResult> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -382,60 +389,12 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, request)
-    }
 
-    /**
-     * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
-     * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
-     * ```
-     * const resp = await wcInstance.multiInvoke({
-     *    signer: [{ scopes: WitnessScope.None }],
-     *    invocations: [{
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'getStream',
-     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *        args: [{ type: 'Integer', value: 17 }],
-     *    }, {
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'transfer',
-     *        args: [from, recipient, value, args]
-     *    }]
-     * })
-     * ```
-     * @param request an array of contract invocations
-     * @return the call result promise
-     */
-    async multiInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
+        const formattedRequest: ContractInvocationMulti = {
+            signer: Array.isArray(signer) ? signer : [signer],
+            invocations: Array.isArray(request) ? request : [request]
         }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.multiInvoke(this.wcClient, this.session, this.chainId, request)
-    }
-
-    /**
-     * Sends a `multiTestInvoke` request to the Wallet.
-     * This method is the combination of `multiInvoke` and `testInvoke`
-     * @param request an array of contract invocations
-     * @return the call result promise
-     */
-    async multiTestInvoke (request: ContractInvocationMulti): Promise<RpcCallResult> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.multiTestInvoke(this.wcClient, this.session, this.chainId, request)
+        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, formattedRequest)
     }
 
     /**
@@ -541,7 +500,7 @@ export class WcSdk {
      * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
      * @return a string that represents the blockchain
      */
-    static getChainId (session: SessionTypes.Settled, accountIndex?: number): string | null {
+    static getChainId (session: SessionTypes.Settled, accountIndex?: number): string {
         const info = WcSdk.getAccountInfo(session, accountIndex)
         return info && `${info[0]}:${info[1]}`
     }
@@ -613,7 +572,7 @@ export class WcSdk {
     }
 
     /**
-     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      * ```
      * const senderAddress = WcSdk.getAccountAddress(session)
      *
@@ -623,54 +582,6 @@ export class WcSdk {
      * const args = { type: 'Array', value: [] }
      *
      * const resp = await WcSdk.invokeFunction(wcClient, session, chainId, {
-     *    scriptHash: smartContractScripthash,
-     *    operation: 'transfer',
-     *    args: [from, recipient, value, args]
-     * })
-     * ```
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request the contract invocation options
-     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
-     */
-    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'invokefunction',
-            params: [request],
-        })
-    }
-
-    /**
-     * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
-     * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
-     * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
-     * ```
-     * const resp = await WcSdk.testInvoke(wcClient, session, chainId, {
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'getStream',
-     *     args: [{ type: 'Integer', value: 17 }],
-     *     signer: { scopes: WitnessScope.None }
-     * })
-     * ```
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request the contract invocation options
-     * @return the call result promise
-     */
-    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocation): Promise<RpcCallResult> {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'testInvoke',
-            params: [request],
-        })
-    }
-
-    /**
-     * Sends a `multiInvoke` request to the Wallet, it will concatenate all invocations and send to the blockchain all at once.
-     * This is an advanced feature, interesting to make transactional operations, also check `abortOnFail` option documentation.
-     * ```
-     * const resp = await QcSdk.multiInvoke(wcClient, session, chainId, {
      *    signer: [{ scopes: WitnessScope.None }],
      *    invocations: [{
      *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
@@ -687,28 +598,44 @@ export class WcSdk {
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request an array of contract invocations
-     * @return the call result promise
+     * @param request the contract invocation options
+     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    static async multiInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
+    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'multiInvoke',
+            method: 'invokeFunction',
             params: request,
         })
     }
 
     /**
-     * Sends a `multiTestInvoke` request to the Wallet.
-     * This method is the combination of `multiInvoke` and `testInvoke`
+     * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
+     * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
+     * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
+     * ```
+     * const resp = await WcSdk.testInvoke(wcClient, session, chainId, {
+     *    signer: [{ scopes: WitnessScope.None }],
+     *    invocations: [{
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'getStream',
+     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *        args: [{ type: 'Integer', value: 17 }],
+     *    }, {
+     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *        operation: 'transfer',
+     *        args: [from, recipient, value, args]
+     *    }]
+     * })
+     * ```
      * @param wcClient
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request an array of contract invocations
+     * @param request the contract invocation options
      * @return the call result promise
      */
-    static async multiTestInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
+    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
-            method: 'multiTestInvoke',
+            method: 'testInvoke',
             params: request,
         })
     }

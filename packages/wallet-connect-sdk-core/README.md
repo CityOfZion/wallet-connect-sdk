@@ -81,7 +81,7 @@ if (resp.result.error && resp.result.error.message) {
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
-To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokefunction` as method, but WcSdk
+To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokeFunction` as method, but WcSdk
 has a shortcut: `WcSdk.invokeFunction`.
 
 On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
