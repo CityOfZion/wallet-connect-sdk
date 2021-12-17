@@ -28,7 +28,8 @@
     "build": "tsc",
     "docs": "typedoc",
     "fmt": "eslint .",
-    "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/core --acl public-read",
+    "publishDocs:dev": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/core --acl public-read",
+    "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/core --acl public-read",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

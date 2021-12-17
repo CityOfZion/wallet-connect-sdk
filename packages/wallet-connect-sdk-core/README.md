@@ -3,9 +3,8 @@
 ## Installation
 Install the dependency on your client-side application:
 ```
-npm i @cityofzion/wallet-connect-sdk-core @walletconnect/client@2.0.0-beta.17 @walletconnect/qrcode-modal"@2.0.0-alpha.20 @walletconnect/types@2.0.0-beta.17 @walletconnect/utils@2.0.0-beta.17
+npm i @cityofzion/wallet-connect-sdk-core
 ```
-<small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
 ## Setup
 Initialize the client:
@@ -19,7 +18,8 @@ await wcInstance.initClient(
   "wss://relay.walletconnect.org" // we are using walletconnect's official relay server
 );
 ```
-Subscribe to Wallet Connect events
+### Subscribe to Wallet Connect events
+
 ```js
 wcInstance.subscribeToEvents({
     onProposal: (uri: string) => {
@@ -34,7 +34,9 @@ wcInstance.subscribeToEvents({
     }
 })
 ```
-Load any existing connection, it should be called after the initialization, to reestablish connections made previously
+
+### Load any existing connection, it should be called after the initialization, to reestablish connections made previously
+
 ```js
 await wcInstance.loadSession()
 ```
@@ -42,6 +44,7 @@ await wcInstance.loadSession()
 ## Recipes
 
 ### Check if the user has a Session and get its Accounts
+
 ```js
 if (wcInstance.session) {
   console.log(wcInstance.accountAddress) // print the first connected account address
@@ -55,12 +58,10 @@ if (wcInstance.session) {
 Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
 ```js
 await wcInstance.connect({
-  chains: ["neo3:testnet", "neo3:mainnet", "neo3:private"], // the blockchains your dapp accepts to connect
+  chains: ["neo3:testnet", "neo3:mainnet"], // the blockchains your dapp accepts to connect
   methods: [ // which RPC methods do you plan to call
-    "invokefunction",
+    "invokeFunction",
     "testInvoke",
-    "multiInvoke",
-    "multiTestInvoke",
     "signMessage",
     "verifyMessage",
     "getapplicationlog"
@@ -83,7 +84,7 @@ console.log(wcInstance.session ? 'Connected successfully' : 'Connection refused'
 await wcInstance.disconnect();
 ```
 
-### Make an JSON-RPC call
+### Make a JSON-RPC call
 Every request is made via JSON-RPC. You need to provide a method name that is expected by the wallet and listed on
 the `methods` property of the [options object](#setup) as well as some additional `parameters`.
 
@@ -103,28 +104,38 @@ if (resp.result.error && resp.result.error.message) {
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
-To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokeFunction` as method, but WcSdk
+To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokefunction` as method, but WcSdk
 has a shortcut: `WcSdk.invokeFunction`.
 
 On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
 `{ type, value }` format, and on `type` you should provide one of the types mentioned
-[here](https://github.com/neo-project/neo/blob/master/src/neo/SmartContract/ContractParameterType.cs).
+[here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
 WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
+
+For reference, developers should reference
+the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
+For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
 
 Check it out:
 ```js
-const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf' // GAS token
+const scriptHash: string = '0xd2a4cff31913016155e38e474a2c06d08be276cf' // GAS token
 
-const senderAddress = wcInstance.accountAddress
-const from = { type: 'Address', value: senderAddress }
-const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
-const value = { type: 'Integer', value: 100000000 }
-const args = { type: 'Array', value: [] }
-const resp = await wcInstance.invokeFunction({
-   scriptHash: scripthash,
-   operation: 'transfer',
-   args: [from, recipient, value, args]
-})
+request: ContractInvocation = {
+  scriptHash,
+  operation: 'transfer',
+  args: [
+    { type: 'Address', value: senderAddress },
+    { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+    { type: 'Integer', value: 100000000 },
+    { type: 'Array', value: [] }
+  ]
+}
+
+signer: Signer = {
+  scope: WitnessScope.Global
+}
+
+const resp = await wcInstance.invokeFunction(request, signer)
 ```
 
 ### Calling TestInvoke will not require user acceptance
@@ -137,12 +148,22 @@ Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
 ```js
-const resp = await wcInstance.testInvoke({
-    scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+const scriptHash: string = '0xd2a4cff31913016155e38e474a2c06d08be276cf'
+
+const request: ContractInvocation = {
+    scriptHash,
     operation: 'balanceOf',
-    args: [{type: 'Address', value: wcInstance.accountAddress}],
-    signer: { scopes: WitnessScope.None }
-})
+    args: [
+       {type: 'Address', value: wcInstance.accountAddress}
+    ]
+}
+
+const signer: Signer = [
+    scope: WitnessScope.Global
+]
+
+const resp = await wcInstance.testInvoke(request, signer)
+
 ```
 
 ## Read the Docs

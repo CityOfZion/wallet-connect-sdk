@@ -191,7 +191,7 @@ export type ContractInvocation = {
      */
     args: Argument[]
     /**
-     * When calling `multiInvoke`, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
+     * When requesting multiple invocations, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
      */
     abortOnFail?: boolean
     /**
@@ -385,20 +385,27 @@ export class WcSdk {
 
     /**
      * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
-     *
+     * For reference, developers should reference the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
+     * For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
      * ```
      * const senderAddress = wcInstance.getAccountAddress()
      *
-     * const from = { type: 'Address', value: senderAddress }
-     * const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
-     * const value = { type: 'Integer', value: 100000000 }
-     * const args = { type: 'Array', value: [] }
+     * const invocation: ContractInvocation = {
+     *   scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+     *   operation: 'transfer',
+     *   args: [
+     *     { type: 'Address', value: senderAddress },
+     *     { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+     *     { type: 'Integer', value: 100000000 },
+     *     { type: 'Array', value: [] }
+     *   ]
+     * }
      *
-     * const resp = await wcInstance.invokeFunction({
-     *    scriptHash: smartContractScripthash,
-     *    operation: 'transfer',
-     *    args: [from, recipient, value, args]
-     * })
+     * const signer: Signer = {
+     *   scope: WitnessScope.Global
+     * }
+     *
+     * const resp = await wcInstance.invokeFunction(invocation, signer)
      * ```
      *
      * @param request the contract invocation options
@@ -427,18 +434,21 @@ export class WcSdk {
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
      * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
+     * For reference, developers should reference the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
+     * For this example: [Crypsydra (testnet)](https://dora.coz.io/contract/neo3/testnet_rc4/0x010101c0775af568185025b0ce43cfaa9b990a2a)
      *
      * ```
-     *
-     * const signer = {
+     * const signer: Signer = {
      *     scope: 128
      * }
-     * const resp = await wcInstance.testInvoke({
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'getStream',
-     *     args: [{ type: 'Integer', value: 17 }]
-     *     }, signer
-     * )
+     *
+     * const invocation: ContractInvocation = {
+     *   scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *   operation: 'getStream',
+     *   args: [{ type: 'Integer', value: 17 }]
+     * }
+     *
+     * const resp = await wcInstance.testInvoke(invocation, signer)
      * ```
      *
      * @param request The contract invocation options. For multiple invocations, pass an array.
@@ -685,24 +695,38 @@ export class WcSdk {
      * ```
      * const senderAddress = WcSdk.getAccountAddress(session)
      *
-     * const from = { type: 'Address', value: senderAddress }
-     * const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
-     * const value = { type: 'Integer', value: 100000000 }
-     * const args = { type: 'Array', value: [] }
+     * const invocations: ContractInvocation[] = [
+     *   {
+     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *     operation: 'getStream',
+     *     abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *     args: [
+     *       { type: 'Integer', value: 17 }
+     *     ]
+     *   },
+     *   {
+     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *     operation: 'transfer',
+     *     args: [
+     *       { type: 'Address', value: senderAddress },
+     *       { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+     *       { type: 'Integer', value: 100000000 },
+     *       { type: 'Array', value: [] }
+     *     ]
+     *   }
+     * ]
      *
-     * const resp = await WcSdk.invokeFunction(wcClient, session, chainId, {
-     *    signer: [{ scopes: WitnessScope.None }],
-     *    invocations: [{
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'getStream',
-     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *        args: [{ type: 'Integer', value: 17 }],
-     *    }, {
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'transfer',
-     *        args: [from, recipient, value, args]
-     *    }]
-     * })
+     * const signer: Signer[] = [
+     *   {
+     *     scope: WitnessScope.Global
+     *   }
+     * ]
+     *
+     * const formattedRequest: ContractInvocationMulti = {
+     *   signer,
+     *   invocations
+     * }
+     * const resp = await WcSdk.invokeFunction(wcClient, session, chainId, formattedRequest)
      * ```
      *
      * @param wcClient
@@ -725,19 +749,37 @@ export class WcSdk {
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
      *
      * ```
-     * const resp = await WcSdk.testInvoke(wcClient, session, chainId, {
-     *    signer: [{ scopes: WitnessScope.None }],
-     *    invocations: [{
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'getStream',
-     *        abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *        args: [{ type: 'Integer', value: 17 }],
-     *    }, {
-     *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *        operation: 'transfer',
-     *        args: [from, recipient, value, args]
-     *    }]
-     * })
+     * const senderAddress = WcSdk.getAccountAddress(session)
+     *
+     * const signer: Signer[] = [
+     *   {
+     *     scopes: WitnessScope.None
+     *   }
+     * ]
+     *
+     * const invocations: ContractInvocation[] = [
+     *   {
+     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *     operation: 'getStream',
+     *     abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
+     *     args: [
+     *       { type: 'Integer', value: 17 }
+ *         ],
+     *   },
+     *   {
+     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+     *     operation: 'balanceOf',
+     *     args: [
+     *       { type: 'Address', value: senderAddress }
+     *     ]
+     *   }
+     * ]
+     *
+     * const formattedRequest: ContractInvocationMulti = {
+     *   signer,
+     *   invocations
+     * }
+     * const resp = await WcSdk.testInvoke(wcClient, session, chainId, formattedRequest)
      * ```
      *
      * @param wcClient
@@ -791,6 +833,14 @@ export class WcSdk {
      * @param request
      */
     static certifyInvocationPayload(request: ContractInvocationMulti): boolean {
+        //verify fields
+        if (!request.signer) {
+            throw new Error("Missing required field: signer")
+        }
+        if (!request.invocations) {
+            throw new Error("Missing required field: invocations")
+        }
+
         //verify signers
         request.signer.forEach( (signer: Signer) => {
             if (!(signer.scope in WitnessScope)) {
