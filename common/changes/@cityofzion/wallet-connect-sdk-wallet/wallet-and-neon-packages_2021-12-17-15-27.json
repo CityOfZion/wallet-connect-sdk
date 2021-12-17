@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet",
+      "comment": "Added WalletConnectContext for React Wallets",
+      "type": "major"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet"
+}

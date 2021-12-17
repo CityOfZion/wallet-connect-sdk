@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-neon",
+      "comment": "Added NeonWcAdapter, responsible to send requests to the blockchain according to what was requested by the dapp via Wallet Connect",
+      "type": "major"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-neon"
+}
