@@ -8,44 +8,63 @@ npm i @cityofzion/wallet-connect-sdk-core @walletconnect/client@2.0.0-beta.17 @w
 <small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
 ## Setup
-Wrap WalletConnectContextProvider around your App by passing an options object as prop:
-```jsx
+Initialize the client:
+```js
 import {WcSdk} from "@cityofzion/wallet-connect-sdk-core";
 
-const wcClient = await WcSdk.initClient(
-  "debug", // logger: use debug to show all log information on browser console
+const wcInstance = new WcSdk()
+
+await wcInstance.initClient(
+  "debug", // logger: use 'debug' to show all log information on browser console, use 'error' to show only errors
   "wss://relay.walletconnect.org" // we are using walletconnect's official relay server
 );
+```
+Subscribe to Wallet Connect events
+```js
+wcInstance.subscribeToEvents({
+    onProposal: (uri: string) => {
+        // show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
+        QRCodeModal.open(uri, () => {})
+        // alternatively you can show Neon Wallet Connect's website, which is more welcoming
+        window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
+    },
+    onDeleted: () => {
+        // here is where you describe a logout callback
+        logout()
+    }
+})
+```
+Load any existing connection, it should be called after the initialization, to reestablish connections made previously
+```js
+await wcInstance.loadSession()
 ```
 
 ## Recipes
 
 ### Check if the user has a Session and get its Accounts
 ```js
-const session = await WcSdk.getSession(wcClient);
-
-if (session) {
-  console.log(WcSdk.getAccountAddress(session)) // print the account address
-  console.log(session.state.accounts); // print the accounts (with the chain info)
-  console.log(session.peer.metadata); // print the wallet metadata 
+if (wcInstance.session) {
+  console.log(wcInstance.accountAddress) // print the first connected account address
+  console.log(wcInstance.chainId) // print the first connected account chain info
+  console.log(wcInstance.session.state.accounts); // print all the connected accounts (with the chain info)
+  console.log(wcInstance.session.peer.metadata); // print the wallet metadata
 }
 ```
 
 ### Connect to the Wallet
+Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
 ```js
-import { SessionTypes } from '@walletconnect/types'
-import Client from '@walletconnect/client'
-import QRCodeModal from '@walletconnect/qrcode-modal'
-
-WcSdk.subscribeToEvents(wcClient, {
-  onProposal: uri => {
-    QRCodeModal.open(uri, () => { /* nothing */ })
-  }
-});
-
-WcSdk.connect(wcClient, {
-  chainId: "neo3:testnet", // blockchain and network identifier
-  methods: ["invokefunction"], // which RPC methods do you plan to call
+await wcInstance.connect({
+  chains: ["neo3:testnet", "neo3:mainnet", "neo3:private"], // the blockchains your dapp accepts to connect
+  methods: [ // which RPC methods do you plan to call
+    "invokefunction",
+    "testInvoke",
+    "multiInvoke",
+    "multiTestInvoke",
+    "signMessage",
+    "verifyMessage",
+    "getapplicationlog"
+  ],
   appMetadata: {
     name: "MyApplicationName", // your application name to be displayed on the wallet
     description: "My Application description", // description to be shown on the wallet
@@ -53,11 +72,15 @@ WcSdk.connect(wcClient, {
     icons: ["https://myapplicationdescription.app/myappicon.png"], // icon to be shown on the wallet
   }
 })
+// the promise will be resolved after the connection is accepted or refused, you can close the QRCode modal here
+QRCodeModal.close()
+// and check if there is a connection
+console.log(wcInstance.session ? 'Connected successfully' : 'Connection refused')
 ```
 
 ### Disconnect
 ```js
-await WcSdk.disconnect(wcClient, session);
+await wcInstance.disconnect();
 ```
 
 ### Make an JSON-RPC call
@@ -68,11 +91,10 @@ The JSON-RPC format accepts parameters in many formats. The rules on how to cons
 entirely on the blockchain you are using. The code below is an example of a request constructed for the Neo Blockchain:
 
 ```js
-const chainId = "neo3:testnet"; // blockchain and network identifier
-const resp = await WcSdk.sendRequest(wcClient, session, chainId, {
-  method: 'rpcMethod',
-  params: ['param', 3, true]
-});
+const result = await wcInstance.sendRequest({
+  method: 'getapplicationlog',
+  params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
+})
 
 // the response format depends interely on the blockchain response format
 if (resp.result.error && resp.result.error.message) {
@@ -91,18 +113,18 @@ WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
 
 Check it out:
 ```js
-const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
-const methodName = 'transfer';
+const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf' // GAS token
 
-const senderAddress = WcSdk.getAccountAddress(session)
-
-const from = {type: 'Address', value: senderAddress};
-const recipient = {type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv'};
-const value = {type: 'Integer', value: 100000000};
-const args = {type: 'Array', value: []}
-
-const parameters = [from, recipient, value, args];
-const resp = await WcSdk.invokeFunction(wcClient, session, scripthash, methodName, parameters);
+const senderAddress = wcInstance.accountAddress
+const from = { type: 'Address', value: senderAddress }
+const recipient = { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }
+const value = { type: 'Integer', value: 100000000 }
+const args = { type: 'Array', value: [] }
+const resp = await wcInstance.invokeFunction({
+   scriptHash: scripthash,
+   operation: 'transfer',
+   args: [from, recipient, value, args]
+})
 ```
 
 ### Calling TestInvoke will not require user acceptance
@@ -115,13 +137,13 @@ Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
 ```js
-const scripthash = '0xd2a4cff31913016155e38e474a2c06d08be276cf'; // GAS token
-const methodName = 'balanceOf';
-
-const address = WcSdk.getAccountAddress(session)
-
-const from = {type: 'Address', value: address};
-
-const parameters = [from];
-const resp = await WcSdk.testInvoke(wcClient, session, scripthash, methodName, parameters);
+const resp = await wcInstance.testInvoke({
+    scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+    operation: 'balanceOf',
+    args: [{type: 'Address', value: wcInstance.accountAddress}],
+    signer: { scopes: WitnessScope.None }
+})
 ```
+
+## Read the Docs
+There is more information on the [documentation website](https://neon-dev.coz.io/wksdk/core/modules.html)
