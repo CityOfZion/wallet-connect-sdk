@@ -167,4 +167,4 @@ const resp = await wcInstance.testInvoke(request, signer)
 ```
 
 ## Read the Docs
-There is more information on the [documentation website](https://neon-dev.coz.io/wksdk/core/modules.html)
+There is more information on the [documentation website](https://neon.coz.io/wksdk/core/modules.html)
