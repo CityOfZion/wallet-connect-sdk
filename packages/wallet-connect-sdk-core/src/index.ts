@@ -834,12 +834,7 @@ export class WcSdk {
      */
     static certifyInvocationPayload(request: ContractInvocationMulti): boolean {
         //verify fields
-        if (!request.signer) {
-            throw new Error("Missing required field: signer")
-        }
-        if (!request.invocations) {
-            throw new Error("Missing required field: invocations")
-        }
+        this.objectValidation(request, ['signer', 'invocations'])
 
         //verify signers
         request.signer.forEach( (signer: Signer) => {
@@ -847,9 +842,20 @@ export class WcSdk {
                 throw new Error(`Invalid signature scope: ${signer.scope}`)
             }
         })
-        //verify argument types
+
+        //verify invocations
         request.invocations.forEach((invocation: ContractInvocation) => {
+            this.objectValidation(
+                invocation,
+                ['scriptHash', 'operation', 'args']
+            )
+
             invocation.args.forEach( (arg: Argument) => {
+                this.objectValidation(
+                    arg,
+                    ['type', 'value']
+                )
+
                 if (typeof arg.type == 'string' && SUPPORTED_ARG_TYPES.includes(arg.type)) {
                     return
                 }
@@ -857,6 +863,17 @@ export class WcSdk {
             })
         })
 
+        return true
+    }
+
+    static objectValidation(object: any, keys: string[]): boolean {
+        const objectKeys = Object.keys(object)
+
+        keys.forEach( (req) => {
+            if (objectKeys.indexOf(req) < 0) {
+                throw new Error(`Missing required argument field ${req} in ${req}`)
+            }
+        })
         return true
     }
 }
