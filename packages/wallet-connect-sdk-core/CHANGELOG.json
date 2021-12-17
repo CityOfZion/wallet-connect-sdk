@@ -2,6 +2,26 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "1.5.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v1.5.0",
+      "date": "Fri, 17 Dec 2021 20:05:03 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Updates invocation methods to simplify UX"
+          }
+        ],
+        "patch": [
+          {
+            "comment": "Adds authentication methods"
+          },
+          {
+            "comment": "Documentation Improvements"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.4.0",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.4.0",
       "date": "Fri, 05 Nov 2021 21:39:16 GMT",
