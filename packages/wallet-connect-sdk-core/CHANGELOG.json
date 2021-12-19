@@ -2,6 +2,18 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "1.6.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v1.6.0",
+      "date": "Sun, 19 Dec 2021 21:51:42 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "updates syntax to align with neo native types"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.5.0",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.5.0",
       "date": "Fri, 17 Dec 2021 20:05:03 GMT",

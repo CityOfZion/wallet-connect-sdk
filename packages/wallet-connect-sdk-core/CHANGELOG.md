@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Fri, 17 Dec 2021 20:05:03 GMT and should not be manually modified.
+This log was last generated on Sun, 19 Dec 2021 21:51:42 GMT and should not be manually modified.
+
+## 1.6.0
+Sun, 19 Dec 2021 21:51:42 GMT
+
+### Minor changes
+
+- updates syntax to align with neo native types
 
 ## 1.5.0
 Fri, 17 Dec 2021 20:05:03 GMT
