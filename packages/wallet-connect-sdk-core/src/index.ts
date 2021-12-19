@@ -118,7 +118,7 @@ type ArgType = typeof SUPPORTED_ARG_TYPES[number]
  */
 export interface Argument {
     type: ArgType,
-    value: string | number | boolean
+    value: string | number | boolean | Argument[]
 }
 
 /**
@@ -148,12 +148,12 @@ export enum WitnessScope {
 
 /**
  * A simple interface that defines the signing options, which privileges the user needs to give for the SmartContract.
- * Usually the default signer is enough: `{ scope: WitnessScope.CalledByEntry }`
+ * Usually the default signer is enough: `{ scopes: WitnessScope.CalledByEntry }`
  * But you may need additional authorization, for instance, allow the SmartContract to invoke another specific contract:
  *
  * ```
  * {
- *   scope: WitnessScope.CustomContracts,
+ *   scopes: WitnessScope.CustomContracts,
  *   allowedContracts: ['0xf970f4ccecd765b63732b821775dc38c25d74f23']
  * }
  * ```
@@ -163,13 +163,13 @@ export type Signer = {
     /**
      * The level of permission the invocation needs
      */
-    scope: WitnessScope
+    scopes: WitnessScope
     /**
-     * When the scope is `WitnessScope.CustomContracts`, you need to specify which contracts are allowed
+     * When the scopes is `WitnessScope.CustomContracts`, you need to specify which contracts are allowed
      */
     allowedContracts?: string[]
     /**
-     * When the scope is `WitnessScope.CustomGroups`, you need to specify which groups are allowed
+     * When the scopes is `WitnessScope.CustomGroups`, you need to specify which groups are allowed
      */
     allowedGroups?: string[]
 }
@@ -206,7 +206,7 @@ export type ContractInvocationMulti = {
     /**
      * the signing options
      */
-    signer: Signer[]
+    signers: Signer[]
     /**
      * The array of invocations
      */
@@ -402,7 +402,7 @@ export class WcSdk {
      * }
      *
      * const signer: Signer = {
-     *   scope: WitnessScope.Global
+     *   scopes: WitnessScope.Global
      * }
      *
      * const resp = await wcInstance.invokeFunction(invocation, signer)
@@ -424,7 +424,7 @@ export class WcSdk {
         }
 
         const formattedRequest: ContractInvocationMulti = {
-            signer: Array.isArray(signer) ? signer : [signer],
+            signers: Array.isArray(signer) ? signer : [signer],
             invocations: Array.isArray(request) ? request : [request]
         }
         return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, formattedRequest)
@@ -439,7 +439,7 @@ export class WcSdk {
      *
      * ```
      * const signer: Signer = {
-     *     scope: 128
+     *     scopes: 128
      * }
      *
      * const invocation: ContractInvocation = {
@@ -467,7 +467,7 @@ export class WcSdk {
         }
 
         const formattedRequest: ContractInvocationMulti = {
-            signer: Array.isArray(signer) ? signer : [signer],
+            signers: Array.isArray(signer) ? signer : [signer],
             invocations: Array.isArray(request) ? request : [request]
         }
         return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, formattedRequest)
@@ -718,7 +718,7 @@ export class WcSdk {
      *
      * const signer: Signer[] = [
      *   {
-     *     scope: WitnessScope.Global
+     *     scopes: WitnessScope.Global
      *   }
      * ]
      *
@@ -751,7 +751,7 @@ export class WcSdk {
      * ```
      * const senderAddress = WcSdk.getAccountAddress(session)
      *
-     * const signer: Signer[] = [
+     * const signers: Signer[] = [
      *   {
      *     scopes: WitnessScope.None
      *   }
@@ -776,7 +776,7 @@ export class WcSdk {
      * ]
      *
      * const formattedRequest: ContractInvocationMulti = {
-     *   signer,
+     *   signers,
      *   invocations
      * }
      * const resp = await WcSdk.testInvoke(wcClient, session, chainId, formattedRequest)
@@ -834,21 +834,37 @@ export class WcSdk {
      */
     static certifyInvocationPayload(request: ContractInvocationMulti): boolean {
         //verify fields
-        this.objectValidation(request, ['signer', 'invocations'])
+        this.objectValidation(request, ['signers', 'invocations'])
 
         //verify signers
-        request.signer.forEach( (signer: Signer) => {
-            if (!(signer.scope in WitnessScope)) {
-                throw new Error(`Invalid signature scope: ${signer.scope}`)
+        request.signers.forEach( (signer: Signer, i) => {
+            if (!(signer.scopes in WitnessScope)) {
+                throw new Error(`Invalid signature scopes: ${signer.scopes}`)
+            }
+
+            //format scripthashes
+            if (signer.allowedContracts && signer.allowedContracts.length > 0) {
+                request.signers[i].allowedContracts = signer.allowedContracts.map( (scriptHash) => {
+                    if(!(scriptHash.length == 42 || scriptHash.length == 40)) {
+                        throw new Error(`Invalid Script Hash (allowed contract): ${scriptHash}`)
+                    }
+                    return (scriptHash.length == 42) ? scriptHash : `0x${scriptHash}`
+                })
             }
         })
 
         //verify invocations
-        request.invocations.forEach((invocation: ContractInvocation) => {
+        request.invocations.forEach((invocation: ContractInvocation, i) => {
             this.objectValidation(
                 invocation,
                 ['scriptHash', 'operation', 'args']
             )
+
+            if(!(invocation.scriptHash.length == 42 || invocation.scriptHash.length == 40)) {
+                throw new Error(`Invalid Script Hash: ${invocation.scriptHash}`)
+            }
+            request.invocations[i].scriptHash = (invocation.scriptHash.length == 42) ?
+                invocation.scriptHash : `0x${invocation.scriptHash}`
 
             invocation.args.forEach( (arg: Argument) => {
                 this.objectValidation(
