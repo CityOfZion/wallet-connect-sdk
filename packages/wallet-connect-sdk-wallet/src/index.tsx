@@ -358,7 +358,14 @@ export const WalletConnectContextProvider: React.FC<{
       console.log('EVENT', 'session_deleted')
       setSessions(wcClient.session.values)
     })
-  }, [chains, checkApprovedRequest, makeRequest, respondRequest, wcClient, JSON.stringify(sessions)])
+  }, [
+    chains,
+    checkApprovedRequest,
+    makeRequest,
+    respondRequest,
+    wcClient,
+    JSON.stringify(sessions),
+  ])
 
   const findSessionByTopic = useCallback(
     (topic: string) => {
@@ -415,7 +422,21 @@ export const WalletConnectContextProvider: React.FC<{
     }
     const session = await wcClient.approve({proposal, response})
     setSessionProposals((old) => old.filter((i) => i !== proposal))
-    setSessions([session])
+    setSessions((old) => {
+      if (
+        old.find(
+          (oldSession) =>
+            oldSession.topic === session.topic &&
+            oldSession.state.accounts.some((account) =>
+              session.state.accounts.includes(account)
+            )
+        )
+      ) {
+        return old
+      } else {
+        return [...old, session]
+      }
+    })
   }
 
   const rejectSession = async (proposal: SessionTypes.Proposal) => {
