@@ -6,7 +6,7 @@ import {WitnessScope} from "@cityofzion/neon-core/lib/tx/components/WitnessScope
 import {randomBytes} from "crypto";
 
 export type Signer = {
-  scope: WitnessScope
+  scopes: WitnessScope
   allowedContracts?: string[]
   allowedGroups?: string[]
 }
@@ -16,11 +16,10 @@ export type ContractInvocation = {
   operation: string
   args: any[]
   abortOnFail?: boolean
-  signer?: Signer
 }
 
 export type ContractInvocationMulti = {
-  signer: Signer[]
+  signers: Signer[]
   invocations: ContractInvocation[]
 }
 
@@ -58,33 +57,19 @@ export class NeonWcAdapter {
   rpcCall = async (account: Account | undefined, request: JsonRpcRequest): Promise<JsonRpcResponse> => {
     let result: any
 
-    if (request.method === 'invokefunction') {
+    if (request.method === 'invokeFunction') {
       if (!account) {
         throw new Error("No account")
       }
 
-      result = await this.contractInvoke(account, request.params[0]);
+      result = await this.invokeFunction(account, request.params);
 
     } else if (request.method === 'testInvoke') {
       if (!account) {
         throw new Error("No account")
       }
 
-      result = await this.testInvoke(account, request.params[0]);
-
-    } else if (request.method === 'multiInvoke') {
-      if (!account) {
-        throw new Error("No account")
-      }
-
-      result = await this.multiInvoke(account, request.params);
-
-    } else if (request.method === 'multiTestInvoke') {
-      if (!account) {
-        throw new Error("No account")
-      }
-
-      result = await this.multiTestInvoke(account, request.params);
+      result = await this.testInvoke(account, request.params);
 
     } else if (request.method === 'signMessage') {
       if (!account) {
@@ -113,41 +98,7 @@ export class NeonWcAdapter {
     }
   }
 
-  contractInvoke = async (account: Account, call: ContractInvocation): Promise<any> => {
-    const contract = new Neon.experimental.SmartContract(
-      Neon.u.HexString.fromHex(call.scriptHash),
-      {
-        networkMagic: this.networkMagic,
-        rpcAddress: this.rpcAddress,
-        account: account,
-        // systemFeeOverride: Neon.u.BigInteger.fromDecimal(10, 8)
-      }
-    );
-
-    const convertedArgs = NeonWcAdapter.convertParams(call.args)
-
-    try {
-      return await contract.invoke(call.operation, convertedArgs, [NeonWcAdapter.buildSigner(account, call.signer)])
-    } catch (e) {
-      return NeonWcAdapter.convertError(e)
-    }
-  }
-
-  testInvoke = async (account: Account, call: ContractInvocation): Promise<any> => {
-    const convertedArgs = NeonWcAdapter.convertParams(call.args)
-
-    try {
-      return await new rpc.RPCClient(this.rpcAddress).invokeFunction(
-        call.scriptHash,
-        call.operation,
-        convertedArgs,
-        [NeonWcAdapter.buildSigner(account, call.signer)])
-    } catch (e) {
-      return NeonWcAdapter.convertError(e)
-    }
-  }
-
-  multiTestInvoke = async (account: Account, cim: ContractInvocationMulti): Promise<any> => {
+  testInvoke = async (account: Account, cim: ContractInvocationMulti): Promise<any> => {
     const sb = Neon.create.scriptBuilder();
 
     cim.invocations.forEach((c) => {
@@ -164,10 +115,10 @@ export class NeonWcAdapter {
 
     const script = sb.build()
     return await new rpc.RPCClient(this.rpcAddress).invokeScript(
-      Neon.u.HexString.fromHex(script), NeonWcAdapter.buildMultipleSigner(account, cim.signer))
+      Neon.u.HexString.fromHex(script), NeonWcAdapter.buildMultipleSigner(account, cim.signers))
   }
 
-  multiInvoke = async (account: Account, cim: ContractInvocationMulti): Promise<any> => {
+  invokeFunction = async (account: Account, cim: ContractInvocationMulti): Promise<any> => {
     const sb = Neon.create.scriptBuilder();
 
     cim.invocations.forEach((c) => {
@@ -191,10 +142,8 @@ export class NeonWcAdapter {
     const trx = new tx.Transaction({
       script: Neon.u.HexString.fromHex(script),
       validUntilBlock: currentHeight + 100,
-      signers: NeonWcAdapter.buildMultipleSigner(account, cim.signer)
+      signers: NeonWcAdapter.buildMultipleSigner(account, cim.signers)
     })
-
-    console.log(trx)
 
     await Neon.experimental.txHelpers.addFees(trx, {
       rpcAddress: this.rpcAddress,
@@ -243,7 +192,7 @@ export class NeonWcAdapter {
       account: account.scriptHash
     })
 
-    signer.scopes = signerEntry?.scope ?? WitnessScope.CalledByEntry
+    signer.scopes = signerEntry?.scopes ?? WitnessScope.CalledByEntry
     if (signerEntry?.allowedContracts) {
       signer.allowedContracts = signerEntry.allowedContracts.map((ac) => Neon.u.HexString.fromHex(ac))
     }
@@ -255,10 +204,6 @@ export class NeonWcAdapter {
   }
 
   private static buildMultipleSigner(account: Account, signers: Signer[]) {
-    return !signers.length ? [NeonWcAdapter.buildSigner(account)] : signers.map((s) => NeonWcAdapter.buildSigner(account, s))
-  }
-
-  private static convertError(e) {
-    return {error: {message: e.message, ...e}};
+    return !signers?.length ? [NeonWcAdapter.buildSigner(account)] : signers.map((s) => NeonWcAdapter.buildSigner(account, s))
   }
 }
