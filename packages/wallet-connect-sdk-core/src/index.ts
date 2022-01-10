@@ -154,7 +154,6 @@ const SUPPORTED_RPC_METHODS = [
     "getwalletunclaimedgas",
     "importprivkey",
     "invokecontractverify",
-    "invokefunction",
     "invokescript",
     "listaddress",
     "listplugins",
