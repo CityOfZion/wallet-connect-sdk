@@ -6,7 +6,7 @@ import {
     RpcCallResult,
     WcSdk,
     SignedMessage,
-    OperationType,
+    RpcMethodType,
     MethodAndParams
 } from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
@@ -209,7 +209,7 @@ export interface CtxOptions {
      * ]
      * ```
      */
-    methods: OperationType[],
+    methods: RpcMethodType[],
 
     /**
      * the relayserver to connect to. It needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
