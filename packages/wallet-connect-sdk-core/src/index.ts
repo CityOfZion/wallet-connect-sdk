@@ -118,6 +118,7 @@ const SUPPORTED_RPC_METHODS = [
     "testInvoke",
     "signMessage",
     "verifyMessage",
+    "getapplicationlog",
 ] as const
 /**
  * A list of types supported by wallets

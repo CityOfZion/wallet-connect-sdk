@@ -64,8 +64,7 @@ if (!wcInstance.session) {
       "invokeFunction",
       "testInvoke",
       "signMessage",
-      "verifyMessage",
-      "getapplicationlog"
+      "verifyMessage"
     ],
     appMetadata: {
       name: "MyApplicationName", // your application name to be displayed on the wallet
