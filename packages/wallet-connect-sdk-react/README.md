@@ -1,11 +1,26 @@
-# WcSdk for React.js
+<p align="center">
+  <img
+    src="../../.github/resources/images/coz.png"
+    width="200px;">
+</p>
+
+<p align="center">
+  WalletConnect 2.0 React SDK for Neo
+  <br/> Made by <b>COZ.IO</b>
+</p>
+
+## Documentation
+For more documentation check out our [**docs**](https://neon.coz.io/wksdk/react/index.html).
+
+For typescript SDK, try out the [**Core SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core).
 
 ## Installation
+
 Install the dependency on your client-side application:
+
 ```
 npm i @cityofzion/wallet-connect-sdk-react
 ```
-<small><small>(Or, idk... do your yarn thing 😅)</small></small>
 
 ## Setup
 Wrap WalletConnectContextProvider around your App by passing an options object as prop

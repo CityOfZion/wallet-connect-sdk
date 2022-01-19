@@ -102,7 +102,7 @@ export interface WcConnectOptions {
      * ```
      *
      */
-    methods: RpcMethodType[]
+    methods: WCMethodType[]
 }
 
 
@@ -113,7 +113,7 @@ const SUPPORTED_ARG_TYPES = ["Any", "Signature", "Boolean", "Integer", "Hash160"
  */
 type ArgType = typeof SUPPORTED_ARG_TYPES[number]
 
-const SUPPORTED_RPC_METHODS = [
+const SUPPORTED_WC_METHODS = [
     "invokeFunction",
     "testInvoke",
     "signMessage",
@@ -123,7 +123,7 @@ const SUPPORTED_RPC_METHODS = [
 /**
  * A list of types supported by wallets
  */
-export type RpcMethodType = typeof SUPPORTED_RPC_METHODS[number]
+export type WCMethodType = typeof SUPPORTED_WC_METHODS[number]
 
 /**
  * An argument for a contract invocation.
@@ -133,7 +133,7 @@ export interface Argument {
     value: string | number | boolean | Argument[]
 }
 
-export interface MethodAndParams { method: RpcMethodType; params?: any; }
+export interface MethodAndParams { method: WCMethodType; params?: any; }
 
 /**
  * The result format of a call of a method on the wallet
@@ -142,7 +142,7 @@ export interface RpcCallResult<T> {
     /**
      * Which method was called
      */
-    method: RpcMethodType,
+    method: WCMethodType,
     /**
      * The result object
      */

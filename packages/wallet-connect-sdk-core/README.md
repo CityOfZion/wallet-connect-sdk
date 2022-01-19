@@ -1,4 +1,19 @@
-# WcSdk CORE
+<p align="center">
+  <img
+    src="../../.github/resources/images/coz.png"
+    width="200px;">
+</p>
+
+<p align="center">
+  WalletConnect 2.0 Core SDK for Neo
+  <br/> Made by <b>COZ.IO</b>
+</p>
+
+## Documentation
+For more documentation check out our [**docs**](https://neon.coz.io/wksdk/core/index.html).
+
+For React, try out the [**React SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react).
+
 
 ## Installation
 Install the dependency on your client-side application:
