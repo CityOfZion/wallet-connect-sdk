@@ -1,4 +1,10 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import Client, {CLIENT_EVENTS} from '@walletconnect/client'
 import {AppMetadata, SessionTypes} from '@walletconnect/types'
 import {ERROR} from '@walletconnect/utils'
@@ -54,7 +60,7 @@ interface IWalletConnectContext {
   checkApprovedRequest: (
     request: JsonRpcRequest
   ) => Promise<boolean | undefined>
-  onURI: (data: any) => Promise<void>
+  onURI: (data: any, timeoutMs?: number) => Promise<void>
   getPeerOfRequest: (
     requestEvent: SessionTypes.RequestEvent
   ) => Promise<SessionTypes.Participant>
@@ -110,6 +116,7 @@ export const WalletConnectContextProvider: React.FC<{
   const [autoAcceptCallback, setAutoAcceptCallback] = useState<
     AutoAcceptCallback | undefined
     >(undefined)
+  const lastSessionProposal = useRef<SessionTypes.Proposal | undefined>()
 
   useEffect(() => {
     init()
@@ -274,6 +281,7 @@ export const WalletConnectContextProvider: React.FC<{
           return wcClient.reject({proposal})
         }
         setSessionProposals((old) => [...old, proposal])
+        lastSessionProposal.current = proposal
 
         return null
       }
@@ -381,13 +389,38 @@ export const WalletConnectContextProvider: React.FC<{
     }
   }, [wcClient, subscribeToEvents, checkPersistedState])
 
-  const onURI = async (data: any) => {
-    const uri = typeof data === 'string' ? data : ''
-    if (!uri) return
-    if (typeof wcClient === 'undefined') {
-      throw new Error('Client is not initialized')
-    }
-    await wcClient.pair({uri})
+  const onURI = (data: any, timeoutMs: number = 5000) => {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const uri = typeof data === 'string' ? data : ''
+        if (!uri) return
+        if (typeof wcClient === 'undefined') {
+          throw new Error('Client is not initialized')
+        }
+
+        const pairId = await wcClient.pair({uri})
+
+        let attempts = 0
+        const msPerAttempts = 500
+        const maxAttempts = Math.ceil(timeoutMs / msPerAttempts)
+
+        const interval = setInterval(() => {
+          if (lastSessionProposal.current?.signal.params.topic === pairId) {
+            clearInterval(interval)
+            resolve()
+          }
+
+          if (attempts >= maxAttempts) {
+            clearInterval(interval)
+            reject(new Error('Connection URL Expired'))
+          }
+
+          attempts += 1
+        }, msPerAttempts)
+      } catch (error) {
+        reject(new Error('Problem with client pair'))
+      }
+    })
   }
 
   const getPeerOfRequest = async (requestEvent: SessionTypes.RequestEvent) => {
