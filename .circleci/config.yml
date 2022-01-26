@@ -56,8 +56,6 @@ jobs:
             rush update
             rush rebuild
 
-
-
       - run:
           name: Authenticate
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/common/config/rush/.npmrc-publish

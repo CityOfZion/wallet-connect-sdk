@@ -1,9 +1,15 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import Client from "@walletconnect/client";
 import {AppMetadata, SessionTypes} from "@walletconnect/types";
-import {ContractInvocationMulti, RpcCallResult, WcSdk, SignedMessage} from "@cityofzion/wallet-connect-sdk-core";
+import {
+    ContractInvocationMulti,
+    RpcCallResult,
+    WcSdk,
+    SignedMessage,
+    WCMethodType,
+    MethodAndParams
+} from "@cityofzion/wallet-connect-sdk-core";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {RequestArguments} from "@walletconnect/jsonrpc-utils";
 
 /**
  * WalletConnect's context for React
@@ -74,13 +80,13 @@ interface IWalletConnectContext {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    sendRequest: (request: RequestArguments) => Promise<RpcCallResult<any>>,
+    sendRequest: (request: MethodAndParams) => Promise<RpcCallResult<any>>,
 
     /**
-     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      * ```
-     * const resp = await walletConnectCtx.multiInvoke({
-     *    signer: { scopes: WitnessScope.None }
+     * const resp = await walletConnectCtx.invokeFunction({
+     *    signers: [{ scopes: WitnessScope.None }],
      *    invocations: [{
      *        scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
      *        operation: 'getStream',
@@ -196,14 +202,14 @@ export interface CtxOptions {
      * Which methods the dApp needs authorization to call
      * ```
      * [
-     *     'invokefunction', // makes real invocations that persist data on the blockchain
+     *     'invokeFunction', // makes real invocations that persist data on the blockchain
      *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
      *     // You can also provide any other method name present on the RpcServer, eg.:
      *     'getversion'
      * ]
      * ```
      */
-    methods: string[],
+    methods: WCMethodType[],
 
     /**
      * the relayserver to connect to. It needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
@@ -342,7 +348,7 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return resp
     }
 
-    const sendRequest = async (request: RequestArguments) => {
+    const sendRequest = async (request: MethodAndParams) => {
         return await handleRequest(async (w, s, c) => await WcSdk.sendRequest(w, s, c, request))
     };
 

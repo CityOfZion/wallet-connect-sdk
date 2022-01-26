@@ -1,4 +1,19 @@
-# WcSdk CORE
+<p align="center">
+  <img
+    src="../../.github/resources/images/coz.png"
+    width="200px;">
+</p>
+
+<p align="center">
+  WalletConnect 2.0 Core SDK for Neo
+  <br/> Made by <b>COZ.IO</b>
+</p>
+
+## Documentation
+For more documentation check out our [**docs**](https://neon.coz.io/wksdk/core/index.html).
+
+For React, try out the [**React SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react).
+
 
 ## Installation
 Install the dependency on your client-side application:
@@ -57,29 +72,31 @@ if (wcInstance.session) {
 ### Connect to the Wallet
 Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
 ```js
-await wcInstance.connect({
-  chains: ["neo3:testnet", "neo3:mainnet"], // the blockchains your dapp accepts to connect
-  methods: [ // which RPC methods do you plan to call
-    "invokeFunction",
-    "testInvoke",
-    "signMessage",
-    "verifyMessage",
-    "getapplicationlog"
-  ],
-  appMetadata: {
-    name: "MyApplicationName", // your application name to be displayed on the wallet
-    description: "My Application description", // description to be shown on the wallet
-    url: "https://myapplicationdescription.app/", // url to be linked on the wallet
-    icons: ["https://myapplicationdescription.app/myappicon.png"], // icon to be shown on the wallet
-  }
-})
-// the promise will be resolved after the connection is accepted or refused, you can close the QRCode modal here
-QRCodeModal.close()
-// and check if there is a connection
-console.log(wcInstance.session ? 'Connected successfully' : 'Connection refused')
+if (!wcInstance.session) {
+  await wcInstance.connect({
+    chains: ["neo3:testnet", "neo3:mainnet"], // the blockchains your dapp accepts to connect
+    methods: [ // which RPC methods do you plan to call
+      "invokeFunction",
+      "testInvoke",
+      "signMessage",
+      "verifyMessage"
+    ],
+    appMetadata: {
+      name: "MyApplicationName", // your application name to be displayed on the wallet
+      description: "My Application description", // description to be shown on the wallet
+      url: "https://myapplicationdescription.app/", // url to be linked on the wallet
+      icons: ["https://myapplicationdescription.app/myappicon.png"], // icon to be shown on the wallet
+    }
+  })
+  // the promise will be resolved after the connection is accepted or refused, you can close the QRCode modal here
+  QRCodeModal.close()
+  // and check if there is a connection
+  console.log(wcInstance.session ? 'Connected successfully' : 'Connection refused')
+}
 ```
 
 ### Disconnect
+It's interesting to have a button to allow the user to disconnect it's wallet, call `disconnect` when this happen:
 ```js
 await wcInstance.disconnect();
 ```
@@ -104,7 +121,7 @@ if (resp.result.error && resp.result.error.message) {
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
-To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokefunction` as method, but WcSdk
+To invoke a SmartContract method you can use `WcSdk.sendRequest` with `invokeFunction` as method, but WcSdk
 has a shortcut: `WcSdk.invokeFunction`.
 
 On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
@@ -117,25 +134,23 @@ the contract manifest on the contracts details pages on dora to understand the m
 For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
 
 Check it out:
-```js
-const scriptHash: string = '0xd2a4cff31913016155e38e474a2c06d08be276cf' // GAS token
-
-request: ContractInvocation = {
-  scriptHash,
+```ts
+const invocation: ContractInvocation = {
+  scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
   operation: 'transfer',
   args: [
-    { type: 'Address', value: senderAddress },
+    { type: 'Address', value: wcInstance.accountAddress },
     { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
     { type: 'Integer', value: 100000000 },
     { type: 'Array', value: [] }
   ]
 }
 
-signer: Signer = {
+const signer: Signer = {
   scope: WitnessScope.Global
 }
 
-const resp = await wcInstance.invokeFunction(request, signer)
+const resp = await wcInstance.invokeFunction(invocation, signer)
 ```
 
 ### Calling TestInvoke will not require user acceptance
@@ -147,22 +162,20 @@ On the example below we are invoking the `balanceOf` method of the `GAS` token.
 Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
-```js
-const scriptHash: string = '0xd2a4cff31913016155e38e474a2c06d08be276cf'
-
-const request: ContractInvocation = {
-    scriptHash,
+```ts
+const invocation: ContractInvocation = {
+  scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
     operation: 'balanceOf',
     args: [
        {type: 'Address', value: wcInstance.accountAddress}
     ]
 }
 
-const signer: Signer = [
-    scope: WitnessScope.Global
-]
+const signer: Signer = {
+  scopes: WitnessScope.Global
+}
 
-const resp = await wcInstance.testInvoke(request, signer)
+const resp = await wcInstance.testInvoke(invocation, signer)
 
 ```
 

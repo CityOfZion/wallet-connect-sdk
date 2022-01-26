@@ -102,16 +102,28 @@ export interface WcConnectOptions {
      * ```
      *
      */
-    methods: string[]
+    methods: WCMethodType[]
 }
 
 
-const SUPPORTED_ARG_TYPES = ["Any", "Signature", "Boolean", "Integer", "Hash160", "Address", "Null", "Hash256",
+const SUPPORTED_ARG_TYPES = ["Any", "Signature", "Boolean", "Integer", "Hash160", "Address", "ScriptHash", "Null", "Hash256",
     "ByteArray", "PublicKey", "String", "ByteString", "Array", "Buffer", "InteropInterface", "Void"] as const
 /**
  * A list of types supported by wallets
  */
 type ArgType = typeof SUPPORTED_ARG_TYPES[number]
+
+const SUPPORTED_WC_METHODS = [
+    "invokeFunction",
+    "testInvoke",
+    "signMessage",
+    "verifyMessage",
+    "getapplicationlog",
+] as const
+/**
+ * A list of types supported by wallets
+ */
+export type WCMethodType = typeof SUPPORTED_WC_METHODS[number]
 
 /**
  * An argument for a contract invocation.
@@ -121,6 +133,8 @@ export interface Argument {
     value: string | number | boolean | Argument[]
 }
 
+export interface MethodAndParams { method: WCMethodType; params?: any; }
+
 /**
  * The result format of a call of a method on the wallet
  */
@@ -128,7 +142,7 @@ export interface RpcCallResult<T> {
     /**
      * Which method was called
      */
-    method: string,
+    method: WCMethodType,
     /**
      * The result object
      */
@@ -370,7 +384,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    async sendRequest (request: RequestArguments): Promise<RpcCallResult<any>> {
+    async sendRequest (request: MethodAndParams): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -384,7 +398,7 @@ export class WcSdk {
     }
 
     /**
-     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      * For reference, developers should reference the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
      * For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
      * ```
@@ -412,7 +426,7 @@ export class WcSdk {
      * @param signer: The contract signer. For multiple signers, pass an array.
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction (request: ContractInvocation | ContractInvocation[], signer: Signer  | Signer[]): Promise<RpcCallResult<any>> {
+    async invokeFunction (request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]): Promise<RpcCallResult<any>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -669,7 +683,7 @@ export class WcSdk {
      * @param request the request information object containing the rpc method name and the parameters
      * @return the call result promise
      */
-    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: RequestArguments): Promise<RpcCallResult<any>> {
+    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: MethodAndParams): Promise<RpcCallResult<any>> {
         try {
             const result = await wcClient.request({
                 topic: session.topic,
@@ -690,7 +704,7 @@ export class WcSdk {
     }
 
     /**
-     * Sends an 'invokefunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
+     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      *
      * ```
      * const senderAddress = WcSdk.getAccountAddress(session)
