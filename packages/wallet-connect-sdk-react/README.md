@@ -128,7 +128,7 @@ Check it out:
 ```js
 const senderAddress = walletConnectCtx.getAccountAddress(0) ?? ''
 
-const invocations: ContractInvocation = [{
+const invocations: ContractInvocation[] = [{
   scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS Token
   operation: 'transfer',
   args: [
@@ -139,8 +139,8 @@ const invocations: ContractInvocation = [{
   ]
 }]
 
-const signers: Signer = [{
-  scope: WitnessScope.CalledByEntry
+const signers: Signer[] = [{
+  scopes: WitnessScope.CalledByEntry
 }]
 
 const resp = await walletConnectCtx.invokeFunction({invocations, signers});
@@ -159,7 +159,7 @@ Check it out:
 ```js
 const targetAddress = walletConnectCtx.getAccountAddress(0) ?? ''
 
-const invocations: ContractInvocation = [{
+const invocations: ContractInvocation[] = [{
   scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS Token
   operation: 'balanceOf',
   args: [
@@ -167,8 +167,8 @@ const invocations: ContractInvocation = [{
   ]
 }]
 
-const signers: Signer = [{
-  scope: WitnessScope.CalledByEntry
+const signers: Signer[] = [{
+  scopes: WitnessScope.CalledByEntry
 }]
 
 const resp = await walletConnectCtx.testInvoke({invocations, signers});
