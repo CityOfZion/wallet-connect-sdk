@@ -2,6 +2,23 @@
   "name": "@cityofzion/wallet-connect-sdk-react",
   "entries": [
     {
+      "version": "1.4.1",
+      "tag": "@cityofzion/wallet-connect-sdk-react_v1.4.1",
+      "date": "Wed, 26 Jan 2022 19:25:44 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "updates to types"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" from `^1.6.0` to `^1.6.1`"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.4.0",
       "tag": "@cityofzion/wallet-connect-sdk-react_v1.4.0",
       "date": "Fri, 17 Dec 2021 20:05:03 GMT",
