@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="../../.github/resources/images/coz.png"
+    src="https://raw.githubusercontent.com/CityOfZion/wallet-connect-sdk/develop/.github/resources/images/coz.png"
     width="200px;">
 </p>
 
