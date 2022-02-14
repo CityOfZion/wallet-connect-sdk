@@ -15,11 +15,25 @@ For more documentation check out our [**docs**](https://neon.coz.io/wksdk/react/
 For typescript SDK, try out the [**Core SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core).
 
 ## Installation
-
-Install the dependency on your client-side application:
-
+Install the dependency on your client-side application
+### NPM
 ```
 npm i @cityofzion/wallet-connect-sdk-react
+```
+### YARN
+To install using **YARN**, you need to add this to your `package.json` before running the command:
+```
+  "resolutions": {
+    "@walletconnect/client": "2.0.0-beta.17",
+    "@walletconnect/jsonrpc-utils": "1.0.0",
+    "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
+    "@walletconnect/types": "2.0.0-beta.17",
+    "@walletconnect/utils": "2.0.0-beta.17"
+  }
+```
+And then:
+```
+yarn add @cityofzion/wallet-connect-sdk-react
 ```
 
 ## Setup
