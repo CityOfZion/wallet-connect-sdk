@@ -491,9 +491,10 @@ export class WcSdk {
      * Sends a `signMessage` request to the Wallet.
      * Signs a message
      * @param message the message to be signed
+     * @param legacy the signing algorithm is legacy by default, but this will change in the next versions
      * @return the signed message object
      */
-    async signMessage (message: string): Promise<RpcCallResult<SignedMessage>> {
+    async signMessage (message: string, legacy: boolean = true): Promise<RpcCallResult<SignedMessage>> {
         if (!this.wcClient) {
             throw Error('The client was not initialized')
         }
@@ -503,7 +504,7 @@ export class WcSdk {
         if (!this.chainId) {
             throw Error('No chainId informed')
         }
-        return await WcSdk.signMessage(this.wcClient, this.session, this.chainId, message)
+        return await WcSdk.signMessage(this.wcClient, this.session, this.chainId, message, legacy)
     }
 
     /**
@@ -817,12 +818,13 @@ export class WcSdk {
      * @param session connected session
      * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
      * @param message the message to be signed
+     * @param legacy the signing algorithm is legacy by default, but this will change in the next versions
      * @return the signed message object
      */
-    static async signMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, message: string): Promise<RpcCallResult<SignedMessage>> {
+    static async signMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, message: string, legacy: boolean = true): Promise<RpcCallResult<SignedMessage>> {
         return WcSdk.sendRequest(wcClient, session, chainId, {
             method: 'signMessage',
-            params: message,
+            params: {message, legacy},
         })
     }
 

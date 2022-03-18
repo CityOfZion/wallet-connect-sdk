@@ -125,9 +125,10 @@ interface IWalletConnectContext {
      * Sends a `signMessage` request to the Wallet.
      * Signs a message
      * @param message the message to be signed
+     * @param legacy the signing algorithm is legacy by default, but this will change in the next versions
      * @return the signed message object
      */
-    signMessage: (message: string) => Promise<RpcCallResult<SignedMessage>>,
+    signMessage: (message: string, legacy?: boolean) => Promise<RpcCallResult<SignedMessage>>,
 
     /**
      * Sends a `verifyMessage` request to the Wallet.
@@ -360,8 +361,8 @@ export const WalletConnectContextProvider: React.FC<{ options: CtxOptions, child
         return await handleRequest(async (w, s, c) => await WcSdk.testInvoke(w, s, c, request))
     };
 
-    const signMessage = async (message: string) => {
-        return await handleRequest(async (w, s, c) => await WcSdk.signMessage(w, s, c, message))
+    const signMessage = async (message: string, legacy = true) => {
+        return await handleRequest(async (w, s, c) => await WcSdk.signMessage(w, s, c, message, legacy))
     };
 
     const verifyMessage = async (signedMessage: SignedMessage) => {
