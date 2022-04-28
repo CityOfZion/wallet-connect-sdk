@@ -1,129 +1,28 @@
-import Client, { CLIENT_EVENTS } from '@walletconnect/client/dist/cjs'
-import { ERROR } from '@walletconnect/utils/dist/cjs/error'
-import { AppMetadata, PairingTypes, SessionTypes } from '@walletconnect/types/dist/cjs'
-import { RequestArguments } from '@walletconnect/jsonrpc-utils'
+import WalletConnectClient, { CLIENT_EVENTS } from '@walletconnect/client'
+import { PairingTypes, SessionTypes } from '@walletconnect/types'
+import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
 
-/**
- * A simple interface that defines the callbacks that can be implemented
- */
-export interface WcCallbacks {
-    /**
-     * Defines the callback for when the proposal is built so the dApp can show a QRCode to start the connection.
-     *
-     * ```
-     * wcInstance.subscribeToEvents({
-     *     onProposal: (uri: string) => {
-     *         // show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
-     *         QRCodeModal.open(uri, () => {})
-     *         // alternatively you can show Neon Wallet's connection website, which is more welcoming
-     *         window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
-     *     }
-     * })
-     * ```
-     *
-     * @param uri the code that will be delivered to the wallet to establish a connection
-     */
-    onProposal?: (uri: string) => void,
-    /**
-     * Defines the callback for when a pairing is created
-     * @param topics
-     */
-    onCreated?: (topics: string[]) => void,
-    /**
-     * Defines a callback for when the wallet disconnects from the dApp
-     *
-     * ```
-     * wcInstance.subscribeToEvents({
-     *     onDeleted: () => {
-     *         // here is where you describe a logout callback
-     *         logout()
-     *     }
-     * })
-     * ```
-     *
-     */
-    onDeleted?: () => void
-}
-
-/**
- * A simple interface used to define the options for wallet connect interaction
- */
-export interface WcConnectOptions {
-    /**
-     * Only necessary if you've already had a connection and wants to reconnect to it
-     */
-    topic?: string,
-    /**
-     * @deprecated Use `chains` instead
-     */
-    chainId?: string,
-    /**
-     * Defines with which chains the dApp accepts to connect to
-     *
-     * ```
-     * ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
-     * ```
-     *
-     * The wallet will decide which chain it will use and the dApp can check the choice by calling one of the methods below:
-     *
-     * ```
-     * // calling the static method passing a session as parameter
-     * const chain = WcSdk.getChainId(session)
-     * // calling the getter of an instance of WcSdk
-     * const chain = wcInstance.chainId
-     * ```
-     *
-     */
-    chains?: string[],
-    /**
-     * the dApp metadata to be shown on the wallet
-     *
-     * ```
-     * {
-     *     name: "My dApp Name",
-     *     description: "This is the dApp description",
-     *     url: "https://mydappwebsite.com/",
-     *     icons: ["https://mydappwebsite.com/icon.png"]
-     * }
-     * ```
-     *
-     */
-    appMetadata: AppMetadata,
-    /**
-     * Which methods the dApp needs authorization to call
-     *
-     * ```
-     * [
-     *     'invokeFunction', // makes real invocations that persist data on the blockchain
-     *     'testInvoke', // makes test invocations that don't require user authorization, often used to retrieve information provided by the SmartContract
-     *     // You can also provide any other method name present on the RpcServer, eg.:
-     *     'getversion'
-     * ]
-     * ```
-     *
-     */
-    methods: WCMethodType[]
-}
-
-
-const SUPPORTED_ARG_TYPES = ["Any", "Signature", "Boolean", "Integer", "Hash160", "Address", "ScriptHash", "Null", "Hash256",
-    "ByteArray", "PublicKey", "String", "ByteString", "Array", "Buffer", "InteropInterface", "Void"] as const
-/**
- * A list of types supported by wallets
- */
-type ArgType = typeof SUPPORTED_ARG_TYPES[number]
-
-const SUPPORTED_WC_METHODS = [
-    "invokeFunction",
-    "testInvoke",
-    "signMessage",
-    "verifyMessage",
-    "getapplicationlog",
+const SUPPORTED_NETWORKS = ['neo3:private', 'neo3:testnet', 'neo3:mainnet'] as const
+const SUPPORTED_METHODS = [
+    'invokeFunction',
+    'testInvoke',
+    'signMessage',
+    'verifyMessage'
 ] as const
+const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'Hash160', 'Address', 'ScriptHash', 'Null', 'Hash256',
+    'ByteArray', 'PublicKey', 'String', 'ByteString', 'Array', 'Buffer', 'InteropInterface', 'Void'] as const
+/**
+ * A list of networkds supported by wallets
+ */
+export type NetworkType = typeof SUPPORTED_NETWORKS[number]
+/**
+ * A list of methods supported by wallets
+ */
+export type MethodType = typeof SUPPORTED_METHODS[number]
 /**
  * A list of types supported by wallets
  */
-export type WCMethodType = typeof SUPPORTED_WC_METHODS[number]
+export type ArgType = typeof SUPPORTED_ARG_TYPES[number]
 
 /**
  * An argument for a contract invocation.
@@ -133,20 +32,12 @@ export interface Argument {
     value: string | number | boolean | Argument[]
 }
 
-export interface MethodAndParams { method: WCMethodType; params?: any; }
-
-/**
- * The result format of a call of a method on the wallet
- */
-export interface RpcCallResult<T> {
-    /**
-     * Which method was called
-     */
-    method: WCMethodType,
-    /**
-     * The result object
-     */
-    result: T,
+export class WcSdkError extends Error {
+    payload: unknown
+    constructor (payload: unknown) {
+        super()
+        this.payload = payload
+    }
 }
 
 /**
@@ -228,6 +119,14 @@ export type ContractInvocationMulti = {
 }
 
 /**
+ * A simple interface that defines the SignMessage payload, where version 1 is obsolete and version 2 is compatible with NeoFS
+ */
+export type SignMessagePayload = {
+    message: string,
+    version: number
+}
+
+/**
  * A simple interface that defines the Signed Message format
  */
 export type SignedMessage = {
@@ -253,462 +152,137 @@ export type SignedMessage = {
 }
 
 /**
- * The main class that exposes all Wallet Connect operations to allow such interaction.
- * It exposes static methods and instance methods, is up to the developer to choose which approach fits better it's needs.
- *
- * ```
- * // you can call the constructor to have an instance with it's own state
- * const wcInstance = new WcSdk()
- * // and call the methods directly from it, eg.:
- * wcInstance.initClient(...)
- * wcInstance.loadSession(...)
- *
- * // Or alternatively you can use the static methods and store the wcClient and session by yourself, eg.:
- * const wcClient = WcSdk.initClient(...)
- * const session = wcInstance.loadSession(...)
- * // the downside of this approach is that you will have to pass wcClient and session as parameter on most of the methods
- * ```
- *
+ * An adapter of WalletConnectClient to work easily with Neon Wallet
  */
-export class WcSdk {
+export default class WcSdk {
     /**
-     * Wallet Connect Client, used on most of the methods
+     * The WalletConnect Library
      */
-    wcClient?: Client
+    client: WalletConnectClient
 
     /**
-     * The Session of the current connection
+     * The current WalletConnect connected session
      */
-    session?: SessionTypes.Created
+    session: SessionTypes.Settled | null = null
 
     /**
-     * Initializes the SDK, it's the first method to be called
-     * @param logger the logger level, describes how much information to show on the log, use `debug` for more information or `error` for less information
-     * @param relayServer the relayserver to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
+     * To initialize the adapter you need to provide the WalletConnectClient
+     * @param client Client of the original WalletConnect library
      */
-    async initClient (logger: string, relayServer: string): Promise<void> {
-        this.wcClient = await WcSdk.initClient(logger, relayServer)
+    constructor (client: WalletConnectClient) {
+        this.client = client
     }
 
     /**
-     * Subscribe to Wallet Connect events
-     *
-     * ```
-     * wcInstance.subscribeToEvents({
-     *     onProposal: (uri: string) => {
-     *         // show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
-     *         QRCodeModal.open(uri, () => {})
-     *         // alternatively you can show Neon Wallet Connect's website, which is more welcoming
-     *         window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
-     *     },
-     *     onDeleted: () => {
-     *         // here is where you describe a logout callback
-     *         logout()
-     *     }
-     * })
-     * ```
-     *
+     * returns if the session is connected
      */
-    subscribeToEvents (callbacks?: WcCallbacks): void {
-        WcSdk.subscribeToEvents(this.wcClient, callbacks)
+    get isConnected (): boolean {
+        return !!this.session
     }
 
     /**
-     * Load any existing connection, it should be called after the initialization, to reestablish connections made previously
+     * returns the chain id of the connected wallet
      */
-    async loadSession (): Promise<void> {
-        if (this.wcClient) {
-            this.session = await WcSdk.getSession(this.wcClient) || undefined
-        }
-    }
-
-    /**
-     * Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
-     * @param options describes the options for the connection
-     */
-    async connect (options: WcConnectOptions): Promise<void> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        this.session = await WcSdk.connect(this.wcClient, options)
-    }
-
-    /**
-     * gets the address of the connected account
-     * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
-     * @return the address of the connected account of the wallet
-     */
-    getAccountAddress (accountIndex?: number): string | null {
-        return this.session ? WcSdk.getAccountAddress(this.session, accountIndex) : null
-    }
-
-    /**
-     * gets the chain id of the first connected account, to retrieve this information from another account use `WcSdk.getAccountInfo` static method.
-     * @return a string that represents the blockchain
-     */
-    get chainId (): string | null {
-        return this.session ? WcSdk.getChainId(this.session) : null
-    }
-
-    /**
-     * gets the address of the first connected account, to retrieve this information from another account use `getAccountAddress` method.
-     * @return a string that represents the blockchain
-     */
-    get accountAddress (): string | null {
-        return this.session ? WcSdk.getAccountAddress(this.session) : null
-    }
-
-    /**
-     * Disconnects from the Wallet, use this method to logout
-     */
-    async disconnect (): Promise<void> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        await WcSdk.disconnect(this.wcClient, this.session)
-    }
-
-    /**
-     * Sends a request to the Wallet and it will call the RpcServer
-     *
-     * ```
-     * const result = await wcInstance.sendRequest({
-     *   method: 'getapplicationlog',
-     *   params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
-     * })
-     * ```
-     *
-     * @param request the request information object containing the rpc method name and the parameters
-     * @return the call result promise
-     */
-    async sendRequest (request: MethodAndParams): Promise<RpcCallResult<any>> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.sendRequest(this.wcClient, this.session, this.chainId, request)
-    }
-
-    /**
-     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
-     * For reference, developers should reference the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
-     * For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
-     * ```
-     * const senderAddress = wcInstance.getAccountAddress()
-     *
-     * const invocation: ContractInvocation = {
-     *   scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-     *   operation: 'transfer',
-     *   args: [
-     *     { type: 'Address', value: senderAddress },
-     *     { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-     *     { type: 'Integer', value: 100000000 },
-     *     { type: 'Array', value: [] }
-     *   ]
-     * }
-     *
-     * const signer: Signer = {
-     *   scopes: WitnessScope.Global
-     * }
-     *
-     * const resp = await wcInstance.invokeFunction(invocation, signer)
-     * ```
-     *
-     * @param request the contract invocation options
-     * @param signer: The contract signer. For multiple signers, pass an array.
-     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
-     */
-    async invokeFunction (request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]): Promise<RpcCallResult<any>> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-
-        const formattedRequest: ContractInvocationMulti = {
-            signers: Array.isArray(signer) ? signer : [signer],
-            invocations: Array.isArray(request) ? request : [request]
-        }
-        return await WcSdk.invokeFunction(this.wcClient, this.session, this.chainId, formattedRequest)
-    }
-
-    /**
-     * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
-     * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
-     * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
-     * For reference, developers should reference the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
-     * For this example: [Crypsydra (testnet)](https://dora.coz.io/contract/neo3/testnet_rc4/0x010101c0775af568185025b0ce43cfaa9b990a2a)
-     *
-     * ```
-     * const signer: Signer = {
-     *     scopes: 128
-     * }
-     *
-     * const invocation: ContractInvocation = {
-     *   scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *   operation: 'getStream',
-     *   args: [{ type: 'Integer', value: 17 }]
-     * }
-     *
-     * const resp = await wcInstance.testInvoke(invocation, signer)
-     * ```
-     *
-     * @param request The contract invocation options. For multiple invocations, pass an array.
-     * @param signer: The contract signer. For multiple signers, pass an array.
-     * @return the call result promise
-     */
-    async testInvoke (request: ContractInvocation | ContractInvocation[], signer: Signer | Signer[]): Promise<RpcCallResult<any>> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-
-        const formattedRequest: ContractInvocationMulti = {
-            signers: Array.isArray(signer) ? signer : [signer],
-            invocations: Array.isArray(request) ? request : [request]
-        }
-        return await WcSdk.testInvoke(this.wcClient, this.session, this.chainId, formattedRequest)
-    }
-
-    /**
-     * Sends a `signMessage` request to the Wallet.
-     * Signs a message
-     * @param message the message to be signed
-     * @return the signed message object
-     */
-    async signMessage (message: string): Promise<RpcCallResult<SignedMessage>> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.signMessage(this.wcClient, this.session, this.chainId, message)
-    }
-
-    /**
-     * Sends a `verifyMessage` request to the Wallet.
-     * Checks if the signedMessage is true
-     * @param signedMessage an object that represents a signed message
-     * @return true if the signedMessage is acknowledged by the account
-     */
-    async verifyMessage (signedMessage: SignedMessage): Promise<RpcCallResult<boolean>> {
-        if (!this.wcClient) {
-            throw Error('The client was not initialized')
-        }
-        if (!this.session) {
-            throw Error('No session open')
-        }
-        if (!this.chainId) {
-            throw Error('No chainId informed')
-        }
-        return await WcSdk.verifyMessage(this.wcClient, this.session, this.chainId, signedMessage)
-    }
-
-    /**
-     * Initializes the SDK, it's the first method to be called
-     * @param logger the logger level, describes how much information to show on the log, use `debug` for more information or `error` for less information
-     * @param relayProvider the relayProvider to connect to, it needs to be the same relay server of the wallet. It's recommended to use `wss://relay.walletconnect.org`
-     * @return a wcClient
-     */
-    static async initClient (logger: string, relayProvider: string): Promise<Client> {
-        return await Client.init({
-            logger,
-            relayProvider
-        })
-    }
-
-    /**
-     * Subscribe to Wallet Connect events
-     *
-     * ```
-     * WcSdk.subscribeToEvents(wcClient, {
-     *     onProposal: (uri: string) => {
-     *         // show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
-     *         QRCodeModal.open(uri, () => {})
-     *         // alternatively you can show Neon Wallet Connect's website, which is more welcoming
-     *         window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
-     *     },
-     *     onDeleted: () => {
-     *         // here is where you describe a logout callback
-     *         logout()
-     *     }
-     * })
-     * ```
-     *
-     */
-    static subscribeToEvents (wcClient?: Client, callbacks?: WcCallbacks): void {
-        if (!wcClient) {
-            throw Error('The client was not initialized')
-        }
-
-        wcClient.on(
-          CLIENT_EVENTS.pairing.proposal,
-          async (proposal: PairingTypes.Proposal) => {
-              const { uri } = proposal.signal.params
-
-              if (callbacks && callbacks.onProposal) {
-                  callbacks.onProposal(uri)
-              }
-          }
-        )
-
-        wcClient.on(CLIENT_EVENTS.pairing.created, async () => {
-            if (callbacks && callbacks.onCreated) {
-                callbacks.onCreated(wcClient.pairing.topics)
-            }
-        })
-
-        wcClient.on(CLIENT_EVENTS.session.deleted, async (session: SessionTypes.Settled) => {
-            if (session.topic !== session?.topic) return
-
-            if (callbacks && callbacks.onDeleted) {
-                callbacks.onDeleted()
-            }
-        })
-    }
-
-    /**
-     * Gets any existing connection, it should be called after the initialization, to retrieve the session of connections made previously
-     */
-    static async getSession (wcClient: Client): Promise<SessionTypes.Settled | null> {
-        if (wcClient?.session.topics.length) {
-            return await wcClient.session.get(wcClient.session.topics[0])
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * gets the information of a connected account
-     * @param session connection session
-     * @param accountIndex index of one of the connected accounts
-     * @return an array that represents the address and chain
-     */
-    static getAccountInfo (session: SessionTypes.Settled, accountIndex?: number): string[] | null {
-        const index = accountIndex ?? 0
-        if (session.state.accounts.length <= index) {
-            return null
-        }
-        return session.state.accounts[index].split(':')
-    }
-
-    /**
-     * gets the address of the connected account
-     * @param session connection session
-     * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
-     * @return the address of the connected account of the wallet
-     */
-    static getAccountAddress (session: SessionTypes.Settled, accountIndex?: number): string | null {
-        const info = WcSdk.getAccountInfo(session, accountIndex)
-        return info && info[2]
-    }
-
-    /**
-     * gets the chain id of the first connected account, to retrieve this information from another account use `WcSdk.getAccountInfo` static method.
-     * @param session connection session
-     * @param accountIndex the index of the account to retrieve, gets the first account if no index is provided
-     * @return a string that represents the blockchain
-     */
-    static getChainId (session: SessionTypes.Settled, accountIndex?: number): string | null {
-        const info = WcSdk.getAccountInfo(session, accountIndex)
+    get chainId (): NetworkType | string | null {
+        const info = this.accountInfo
         return info && `${info[0]}:${info[1]}`
     }
 
     /**
-     * Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
-     * @param wcClient
-     * @param options describes the options for the connection
+     * returns the address of the connected account of the wallet
      */
-    static async connect (wcClient: Client, options: WcConnectOptions): Promise<SessionTypes.Settled> {
-        return await wcClient.connect({
-            metadata: options.appMetadata,
-            pairing: options.topic ? { topic: options.topic } : undefined,
+    get accountAddress (): string | null {
+        const info = this.accountInfo
+        return info && info[2]
+    }
+
+    private get accountInfo (): string[] | null {
+        if (!this.session?.state.accounts.length) {
+            return null
+        }
+        return this.session?.state.accounts[0].split(':') ?? null
+    }
+
+    /**
+     * subscribe to pairing events and opens Neon website to facilitate the connection
+     */
+    managePairing (): void {
+        this.client.on(
+            CLIENT_EVENTS.pairing.proposal,
+            async (proposal: PairingTypes.Proposal) => {
+                const { uri } = proposal.signal.params
+                window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus()
+            }
+        )
+    }
+
+    /**
+     * subscribe to disconnect events and finishes the session
+     */
+    manageDisconnect (): void {
+        this.client.on(
+            CLIENT_EVENTS.session.deleted,
+            () => {
+                this.disconnect()
+            }
+        )
+    }
+
+    /**
+     * loads the session to be used on the application
+     */
+    async loadSession (): Promise<SessionTypes.Settled | null> {
+        if (this.client.session.topics.length) {
+            this.session = await this.client.session.get(this.client.session.topics[0])
+        }
+
+        return this.session
+    }
+
+    /**
+     * Executes `managePairing`, `manageDisconnect` and `loadSession`
+     * The perfect combination to be executed after the page load
+     */
+    async manageSession (): Promise<void> {
+        this.managePairing()
+        this.manageDisconnect()
+        await this.loadSession()
+    }
+
+    /**
+     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     */
+    async connect (): Promise<SessionTypes.Settled | null> {
+        this.session = (await this.client.connect({
             permissions: {
                 blockchain: {
-                    chains: options.chains ?? (options.chainId ? [options.chainId] : [])
+                    chains: [...SUPPORTED_NETWORKS]
                 },
                 jsonrpc: {
-                    methods: options.methods,
-                },
-            },
-        })
+                    methods: [...SUPPORTED_METHODS]
+                }
+            }
+        })) ?? null
+
+        return this.session
     }
 
     /**
-     * Disconnects from the Wallet, use this method to logout
-     * @param wcClient
-     * @param session connected session
+     * disconnects from the wallet
      */
-    static async disconnect (wcClient: Client, session: SessionTypes.Created): Promise<void> {
-        await wcClient.disconnect({
-            topic: session.topic,
-            reason: ERROR.USER_DISCONNECTED.format(),
+    async disconnect (): Promise<void> {
+        if (!this.session) return
+
+        await this.client.disconnect({
+            topic: this.session.topic,
+            reason: { code: 5900, message: 'USER_DISCONNECTED' }
         })
-    }
-
-    /**
-     * Sends a request to the Wallet and it will call the RpcServer
-     *
-     * ```
-     * const result = await WcSdk.sendRequest(wcClient, session, chainId, {
-     *   method: 'getapplicationlog',
-     *   params: ['0x7da6ae7ff9d0b7af3d32f3a2feb2aa96c2a27ef8b651f9a132cfaad6ef20724c']
-     * })
-     * ```
-     *
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request the request information object containing the rpc method name and the parameters
-     * @return the call result promise
-     */
-    static async sendRequest (wcClient: Client, session: SessionTypes.Created, chainId: string, request: MethodAndParams): Promise<RpcCallResult<any>> {
-        try {
-            const result = await wcClient.request({
-                topic: session.topic,
-                chainId,
-                request,
-            })
-
-            return {
-                method: request.method,
-                result,
-            }
-        } catch (error) {
-            return {
-                method: request.method,
-                result: { error },
-            }
-        }
     }
 
     /**
      * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
      *
      * ```
-     * const senderAddress = WcSdk.getAccountAddress(session)
-     *
      * const invocations: ContractInvocation[] = [
      *   {
      *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
@@ -740,21 +314,33 @@ export class WcSdk {
      *   signer,
      *   invocations
      * }
-     * const resp = await WcSdk.invokeFunction(wcClient, session, chainId, formattedRequest)
+     * const resp = await invokeFunction(formattedRequest)
      * ```
      *
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request the contract invocation options
+     * @param params the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    static async invokeFunction (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
-        WcSdk.certifyInvocationPayload(request)
-        return WcSdk.sendRequest(wcClient, session, chainId, {
+    async invokeFunction (params: ContractInvocationMulti): Promise<string> {
+        this.validateContractInvocationMulti(params)
+
+        const request = {
+            id: 1,
+            jsonrpc: '2.0',
             method: 'invokeFunction',
-            params: request,
+            params
+        }
+
+        const resp: unknown = await this.client.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.chainId ?? '',
+            request
         })
+
+        if (typeof resp !== 'string') {
+            throw new WcSdkError(resp)
+        }
+
+        return resp as string
     }
 
     /**
@@ -763,8 +349,6 @@ export class WcSdk {
      * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
      *
      * ```
-     * const senderAddress = WcSdk.getAccountAddress(session)
-     *
      * const signers: Signer[] = [
      *   {
      *     scopes: WitnessScope.None
@@ -778,7 +362,7 @@ export class WcSdk {
      *     abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
      *     args: [
      *       { type: 'Integer', value: 17 }
- *         ],
+     *         ],
      *   },
      *   {
      *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
@@ -793,100 +377,130 @@ export class WcSdk {
      *   signers,
      *   invocations
      * }
-     * const resp = await WcSdk.testInvoke(wcClient, session, chainId, formattedRequest)
+     * const resp = await testInvoke(formattedRequest)
      * ```
      *
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param request the contract invocation options
+     * @param params the contract invocation options
      * @return the call result promise
      */
-    static async testInvoke (wcClient: Client, session: SessionTypes.Created, chainId: string, request: ContractInvocationMulti): Promise<RpcCallResult<any>> {
-        WcSdk.certifyInvocationPayload(request)
-        return WcSdk.sendRequest(wcClient, session, chainId, {
+    async testInvoke (params: ContractInvocationMulti): Promise<InvokeResult> {
+        this.validateContractInvocationMulti(params)
+
+        const request = {
+            id: 1,
+            jsonrpc: '2.0',
             method: 'testInvoke',
-            params: request,
+            params
+        }
+
+        const resp = await this.client.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.chainId ?? '',
+            request
         })
+
+        if (!resp || (resp && resp.state !== 'HALT')) {
+            throw new WcSdkError(resp)
+        }
+
+        return resp as InvokeResult
     }
 
     /**
      * Sends a `signMessage` request to the Wallet.
      * Signs a message
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param message the message to be signed
+     * @param params the params to send the request
      * @return the signed message object
      */
-    static async signMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, message: string): Promise<RpcCallResult<SignedMessage>> {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
+    async signMessage (params: SignMessagePayload): Promise<SignedMessage> {
+        const request = {
+            id: 1,
+            jsonrpc: '2.0',
             method: 'signMessage',
-            params: message,
+            params
+        }
+
+        const resp = await this.client.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.chainId ?? '',
+            request
         })
+
+        if (!resp) {
+            throw new WcSdkError(resp)
+        }
+
+        return resp as SignedMessage
     }
 
     /**
      * Sends a `verifyMessage` request to the Wallet.
      * Checks if the signedMessage is true
-     * @param wcClient
-     * @param session connected session
-     * @param chainId the chosen blockchain id to make the request, must be one of the blockchains authorized by the wallet
-     * @param signedMessage an object that represents a signed message
+     * @param params an object that represents a signed message
      * @return true if the signedMessage is acknowledged by the account
      */
-    static async verifyMessage (wcClient: Client, session: SessionTypes.Created, chainId: string, signedMessage: SignedMessage): Promise<RpcCallResult<boolean>> {
-        return WcSdk.sendRequest(wcClient, session, chainId, {
+    async verifyMessage (params: SignedMessage): Promise<boolean> {
+        const request = {
+            id: 1,
+            jsonrpc: '2.0',
             method: 'verifyMessage',
-            params: signedMessage,
+            params
+        }
+
+        const resp = await this.client.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.chainId ?? '',
+            request
         })
+
+        if (resp === null || resp === undefined) {
+            throw new WcSdkError(resp)
+        }
+
+        return resp as boolean
     }
 
-    /**
-     * Verifies a contract invocation payload
-     * @param request
-     */
-    static certifyInvocationPayload(request: ContractInvocationMulti): boolean {
-        //verify fields
+    private validateContractInvocationMulti (request: ContractInvocationMulti): boolean {
+        // verify fields
         this.objectValidation(request, ['signers', 'invocations'])
 
-        //verify signers
-        request.signers.forEach( (signer: Signer, i) => {
+        // verify signers
+        request.signers.forEach((signer: Signer, i) => {
             if (!(signer.scopes in WitnessScope)) {
                 throw new Error(`Invalid signature scopes: ${signer.scopes}`)
             }
 
-            //format scripthashes
+            // format scripthashes
             if (signer.allowedContracts && signer.allowedContracts.length > 0) {
-                request.signers[i].allowedContracts = signer.allowedContracts.map( (scriptHash) => {
-                    if(!(scriptHash.length == 42 || scriptHash.length == 40)) {
+                request.signers[i].allowedContracts = signer.allowedContracts.map((scriptHash) => {
+                    if (!(scriptHash.length === 42 || scriptHash.length === 40)) {
                         throw new Error(`Invalid Script Hash (allowed contract): ${scriptHash}`)
                     }
-                    return (scriptHash.length == 42) ? scriptHash : `0x${scriptHash}`
+                    return (scriptHash.length === 42) ? scriptHash : `0x${scriptHash}`
                 })
             }
         })
 
-        //verify invocations
+        // verify invocations
         request.invocations.forEach((invocation: ContractInvocation, i) => {
             this.objectValidation(
                 invocation,
                 ['scriptHash', 'operation', 'args']
             )
 
-            if(!(invocation.scriptHash.length == 42 || invocation.scriptHash.length == 40)) {
+            if (!(invocation.scriptHash.length === 42 || invocation.scriptHash.length === 40)) {
                 throw new Error(`Invalid Script Hash: ${invocation.scriptHash}`)
             }
-            request.invocations[i].scriptHash = (invocation.scriptHash.length == 42) ?
-                invocation.scriptHash : `0x${invocation.scriptHash}`
+            request.invocations[i].scriptHash = (invocation.scriptHash.length === 42)
+                ? invocation.scriptHash : `0x${invocation.scriptHash}`
 
-            invocation.args.forEach( (arg: Argument) => {
+            invocation.args.forEach((arg: Argument) => {
                 this.objectValidation(
                     arg,
                     ['type', 'value']
                 )
 
-                if (typeof arg.type == 'string' && SUPPORTED_ARG_TYPES.includes(arg.type)) {
+                if (SUPPORTED_ARG_TYPES.includes(arg.type)) {
                     return
                 }
                 throw new Error(`Invalid argument type: ${arg.type}`)
@@ -896,10 +510,10 @@ export class WcSdk {
         return true
     }
 
-    static objectValidation(object: any, keys: string[]): boolean {
+    private objectValidation (object: Argument | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
         const objectKeys = Object.keys(object)
 
-        keys.forEach( (req) => {
+        keys.forEach((req) => {
             if (objectKeys.indexOf(req) < 0) {
                 throw new Error(`Missing required argument field ${req} in ${req}`)
             }

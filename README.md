@@ -1,6 +1,6 @@
 # WalletConnect SDK
-A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built on
-top of [walletconnect](https://github.com/WalletConnect/walletconnect-monorepo).
+A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built to help the usage of
+[walletconnect](https://github.com/WalletConnect/walletconnect-monorepo) with Neon Wallet.
 
 **WalletConnect integration is a secure solution for signing transactions sent to a blockchain, such as are needed when
 creating Decentralized Applications that require the user's account authentication. This SDK comes in handy to help on
@@ -54,4 +54,4 @@ This SDK uses
 [WalletConnect 2.0](https://docs.walletconnect.org/v/2.0/) protocol, you will need a Wallet application that works with
 it, if you plan to connect with the 
 [Neo blockchain](https://neo.org/) we recommend
-[Aero Web Wallet for testing](https://aero-dev.coz.io/).
+[Aero Web Wallet for testing](https://aero-dev.coz.io/) or Neon Wallet for production.

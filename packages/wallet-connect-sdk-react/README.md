@@ -18,46 +18,32 @@ For typescript SDK, try out the [**Core SDK**](https://www.npmjs.com/package/@ci
 Install the dependency on your client-side application
 ### NPM
 ```
-npm i @cityofzion/wallet-connect-sdk-react
+npm i @walletconnect/client@experimental @walletconnect/types@experimental @cityofzion/wallet-connect-sdk-react
 ```
 ### YARN
-To install using **YARN**, you need to add this to your `package.json` before running the command:
 ```
-  "resolutions": {
-    "@walletconnect/client": "2.0.0-beta.17",
-    "@walletconnect/jsonrpc-utils": "1.0.0",
-    "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
-    "@walletconnect/types": "2.0.0-beta.17",
-    "@walletconnect/utils": "2.0.0-beta.17"
-  }
-```
-And then:
-```
-yarn add @cityofzion/wallet-connect-sdk-react
+yarn add @walletconnect/client@experimental @walletconnect/types@experimental @cityofzion/wallet-connect-sdk-react
 ```
 
 ## Setup
 Wrap WalletConnectContextProvider around your App by passing an options object as prop
 ```jsx
-import {WalletConnectContextProvider} from "@cityofzion/wallet-connect-sdk-react";
+import {WalletConnectProvider} from "@cityofzion/wallet-connect-sdk-react";
 
 const wcOptions = {
-  chains: ["neo3:testnet", "neo3:mainnet"], // the blockchains your dapp accepts to connect
-  logger: "debug", // use debug to show all log information on browser console
-  methods: ["invokeFunction"], // which RPC methods do you plan to call
-  relayServer: "wss://relay.walletconnect.org", // we are using walletconnect's official relay server,
-  qrCodeModal: true, // to show a QRCode modal when connecting. Another option would be to listen to proposal event and handle it manually, described later
-  appMetadata: {
-    name: "MyApplicationName", // your application name to be displayed on the wallet
-    description: "My Application description", // description to be shown on the wallet
-    url: "https://myapplicationdescription.app/", // url to be linked on the wallet
-    icons: ["https://myapplicationdescription.app/myappicon.png"], // icon to be shown on the wallet
-  }
+    projectId: '<your wc project id>', // retrieve a Project ID here: https://docs.walletconnect.com/2.0/api/project-id
+    relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
+    metadata: {
+        name: 'MyApplicationName', // your application name to be displayed on the wallet
+        description: 'My Application description', // description to be shown on the wallet
+        url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
+        icons: ['https://myapplicationdescription.app/myappicon.png'] // icon to be shown on the wallet
+    }
 };
 
 ReactDOM.render(
   <>
-    <WalletConnectContextProvider options={wcOptions}>
+    <WalletConnectContextProvider manageSession={true} options={wcOptions}>
       <App />
     </WalletConnectContextProvider>
   </>,
@@ -71,130 +57,95 @@ From now on, every time you need to use WalletConnect, you simply import it and 
 import {useWalletConnect} from "@cityofzion/wallet-connect-sdk-react";
 
 export default function MyComponent() {
-  const walletConnectCtx = useWalletConnect()
+  const { wcSdk } = useWalletConnect()
   // do something
 }
 ```
 
-## Handling Proposals Manually
-If you choose to declare `qrCodeModal` as `false`, you can handle the connection manually like this:
-```ts
-    useEffect(() => {
-        if (walletConnectCtx.uri.length) {
-            window.open(`https://neon.coz.io/connect?uri=${walletConnectCtx.uri}`, '_blank')?.focus();
-        }
-    }, [walletConnectCtx.uri])
-```
-
 ## Recipes
 
-### Login (Or "Connect Wallet")
-On the following example we are showing a "Connect your Wallet" link, when clicked it will show a dialog with the QRCode
-and proceed with the connection.
-
-We are going to show "Loading Session" text while the session is loading.
-
-And if the user already has a session it will show a list of connected addresses with a "Disconnect" link.
-```tsx
-const connectWallet = async () => {
-  await walletConnectCtx.connect()
-  // the wallet is connected after the promise is resolved
-}
-
-return <>
-{walletConnectCtx.loadingSession
-  ? "Loading Session"
-  : !walletConnectCtx.session ? <a
-        onClick={connectWallet}>Connect your Wallet</a>
-  : <ul>
-            {walletConnectCtx.accounts.map((account) => {
-                const [namespace, reference, address] = account.split(":");
-                return <li key={address}>
-                    <span>{walletConnectCtx.session?.peer.metadata.name}</span>
-                    <span>{address}</span>
-                    <a onClick={walletConnectCtx.disconnect}>Disconnect</a>
-                </li>
-            })}
-    </ul>
-}
-</>;
-
-```
-
-### Make a JSON-RPC call
-very request is made via JSON-RPC. You need to provide a method name that is expected by the wallet and listed on
-the `methods` property of the [options object](#setup), and some additional `parameters`.
-
-The JSON-RPC format accepts parameters in many formats. The rules on how to construct this request will depend
-entirely on the blockchain you are using. The code below is an example of a request constructed for the Neo Blockchain:
+### Check if the user has a Session and get its Accounts
 
 ```js
-const resp = await walletConnectCtx.sendRequest({
-  method: 'rpcMethod',
-  params: ['param', 3, true]
-});
-
-// the response format depends interely on the blockchain response format
-if (resp.result.error && resp.result.error.message) {
-    window.alert(resp.result.error.message);
+if (wcSdk?.isConnected) {
+  console.log(wcSdk?.accountAddress) // print the first connected account address
+  console.log(wcSdk?.chainId) // print the first connected account chain info
+  console.log(wcSdk?.session.state.accounts); // print all the connected accounts (with the chain info)
+  console.log(wcSdk?.session.peer.metadata); // print the wallet metadata
 }
+```
+
+### Connect to the Wallet
+Start the process of establishing a new connection, to be used when there is no `wcSdk?.session`
+```js
+if (!wcSdk?.isConnected) {
+  await wcSdk?.connect()
+  // and check if there is a connection
+  console.log(wcSdk?.isConnected ? 'Connected successfully' : 'Connection refused')
+}
+```
+
+### Disconnect
+It's interesting to have a button to allow the user to disconnect it's wallet, call `disconnect` when this happen:
+```js
+await wcSdk?.disconnect();
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
-To invoke a SmartContract method you can use `walletConnectCtx.sendRequest` with `invokeFunction` as method, but WcSdk
-has a shortcut: `walletConnectCtx.invokeFunction`.
+To invoke a SmartContract method you can use `invokeFunction` method.
 
 On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
 `{ type, value }` format, and on `type` you should provide one of the types mentioned
-[here](https://github.com/neo-project/neo/blob/master/src/neo/SmartContract/ContractParameterType.cs).
+[here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
 WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
 
+For reference, developers should reference
+the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
+For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
+
 Check it out:
-```js
-const senderAddress = walletConnectCtx.getAccountAddress(0) ?? ''
-
-const invocations: ContractInvocation[] = [{
-  scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS Token
-  operation: 'transfer',
-  args: [
-    { type: 'Address', value: senderAddress },
-    { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-    { type: 'Integer', value: 100000000 },
-    { type: 'Array', value: [] }
-  ]
-}]
-
-const signers: Signer[] = [{
-  scopes: WitnessScope.CalledByEntry
-}]
-
-const resp = await walletConnectCtx.invokeFunction({invocations, signers});
+```ts
+import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
+// ...
+const resp = await wcSdk?.invokeFunction({
+    invocations: [{
+        scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
+        operation: 'transfer',
+        args: [
+            { type: 'Address', value: wcSdk?.accountAddress },
+            { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+            { type: 'Integer', value: 100000000 },
+            { type: 'Array', value: [] }
+        ]
+    }],
+    signers: [{
+        scope: WitnessScope.Global
+    }]
+})
 ```
 
-
-### Calling TestInvoke will not require user acceptance 
-To retrieve information from a SmartContract without persisting any information on the blockchain you can use `walletConnectCtx.sendRequest` with `testInvoke` as method, but WcSdk
-has a shortcut: `walletConnectCtx.testInvoke`.
+### Calling TestInvoke will not require user acceptance
+To retrieve information from a SmartContract without persisting any information on the blockchain you can use `testInvoke` method.
 
 On the example below we are invoking the `balanceOf` method of the `GAS` token.
 
 Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
-```js
-const targetAddress = walletConnectCtx.getAccountAddress(0) ?? ''
+```ts
+import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
+// ...
+const resp = await wcSdk?.testInvoke({
+    invocations: [{
+        scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
+        operation: 'balanceOf',
+        args: [
+            {type: 'Address', value: wcSdk?.accountAddress}
+        ]
+    }],
+    signers: [{
+        scopes: WitnessScope.Global
+    }]
+})
 
-const invocations: ContractInvocation[] = [{
-  scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS Token
-  operation: 'balanceOf',
-  args: [
-    { type: 'Address', value: targetAddress }
-  ]
-}]
-
-const signers: Signer[] = [{
-  scopes: WitnessScope.CalledByEntry
-}]
-
-const resp = await walletConnectCtx.testInvoke({invocations, signers});
 ```
