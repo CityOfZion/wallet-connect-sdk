@@ -45,7 +45,8 @@ const wcOptions = {
   chains: ["neo3:testnet", "neo3:mainnet"], // the blockchains your dapp accepts to connect
   logger: "debug", // use debug to show all log information on browser console
   methods: ["invokeFunction"], // which RPC methods do you plan to call
-  relayServer: "wss://relay.walletconnect.org", // we are using walletconnect's official relay server 
+  relayServer: "wss://relay.walletconnect.org", // we are using walletconnect's official relay server,
+  qrCodeModal: true, // to show a QRCode modal when connecting. Another option would be to listen to proposal event and handle it manually, described later
   appMetadata: {
     name: "MyApplicationName", // your application name to be displayed on the wallet
     description: "My Application description", // description to be shown on the wallet
@@ -73,6 +74,16 @@ export default function MyComponent() {
   const walletConnectCtx = useWalletConnect()
   // do something
 }
+```
+
+## Handling Proposals Manually
+If you choose to declare `qrCodeModal` as `false`, you can handle the connection manually like this:
+```ts
+    useEffect(() => {
+        if (walletConnectCtx.uri.length) {
+            window.open(`https://neon.coz.io/connect?uri=${walletConnectCtx.uri}`, '_blank')?.focus();
+        }
+    }, [walletConnectCtx.uri])
 ```
 
 ## Recipes
