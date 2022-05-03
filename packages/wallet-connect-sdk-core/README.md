@@ -12,7 +12,7 @@
 ## Documentation
 For more documentation check out our [**docs**](https://neon.coz.io/wksdk/core/index.html).
 
-For React, try out the [**React SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react).
+To use with React, try out the [**React SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react).
 
 
 ## Installation
@@ -31,7 +31,7 @@ Initialize the client:
 ```js
 import WcSdk from "@cityofzion/wallet-connect-sdk-core";
 
-const wcInstance = new WcSdk(await WalletConnectClient.init({
+const wcSdk = new WcSdk(await WalletConnectClient.init({
     projectId: '<your wc project id>', // retrieve a Project ID here: https://docs.walletconnect.com/2.0/api/project-id
     relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
     metadata: {
@@ -45,7 +45,7 @@ const wcInstance = new WcSdk(await WalletConnectClient.init({
 ### Manage Session
 Just after initializing the client you can call `manageSession`, just once, it will reload the user connected session and other stuff, check the docs for more details.
 ```js
-await this.wcInstance.manageSession()
+await wcSdk.manageSession()
 ```
 
 ## Recipes
@@ -53,28 +53,28 @@ await this.wcInstance.manageSession()
 ### Check if the user has a Session and get its Accounts
 
 ```js
-if (wcInstance.isConnected) {
-  console.log(wcInstance.accountAddress) // print the first connected account address
-  console.log(wcInstance.chainId) // print the first connected account chain info
-  console.log(wcInstance.session.state.accounts); // print all the connected accounts (with the chain info)
-  console.log(wcInstance.session.peer.metadata); // print the wallet metadata
+if (wcSdk.isConnected()) {
+  console.log(wcSdk.getAccountAddress()) // print the first connected account address
+  console.log(wcSdk.getChainId()) // print the first connected account chain info
+  console.log(wcSdk.session.state.accounts); // print all the connected accounts (with the chain info)
+  console.log(wcSdk.session.peer.metadata); // print the wallet metadata
 }
 ```
 
 ### Connect to the Wallet
-Start the process of establishing a new connection, to be used when there is no `wcInstance.session`
+Start the process of establishing a new connection, to be used when there is no `wcSdk.session`
 ```js
-if (!wcInstance.isConnected) {
-  await wcInstance.connect()
+if (!wcSdk.isConnected()) {
+  await wcSdk.connect()
   // and check if there is a connection
-  console.log(wcInstance.isConnected ? 'Connected successfully' : 'Connection refused')
+  console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
 ```
 
 ### Disconnect
 It's interesting to have a button to allow the user to disconnect it's wallet, call `disconnect` when this happen:
 ```js
-await wcInstance.disconnect();
+await wcSdk.disconnect();
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
@@ -91,12 +91,14 @@ For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913
 
 Check it out:
 ```ts
-const resp = await wcInstance.invokeFunction({
+import WcSdk, { WitnessScope } from '@cityofzion/wallet-connect-sdk-core'
+// ...
+const resp = await wcSdk.invokeFunction({
     invocations: [{
         scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
         operation: 'transfer',
         args: [
-            { type: 'Address', value: wcInstance.accountAddress },
+            { type: 'Address', value: wcSdk.getAccountAddress() ?? '' },
             { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
             { type: 'Integer', value: 100000000 },
             { type: 'Array', value: [] }
@@ -117,12 +119,14 @@ Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
 ```ts
-const resp = await wcInstance.testInvoke({
+import WcSdk, { WitnessScope } from '@cityofzion/wallet-connect-sdk-core'
+// ...
+const resp = await wcSdk.testInvoke({
     invocations: [{
         scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
         operation: 'balanceOf',
         args: [
-            {type: 'Address', value: wcInstance.accountAddress}
+            {type: 'Address', value: wcSdk.getAccountAddress() ?? ''}
         ]
     }],
     signers: [{

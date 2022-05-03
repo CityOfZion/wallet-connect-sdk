@@ -9,10 +9,7 @@
   <br/> Made by <b>COZ.IO</b>
 </p>
 
-## Documentation
-For more documentation check out our [**docs**](https://neon.coz.io/wksdk/react/index.html).
-
-For typescript SDK, try out the [**Core SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core).
+To use without React, try out the [**Core SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core).
 
 ## Installation
 Install the dependency on your client-side application
@@ -26,7 +23,7 @@ yarn add @walletconnect/client@experimental @walletconnect/types@experimental @c
 ```
 
 ## Setup
-Wrap WalletConnectContextProvider around your App by passing an options object as prop
+Wrap WalletConnectContextProvider around your App and declare the options
 ```jsx
 import {WalletConnectProvider} from "@cityofzion/wallet-connect-sdk-react";
 
@@ -43,7 +40,7 @@ const wcOptions = {
 
 ReactDOM.render(
   <>
-    <WalletConnectContextProvider manageSession={true} options={wcOptions}>
+    <WalletConnectContextProvider autoManageSession={true} options={wcOptions}>
       <App />
     </WalletConnectContextProvider>
   </>,
@@ -52,12 +49,12 @@ ReactDOM.render(
 ```
 
 ## Usage
-From now on, every time you need to use WalletConnect, you simply import it and call a method:
+From now on, every time you need to use WalletConnect, you can simply use the `useWalletConnect` hook:
 ```ts
 import {useWalletConnect} from "@cityofzion/wallet-connect-sdk-react";
 
 export default function MyComponent() {
-  const { wcSdk } = useWalletConnect()
+  const wcSdk = useWalletConnect()
   // do something
 }
 ```
@@ -67,28 +64,28 @@ export default function MyComponent() {
 ### Check if the user has a Session and get its Accounts
 
 ```js
-if (wcSdk?.isConnected) {
-  console.log(wcSdk?.accountAddress) // print the first connected account address
-  console.log(wcSdk?.chainId) // print the first connected account chain info
-  console.log(wcSdk?.session.state.accounts); // print all the connected accounts (with the chain info)
-  console.log(wcSdk?.session.peer.metadata); // print the wallet metadata
+if (wcSdk.isConnected()) {
+  console.log(wcSdk.getAccountAddress()) // print the first connected account address
+  console.log(wcSdk.getChainId()) // print the first connected account chain info
+  console.log(wcSdk.session.state.accounts); // print all the connected accounts (with the chain info)
+  console.log(wcSdk.session.peer.metadata); // print the wallet metadata
 }
 ```
 
 ### Connect to the Wallet
-Start the process of establishing a new connection, to be used when there is no `wcSdk?.session`
+Start the process of establishing a new connection, to be used when there is no `wcSdk.session`
 ```js
-if (!wcSdk?.isConnected) {
-  await wcSdk?.connect()
+if (!wcSdk.isConnected()) {
+  await wcSdk.connect()
   // and check if there is a connection
-  console.log(wcSdk?.isConnected ? 'Connected successfully' : 'Connection refused')
+  console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
 ```
 
 ### Disconnect
 It's interesting to have a button to allow the user to disconnect it's wallet, call `disconnect` when this happen:
 ```js
-await wcSdk?.disconnect();
+await wcSdk.disconnect();
 ```
 
 ### Invoking a SmartContract method on Neo Blockchain
@@ -107,12 +104,12 @@ Check it out:
 ```ts
 import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
 // ...
-const resp = await wcSdk?.invokeFunction({
+const resp = await wcSdk.invokeFunction({
     invocations: [{
         scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
         operation: 'transfer',
         args: [
-            { type: 'Address', value: wcSdk?.accountAddress },
+            { type: 'Address', value: wcSdk.getAccountAddress() ?? '' },
             { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
             { type: 'Integer', value: 100000000 },
             { type: 'Array', value: [] }
@@ -135,12 +132,12 @@ Check it out:
 ```ts
 import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
 // ...
-const resp = await wcSdk?.testInvoke({
+const resp = await wcSdk.testInvoke({
     invocations: [{
         scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf', // GAS token
         operation: 'balanceOf',
         args: [
-            {type: 'Address', value: wcSdk?.accountAddress}
+            {type: 'Address', value: wcSdk.getAccountAddress() ?? ''}
         ]
     }],
     signers: [{
