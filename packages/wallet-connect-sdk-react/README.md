@@ -67,7 +67,7 @@ export default function MyComponent() {
 if (wcSdk.isConnected()) {
   console.log(wcSdk.getAccountAddress()) // print the first connected account address
   console.log(wcSdk.getChainId()) // print the first connected account chain info
-  console.log(wcSdk.session.state.accounts); // print all the connected accounts (with the chain info)
+  console.log(wcSdk.session.namespaces); // print the blockchain dictionary with methods, accounts and events
   console.log(wcSdk.session.peer.metadata); // print the wallet metadata
 }
 ```
@@ -83,7 +83,7 @@ if (!wcSdk.isConnected()) {
 ```
 
 ### Disconnect
-It's interesting to have a button to allow the user to disconnect it's wallet, call `disconnect` when this happen:
+It's interesting to have a button to allow the user to disconnect its wallet, call `disconnect` when this happens:
 ```js
 await wcSdk.disconnect();
 ```
@@ -146,3 +146,15 @@ const resp = await wcSdk.testInvoke({
 })
 
 ```
+
+### Sign and Verify message
+```ts
+// 1) sign a message
+const mySignedMessage = await wcSdk.signMessage('My message')
+
+// 2) store these information somewhere
+
+// 3) check later if the message was signed by this account
+const valid = await wcSdk.verifyMessage(mySignedMessage)
+```
+
