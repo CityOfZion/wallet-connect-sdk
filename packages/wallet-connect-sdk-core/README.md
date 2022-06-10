@@ -19,11 +19,11 @@ To use with React, try out the [**React SDK**](https://www.npmjs.com/package/@ci
 Install the dependency on your client-side application
 ### NPM
 ```
-npm i @walletconnect/client@experimental @walletconnect/types@experimental @cityofzion/wallet-connect-sdk-core
+npm i @cityofzion/wallet-connect-sdk-core@beta @walletconnect/sign-client@experimental @walletconnect/types@experimental
 ```
 ### YARN
 ```
-yarn add @walletconnect/client@experimental @walletconnect/types@experimental @cityofzion/wallet-connect-sdk-core
+yarn add @cityofzion/wallet-connect-sdk-core@beta @walletconnect/sign-client@experimental @walletconnect/types@experimental
 ```
 
 ## Setup
