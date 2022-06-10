@@ -1,6 +1,14 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Wed, 26 Jan 2022 19:25:44 GMT and should not be manually modified.
+This log was last generated on Fri, 10 Jun 2022 16:56:37 GMT and should not be manually modified.
+
+## 2.0.0
+Fri, 10 Jun 2022 16:56:37 GMT
+
+### Breaking changes
+
+- Using the new version of WalletConnect library, beta 100
+- Using the new version of WalletConnect library, beta 26
 
 ## 1.6.1
 Wed, 26 Jan 2022 19:25:44 GMT

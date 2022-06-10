@@ -2,6 +2,21 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "2.0.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v2.0.0",
+      "date": "Fri, 10 Jun 2022 16:56:37 GMT",
+      "comments": {
+        "major": [
+          {
+            "comment": "Using the new version of WalletConnect library, beta 100"
+          },
+          {
+            "comment": "Using the new version of WalletConnect library, beta 26"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.6.1",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.6.1",
       "date": "Wed, 26 Jan 2022 19:25:44 GMT",
