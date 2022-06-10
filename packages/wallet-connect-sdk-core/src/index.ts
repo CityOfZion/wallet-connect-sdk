@@ -1,8 +1,8 @@
-import WalletConnectClient, { CLIENT_EVENTS } from '@walletconnect/client'
-import { PairingTypes, SessionTypes } from '@walletconnect/types'
+import SignClient from '@walletconnect/sign-client'
+import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
 
-
+export const SUPPORTED_BLOCKCHAINS = ['neo3'] as const
 export const SUPPORTED_NETWORKS = ['neo3:private', 'neo3:testnet', 'neo3:mainnet'] as const
 export const SUPPORTED_METHODS = [
     'invokeFunction',
@@ -10,6 +10,13 @@ export const SUPPORTED_METHODS = [
     'signMessage',
     'verifyMessage'
 ] as const
+export const SUPPORTED_NAMESPACES = {
+    [SUPPORTED_BLOCKCHAINS[0]]: {
+        chains: [...SUPPORTED_NETWORKS],
+        methods: [...SUPPORTED_METHODS],
+        events: []
+    }
+}
 export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'Hash160', 'Address', 'ScriptHash', 'Null', 'Hash256',
     'ByteArray', 'PublicKey', 'String', 'ByteString', 'Array', 'Buffer', 'InteropInterface', 'Void'] as const
 /**
@@ -153,26 +160,26 @@ export type SignedMessage = {
 }
 
 /**
- * An adapter of WalletConnectClient to work easily with Neon Wallet
+ * An adapter of SignClient to work easily with Neon Wallet
  */
 export default class WcSdk {
     /**
      * The WalletConnect Library
      */
-    client: WalletConnectClient
+    signClient: SignClient
 
     /**
      * The current WalletConnect connected session
      */
-    session: SessionTypes.Settled | null = null
+    session: SessionTypes.Struct | null = null
 
     /**
-     * To initialize the adapter you need to provide the WalletConnectClient
-     * @param client Client of the original WalletConnect library
+     * To initialize the adapter you need to provide the SignClient
+     * @param client SignClient of the original WalletConnect library
      * @param initSession An optional existing session object
      */
-    constructor(client: WalletConnectClient, initSession?: SessionTypes.Settled) {
-        this.client = client
+    constructor (client: SignClient, initSession?: SessionTypes.Struct) {
+        this.signClient = client
         if (initSession) {
             this.session = initSession
         }
@@ -181,14 +188,14 @@ export default class WcSdk {
     /**
      * returns if the session is connected
      */
-    isConnected(): boolean {
+    isConnected (): boolean {
         return !!this.session
     }
 
     /**
      * returns the chain id of the connected wallet
      */
-    getChainId(): NetworkType | string | null {
+    getChainId (): NetworkType | string | null {
         const info = this.getAccountInfo()
         return info && `${info[0]}:${info[1]}`
     }
@@ -196,78 +203,62 @@ export default class WcSdk {
     /**
      * returns the address of the connected account of the wallet
      */
-    getAccountAddress(): string | null {
+    getAccountAddress (): string | null {
         const info = this.getAccountInfo()
         return info && info[2]
     }
 
-    private getAccountInfo(): string[] | null {
-        if (!this.session?.state.accounts.length) {
+    private getAccountInfo (): string[] | null {
+        const theOnlyBlockchain = SUPPORTED_BLOCKCHAINS[0]
+        const accounts = this.session?.namespaces[theOnlyBlockchain].accounts
+        if (!accounts?.length) {
             return null
         }
-        return this.session?.state.accounts[0].split(':') ?? null
-    }
-
-    /**
-     * subscribe to pairing events and opens Neon website to facilitate the connection
-     */
-    managePairing(): void {
-        this.client.on(
-            CLIENT_EVENTS.pairing.proposal,
-            async (proposal: PairingTypes.Proposal) => {
-                const {uri} = proposal.signal.params
-                window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus()
-            }
-        )
+        return accounts[0].split(':') ?? null
     }
 
     /**
      * subscribe to disconnect events and finishes the session
      */
-    manageDisconnect(): void {
-        this.client.on(
-            CLIENT_EVENTS.session.deleted,
-            () => {
-                this.disconnect()
-            }
-        )
+    manageDisconnect (): void {
+        this.signClient.on('session_delete', async () => {
+            this.session = null
+        })
     }
 
     /**
      * loads the session to be used on the application
      */
-    async loadSession(): Promise<SessionTypes.Settled | null> {
-        if (this.client.session.topics.length) {
-            this.session = await this.client.session.get(this.client.session.topics[0])
+    loadSession (): SessionTypes.Struct | null {
+        if (this.signClient.session.values[0]) {
+            this.session = this.signClient.session.values[0]
         }
 
         return this.session
     }
 
     /**
-     * Executes `managePairing`, `manageDisconnect` and `loadSession`
+     * Executes `managePairing` and `manageDisconnect`
      * The perfect combination to be executed after the page load
      */
-    async manageSession(): Promise<SessionTypes.Settled | null> {
-        this.managePairing()
+    async manageSession (): Promise<SessionTypes.Struct | null> {
         this.manageDisconnect()
-        return await this.loadSession()
+        return this.loadSession()
     }
 
     /**
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
      */
-    async connect(): Promise<SessionTypes.Settled | null> {
-        this.session = (await this.client.connect({
-            permissions: {
-                blockchain: {
-                    chains: [...SUPPORTED_NETWORKS]
-                },
-                jsonrpc: {
-                    methods: [...SUPPORTED_METHODS]
-                }
-            }
-        })) ?? null
+    async connect (): Promise<SessionTypes.Struct> {
+        const { uri, approval } = await this.signClient.connect({
+            requiredNamespaces: SUPPORTED_NAMESPACES
+        })
+
+        if (uri) {
+            window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus()
+        }
+
+        this.session = await approval()
 
         return this.session
     }
@@ -275,12 +266,12 @@ export default class WcSdk {
     /**
      * disconnects from the wallet
      */
-    async disconnect(): Promise<void> {
+    async disconnect (): Promise<void> {
         if (!this.session) return
 
-        await this.client.disconnect({
+        await this.signClient.disconnect({
             topic: this.session.topic,
-            reason: {code: 5900, message: 'USER_DISCONNECTED'}
+            reason: { code: 5900, message: 'USER_DISCONNECTED' }
         })
 
         this.session = null
@@ -327,7 +318,7 @@ export default class WcSdk {
      * @param params the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction(params: ContractInvocationMulti): Promise<string> {
+    async invokeFunction (params: ContractInvocationMulti): Promise<string> {
         this.validateContractInvocationMulti(params)
 
         const request = {
@@ -337,7 +328,7 @@ export default class WcSdk {
             params
         }
 
-        const resp: unknown = await this.client.request({
+        const resp: unknown = await this.signClient.request({
             topic: this.session?.topic ?? '',
             chainId: this.getChainId() ?? '',
             request
@@ -390,7 +381,7 @@ export default class WcSdk {
      * @param params the contract invocation options
      * @return the call result promise
      */
-    async testInvoke(params: ContractInvocationMulti): Promise<InvokeResult> {
+    async testInvoke (params: ContractInvocationMulti): Promise<InvokeResult> {
         this.validateContractInvocationMulti(params)
 
         const request = {
@@ -400,7 +391,7 @@ export default class WcSdk {
             params
         }
 
-        const resp = await this.client.request({
+        const resp: InvokeResult | null = await this.signClient.request({
             topic: this.session?.topic ?? '',
             chainId: this.getChainId() ?? '',
             request
@@ -410,7 +401,7 @@ export default class WcSdk {
             throw new WcSdkError(resp)
         }
 
-        return resp as InvokeResult
+        return resp
     }
 
     /**
@@ -419,7 +410,7 @@ export default class WcSdk {
      * @param params the params to send the request
      * @return the signed message object
      */
-    async signMessage(params: SignMessagePayload): Promise<SignedMessage> {
+    async signMessage (params: SignMessagePayload): Promise<SignedMessage> {
         const request = {
             id: 1,
             jsonrpc: '2.0',
@@ -427,7 +418,7 @@ export default class WcSdk {
             params
         }
 
-        const resp = await this.client.request({
+        const resp = await this.signClient.request({
             topic: this.session?.topic ?? '',
             chainId: this.getChainId() ?? '',
             request
@@ -446,7 +437,7 @@ export default class WcSdk {
      * @param params an object that represents a signed message
      * @return true if the signedMessage is acknowledged by the account
      */
-    async verifyMessage(params: SignedMessage): Promise<boolean> {
+    async verifyMessage (params: SignedMessage): Promise<boolean> {
         const request = {
             id: 1,
             jsonrpc: '2.0',
@@ -454,7 +445,7 @@ export default class WcSdk {
             params
         }
 
-        const resp = await this.client.request({
+        const resp = await this.signClient.request({
             topic: this.session?.topic ?? '',
             chainId: this.getChainId() ?? '',
             request
@@ -467,7 +458,7 @@ export default class WcSdk {
         return resp as boolean
     }
 
-    private validateContractInvocationMulti(request: ContractInvocationMulti): boolean {
+    private validateContractInvocationMulti (request: ContractInvocationMulti): boolean {
         // verify fields
         this.objectValidation(request, ['signers', 'invocations'])
 
@@ -517,7 +508,7 @@ export default class WcSdk {
         return true
     }
 
-    private objectValidation(object: Argument | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
+    private objectValidation (object: Argument | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
         const objectKeys = Object.keys(object)
 
         keys.forEach((req) => {

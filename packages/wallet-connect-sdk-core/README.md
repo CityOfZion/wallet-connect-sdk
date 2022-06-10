@@ -29,9 +29,10 @@ yarn add @walletconnect/client@experimental @walletconnect/types@experimental @c
 ## Setup
 Initialize the client:
 ```js
-import WcSdk from "@cityofzion/wallet-connect-sdk-core";
+import WcSdk from '@cityofzion/wallet-connect-sdk-core'
+import SignClient from '@walletconnect/sign-client'
 
-const wcSdk = new WcSdk(await WalletConnectClient.init({
+const wcSdk = new WcSdk(await SignClient.init({
     projectId: '<your wc project id>', // retrieve a Project ID here: https://docs.walletconnect.com/2.0/api/project-id
     relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
     metadata: {

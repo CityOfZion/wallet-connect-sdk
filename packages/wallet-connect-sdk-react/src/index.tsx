@@ -1,6 +1,6 @@
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState} from 'react'
-import WalletConnectClient, {CLIENT_EVENTS} from "@walletconnect/client";
-import {ClientOptions, SessionTypes} from "@walletconnect/types";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react'
+import SignClient from "@walletconnect/sign-client";
+import {SessionTypes, SignClientTypes} from "@walletconnect/types";
 import WcSdk, {
     ContractInvocationMulti,
     NetworkType,
@@ -10,17 +10,16 @@ import WcSdk, {
 } from "@cityofzion/wallet-connect-sdk-core";
 
 interface IWalletConnectContext {
-    client: WalletConnectClient | undefined
-    setClient: Dispatch<SetStateAction<WalletConnectClient | undefined>>
-    session: SessionTypes.Settled | undefined,
-    setSession: Dispatch<SetStateAction<SessionTypes.Settled | undefined>>,
+    signClient: SignClient | undefined
+    setSignClient: Dispatch<SetStateAction<SignClient | undefined>>
+    session: SessionTypes.Struct | undefined,
+    setSession: Dispatch<SetStateAction<SessionTypes.Struct | undefined>>,
     isConnected: () => boolean
     getChainId: () => NetworkType | string | null
     getAccountAddress: () => string | null
-    managePairing: () => void
     manageDisconnect: () => void
-    loadSession: () => Promise<void>
-    manageSession: () => Promise<void>
+    loadSession: () => void
+    manageSession: () => void
     connect: () => Promise<void>
     disconnect: () => Promise<void>
     invokeFunction: (params: ContractInvocationMulti) => Promise<string>
@@ -31,101 +30,87 @@ interface IWalletConnectContext {
 
 export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
 
-export const WalletConnectProvider: React.FC<{ children: any, options?: ClientOptions, autoManageSession?: boolean }> = ({ children, options, autoManageSession = false }) => {
+export const WalletConnectProvider: React.FC<{ children: any, options?: SignClientTypes.Options, autoManageSession?: boolean }> = ({ children, options, autoManageSession = false }) => {
     /**
      * The WalletConnect Library
      */
-    const [client, setClient] = useState<WalletConnectClient | undefined>()
+    const [signClient, setSignClient] = useState<SignClient | undefined>()
 
     /**
      * The current WalletConnect connected session
      */
-    const [session, setSession] = useState<SessionTypes.Settled | undefined>()
+    const [session, setSession] = useState<SessionTypes.Struct | undefined>()
     const initRef = useRef(false)
 
-    const getSdk = useCallback(() => {
-        if (!client) throw Error('no client')
-        return new WcSdk(client, session)
-    }, [client, session])
+    const sdk = useMemo(() => {
+        if (!signClient) return null
+        return new WcSdk(signClient, session)
+    }, [signClient, session])
 
-    const getSdkOrNull = () => {
-        if (!client) return null
-        return new WcSdk(client, session)
-    }
+    const getSdkOrError = useCallback(() => {
+        if (!sdk) throw Error('no client')
+        return sdk
+    }, [sdk])
 
     /**
      * returns if the session is connected
      */
     const isConnected = (): boolean => {
-        return getSdkOrNull()?.isConnected() ?? false
+        return sdk?.isConnected() ?? false
     }
 
     /**
      * returns the chain id of the connected wallet
      */
     const getChainId = (): NetworkType | string | null => {
-        return getSdkOrNull()?.getChainId() ?? null
+        return sdk?.getChainId() ?? null
     }
 
     /**
      * returns the address of the connected account of the wallet
      */
     const getAccountAddress = (): string | null => {
-        return getSdkOrNull()?.getAccountAddress() ?? null
+        return sdk?.getAccountAddress() ?? null
     }
-
-    /**
-     * subscribe to pairing events and opens Neon website to facilitate the connection
-     */
-    const managePairing = useCallback((): void => {
-        getSdk().managePairing()
-    }, [getSdk])
 
     /**
      * disconnects from the wallet
      */
     const disconnect = useCallback(async (): Promise<void> => {
-        await getSdk().disconnect()
+        await getSdkOrError().disconnect()
         setSession(undefined)
-    }, [getSdk])
+    }, [getSdkOrError])
 
     /**
      * subscribe to disconnect events and finishes the session
      */
     const manageDisconnect = useCallback((): void => {
-        client?.on(
-            CLIENT_EVENTS.session.deleted,
-            async () => {
-                await disconnect()
-            }
-        )
-    }, [client, disconnect])
+        signClient?.events.removeAllListeners()
+
+        signClient?.on('session_delete', async () => {
+            setSession(undefined)
+        })
+    }, [signClient])
+
+    const loadSession = useCallback((): void => {
+        setSession(getSdkOrError().loadSession() ?? undefined)
+    }, [getSdkOrError])
 
     /**
-     * loads the session to be used on the application
-     */
-    const loadSession = useCallback(async (): Promise<void> => {
-        if (client?.session.topics.length) {
-            setSession(await client?.session.get(client?.session.topics[0]))
-        }
-    }, [client?.session])
-
-    /**
-     * Executes `managePairing`, `manageDisconnect` and `loadSession`
+     * Executes `managePairing` and `manageDisconnect`
      * The perfect combination to be executed after the page load
      */
     const manageSession = useCallback(async (): Promise<void> => {
-        managePairing()
         manageDisconnect()
-        await loadSession()
-    }, [managePairing, manageDisconnect, loadSession])
+        loadSession()
+    }, [manageDisconnect, loadSession])
 
     /**
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
      */
-    const connect = async (): Promise<void> => {
-        setSession(await getSdk().connect() ?? undefined)
-    }
+    const connect = useCallback(async (): Promise<void> => {
+        setSession(await getSdkOrError().connect())
+    }, [getSdkOrError])
 
     /**
      * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
@@ -168,9 +153,9 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: ClientOp
      * @param params the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    const invokeFunction = async (params: ContractInvocationMulti): Promise<string> => {
-        return await getSdk().invokeFunction(params)
-    }
+    const invokeFunction = useCallback(async (params: ContractInvocationMulti): Promise<string> => {
+        return await getSdkOrError().invokeFunction(params)
+    }, [getSdkOrError])
 
     /**
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
@@ -212,9 +197,9 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: ClientOp
      * @param params the contract invocation options
      * @return the call result promise
      */
-    const testInvoke = async (params: ContractInvocationMulti): Promise<InvokeResult> => {
-        return await getSdk().testInvoke(params)
-    }
+    const testInvoke = useCallback(async (params: ContractInvocationMulti): Promise<InvokeResult> => {
+        return await getSdkOrError().testInvoke(params)
+    }, [getSdkOrError])
 
     /**
      * Sends a `signMessage` request to the Wallet.
@@ -222,9 +207,9 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: ClientOp
      * @param params the params to send the request
      * @return the signed message object
      */
-    const signMessage = async (params: SignMessagePayload): Promise<SignedMessage> => {
-        return await getSdk().signMessage(params)
-    }
+    const signMessage = useCallback(async (params: SignMessagePayload): Promise<SignedMessage> => {
+        return await getSdkOrError().signMessage(params)
+    }, [getSdkOrError])
 
     /**
      * Sends a `verifyMessage` request to the Wallet.
@@ -232,40 +217,39 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: ClientOp
      * @param params an object that represents a signed message
      * @return true if the signedMessage is acknowledged by the account
      */
-    const verifyMessage = async (params: SignedMessage): Promise<boolean> => {
-        return await getSdk().verifyMessage(params)
-    }
+    const verifyMessage = useCallback(async (params: SignedMessage): Promise<boolean> => {
+        return await getSdkOrError().verifyMessage(params)
+    },[getSdkOrError])
 
     useEffect(() => {
         (async () => {
-            if (!setClient || !options || initRef.current) return
+            if (!setSignClient || !options || initRef.current) return
             initRef.current = true
 
-            const client = await WalletConnectClient.init(options)
-            setClient(() => client)
+            const client = await SignClient.init(options)
+            setSignClient(client)
         })()
     }, [
-        client,
-        setClient,
+        signClient,
+        setSignClient,
         options,
         manageSession,
     ])
 
     useEffect(() => {
         (async () => {
-            if (client && autoManageSession) {
+            if (signClient && autoManageSession) {
                 await manageSession()
             }
         })()
-    }, [client, manageSession, autoManageSession])
+    }, [signClient, manageSession, autoManageSession])
 
     const contextValue: IWalletConnectContext = {
-        client, setClient,
+        signClient, setSignClient,
         session, setSession,
         isConnected,
         getChainId,
         getAccountAddress,
-        managePairing,
         manageDisconnect,
         loadSession,
         manageSession,

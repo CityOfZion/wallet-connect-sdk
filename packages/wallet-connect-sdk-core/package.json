@@ -38,8 +38,8 @@
   "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
   "dependencies": {
     "@cityofzion/neon-core": "^5.0.0",
-    "@walletconnect/client": "^2.0.0-beta.26",
-    "@walletconnect/types": "^2.0.0-beta.26"
+    "@walletconnect/sign-client": "^2.0.0-beta.100",
+    "@walletconnect/types": "^2.0.0-beta.100"
   },
   "devDependencies": {
     "typedoc": "^0.22.10",
