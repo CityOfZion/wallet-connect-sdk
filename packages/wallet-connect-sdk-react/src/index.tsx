@@ -10,107 +10,55 @@ import WcSdk, {
 } from "@cityofzion/wallet-connect-sdk-core";
 
 interface IWalletConnectContext {
-    signClient: SignClient | undefined
-    setSignClient: Dispatch<SetStateAction<SignClient | undefined>>
-    session: SessionTypes.Struct | undefined,
-    setSession: Dispatch<SetStateAction<SessionTypes.Struct | undefined>>,
-    isConnected: () => boolean
-    getChainId: () => NetworkType | string | null
-    getAccountAddress: () => string | null
-    manageDisconnect: () => void
-    loadSession: () => void
-    manageSession: () => void
-    connect: () => Promise<void>
-    disconnect: () => Promise<void>
-    invokeFunction: (params: ContractInvocationMulti) => Promise<string>
-    testInvoke: (params: ContractInvocationMulti) => Promise<InvokeResult>
-    signMessage: (params: SignMessagePayload) => Promise<SignedMessage>
-    verifyMessage: (params: SignedMessage) => Promise<boolean>
-}
-
-export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
-
-export const WalletConnectProvider: React.FC<{ children: any, options?: SignClientTypes.Options, autoManageSession?: boolean }> = ({ children, options, autoManageSession = false }) => {
     /**
      * The WalletConnect Library
      */
-    const [signClient, setSignClient] = useState<SignClient | undefined>()
+    signClient: SignClient | undefined
+    setSignClient: Dispatch<SetStateAction<SignClient | undefined>>
 
     /**
      * The current WalletConnect connected session
      */
-    const [session, setSession] = useState<SessionTypes.Struct | undefined>()
-    const initRef = useRef(false)
-
-    const sdk = useMemo(() => {
-        if (!signClient) return null
-        return new WcSdk(signClient, session)
-    }, [signClient, session])
-
-    const getSdkOrError = useCallback(() => {
-        if (!sdk) throw Error('no client')
-        return sdk
-    }, [sdk])
+    session: SessionTypes.Struct | undefined,
+    setSession: Dispatch<SetStateAction<SessionTypes.Struct | undefined>>,
 
     /**
      * returns if the session is connected
      */
-    const isConnected = (): boolean => {
-        return sdk?.isConnected() ?? false
-    }
+    isConnected: () => boolean
 
     /**
      * returns the chain id of the connected wallet
      */
-    const getChainId = (): NetworkType | string | null => {
-        return sdk?.getChainId() ?? null
-    }
+    getChainId: () => NetworkType | string | null
 
     /**
      * returns the address of the connected account of the wallet
      */
-    const getAccountAddress = (): string | null => {
-        return sdk?.getAccountAddress() ?? null
-    }
-
-    /**
-     * disconnects from the wallet
-     */
-    const disconnect = useCallback(async (): Promise<void> => {
-        await getSdkOrError().disconnect()
-        setSession(undefined)
-    }, [getSdkOrError])
+    getAccountAddress: () => string | null
 
     /**
      * subscribe to disconnect events and finishes the session
      */
-    const manageDisconnect = useCallback((): void => {
-        signClient?.events.removeAllListeners()
-
-        signClient?.on('session_delete', async () => {
-            setSession(undefined)
-        })
-    }, [signClient])
-
-    const loadSession = useCallback((): void => {
-        setSession(getSdkOrError().loadSession() ?? undefined)
-    }, [getSdkOrError])
+    manageDisconnect: () => void
+    loadSession: () => void
 
     /**
      * Executes `managePairing` and `manageDisconnect`
      * The perfect combination to be executed after the page load
      */
-    const manageSession = useCallback(async (): Promise<void> => {
-        manageDisconnect()
-        loadSession()
-    }, [manageDisconnect, loadSession])
+    manageSession: () => void
 
     /**
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      */
-    const connect = useCallback(async (): Promise<void> => {
-        setSession(await getSdkOrError().connect())
-    }, [getSdkOrError])
+    connect: (network: NetworkType) => Promise<void>
+
+    /**
+     * disconnects from the wallet
+     */
+    disconnect: () => Promise<void>
 
     /**
      * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
@@ -153,9 +101,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
      * @param params the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    const invokeFunction = useCallback(async (params: ContractInvocationMulti): Promise<string> => {
-        return await getSdkOrError().invokeFunction(params)
-    }, [getSdkOrError])
+    invokeFunction: (params: ContractInvocationMulti) => Promise<string>
 
     /**
      * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
@@ -197,9 +143,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
      * @param params the contract invocation options
      * @return the call result promise
      */
-    const testInvoke = useCallback(async (params: ContractInvocationMulti): Promise<InvokeResult> => {
-        return await getSdkOrError().testInvoke(params)
-    }, [getSdkOrError])
+    testInvoke: (params: ContractInvocationMulti) => Promise<InvokeResult>
 
     /**
      * Sends a `signMessage` request to the Wallet.
@@ -207,9 +151,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
      * @param params the params to send the request
      * @return the signed message object
      */
-    const signMessage = useCallback(async (params: SignMessagePayload): Promise<SignedMessage> => {
-        return await getSdkOrError().signMessage(params)
-    }, [getSdkOrError])
+    signMessage: (params: SignMessagePayload) => Promise<SignedMessage>
 
     /**
      * Sends a `verifyMessage` request to the Wallet.
@@ -217,6 +159,76 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
      * @param params an object that represents a signed message
      * @return true if the signedMessage is acknowledged by the account
      */
+    verifyMessage: (params: SignedMessage) => Promise<boolean>
+}
+
+export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
+
+export const WalletConnectProvider: React.FC<{ children: any, options?: SignClientTypes.Options, autoManageSession?: boolean }> = ({ children, options, autoManageSession = false }) => {
+    const [signClient, setSignClient] = useState<SignClient | undefined>()
+    const [session, setSession] = useState<SessionTypes.Struct | undefined>()
+    const initRef = useRef(false)
+
+    const sdk = useMemo(() => {
+        if (!signClient) return null
+        return new WcSdk(signClient, session)
+    }, [signClient, session])
+
+    const getSdkOrError = useCallback(() => {
+        if (!sdk) throw Error('no client')
+        return sdk
+    }, [sdk])
+
+    const isConnected = (): boolean => {
+        return sdk?.isConnected() ?? false
+    }
+
+    const getChainId = (): NetworkType | string | null => {
+        return sdk?.getChainId() ?? null
+    }
+
+    const getAccountAddress = (): string | null => {
+        return sdk?.getAccountAddress() ?? null
+    }
+
+    const disconnect = useCallback(async (): Promise<void> => {
+        await getSdkOrError().disconnect()
+        setSession(undefined)
+    }, [getSdkOrError])
+
+    const manageDisconnect = useCallback((): void => {
+        signClient?.events.removeAllListeners()
+
+        signClient?.on('session_delete', async () => {
+            setSession(undefined)
+        })
+    }, [signClient])
+
+    const loadSession = useCallback((): void => {
+        setSession(getSdkOrError().loadSession() ?? undefined)
+    }, [getSdkOrError])
+
+    const manageSession = useCallback(async (): Promise<void> => {
+        manageDisconnect()
+        loadSession()
+    }, [manageDisconnect, loadSession])
+
+    const connect = useCallback(async (network: NetworkType): Promise<void> => {
+        setSession(await getSdkOrError().connect(network))
+    }, [getSdkOrError])
+
+    const invokeFunction = useCallback(async (params: ContractInvocationMulti): Promise<string> => {
+        return await getSdkOrError().invokeFunction(params)
+    }, [getSdkOrError])
+
+    const testInvoke = useCallback(async (params: ContractInvocationMulti): Promise<InvokeResult> => {
+        return await getSdkOrError().testInvoke(params)
+    }, [getSdkOrError])
+
+    const signMessage = useCallback(async (params: SignMessagePayload): Promise<SignedMessage> => {
+        return await getSdkOrError().signMessage(params)
+    }, [getSdkOrError])
+
     const verifyMessage = useCallback(async (params: SignedMessage): Promise<boolean> => {
         return await getSdkOrError().verifyMessage(params)
     },[getSdkOrError])

@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@cityofzion/wallet-connect-sdk-core": "^1.6.1",
-    "@walletconnect/sign-client": "^2.0.0-beta.100",
-    "@walletconnect/types": "^2.0.0-beta.100"
+    "@walletconnect/sign-client": "^2.0.0-beta.102",
+    "@walletconnect/types": "^2.0.0-beta.102"
   },
   "peerDependencies": {
     "react": "*"

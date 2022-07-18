@@ -10,17 +10,10 @@ export const SUPPORTED_METHODS = [
     'signMessage',
     'verifyMessage'
 ] as const
-export const SUPPORTED_NAMESPACES = {
-    [SUPPORTED_BLOCKCHAINS[0]]: {
-        chains: [...SUPPORTED_NETWORKS],
-        methods: [...SUPPORTED_METHODS],
-        events: []
-    }
-}
 export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'Hash160', 'Address', 'ScriptHash', 'Null', 'Hash256',
     'ByteArray', 'PublicKey', 'String', 'ByteString', 'Array', 'Buffer', 'InteropInterface', 'Void'] as const
 /**
- * A list of networkds supported by wallets
+ * A list of networks supported by wallets
  */
 export type NetworkType = typeof SUPPORTED_NETWORKS[number]
 /**
@@ -248,10 +241,17 @@ export default class WcSdk {
 
     /**
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      */
-    async connect (): Promise<SessionTypes.Struct> {
+    async connect (network: NetworkType): Promise<SessionTypes.Struct> {
         const { uri, approval } = await this.signClient.connect({
-            requiredNamespaces: SUPPORTED_NAMESPACES
+            requiredNamespaces: {
+                [SUPPORTED_BLOCKCHAINS[0]]: {
+                    chains: [network],
+                    methods: [...SUPPORTED_METHODS],
+                    events: []
+                }
+            }
         })
 
         if (uri) {

@@ -27,13 +27,16 @@ yarn add @cityofzion/wallet-connect-sdk-core@beta @walletconnect/sign-client@exp
 ```
 
 ## Setup
+Before starting the development, you need to create an account on [Wallet Connect website](https://walletconnect.com/)
+and then create a new `Project`, it's super easy, with just a few fields on the form.
+
 Initialize the client:
 ```js
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 import SignClient from '@walletconnect/sign-client'
 
 const wcSdk = new WcSdk(await SignClient.init({
-    projectId: '<your wc project id>', // retrieve a Project ID here: https://docs.walletconnect.com/2.0/api/project-id
+    projectId: '<your wc project id>', // the ID of your project on Wallet Connect website
     relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
     metadata: {
         name: 'MyApplicationName', // your application name to be displayed on the wallet
@@ -66,7 +69,7 @@ if (wcSdk.isConnected()) {
 Start the process of establishing a new connection, to be used when there is no `wcSdk.session`
 ```js
 if (!wcSdk.isConnected()) {
-  await wcSdk.connect()
+  await wcSdk.connect('neo3:testnet')  // choose between neo3:mainnet, neo3:testnet or neo3:private
   // and check if there is a connection
   console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
@@ -147,6 +150,11 @@ const mySignedMessage = await this.wcSdk.signMessage('My message')
 // 3) check later if the message was signed by this account
 const valid = await this.wcSdk.verifyMessage(mySignedMessage)
 ```
+
+## Wallet Connect Registry
+After going to production, we really recommend you to register your dApp on the [Wallet Connect website](https://walletconnect.com/).
+Differently than the `Project`, which is necessary to use Wallet Connect services, the `Registry` is not mandatory but
+lists your dApp on their website and helps Wallet Connect users to know your dApp.
 
 ## Read the Docs
 There is more information on the [documentation website](https://neon.coz.io/wksdk/core/modules.html)
