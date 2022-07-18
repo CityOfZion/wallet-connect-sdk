@@ -26,7 +26,7 @@ rush change
 
 ## Publish on beta
 - Build the project
-- Increase the versions: `rush version`
+- Increase the version of each package
 - Commit
 - Go to each of the packages and run:
 ```
