@@ -15,11 +15,11 @@ To use without React, try out the [**Core SDK**](https://www.npmjs.com/package/@
 Install the dependency on your client-side application
 ### NPM
 ```
-npm i @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@experimental @walletconnect/types@experimental
+npm i @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@rc @walletconnect/types@rc
 ```
 ### YARN
 ```
-yarn add @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@experimental @walletconnect/types@experimental
+yarn add @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@rc @walletconnect/types@rc
 ```
 
 ## Setup
