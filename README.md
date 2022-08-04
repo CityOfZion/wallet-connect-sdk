@@ -1,4 +1,9 @@
 # WalletConnect SDK
+
+⚠ Warning: To stay compatible with the Wallets, all Dapps will need to upgrade. Read the [Migration Document](MIGRATION.md) to understand how and more important **when** to do it.
+
+---
+
 A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built on
 top of [walletconnect](https://github.com/WalletConnect/walletconnect-monorepo).
 
