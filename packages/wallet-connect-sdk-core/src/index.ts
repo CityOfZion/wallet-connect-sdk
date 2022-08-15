@@ -117,6 +117,22 @@ export type ContractInvocationMulti = {
      * The array of invocations
      */
     invocations: ContractInvocation[]
+    /**
+     * an optional fee to be added to the calculated system fee
+     */
+    extraSystemFee?: number
+    /**
+     * for the cases you need to calculate the system fee by yourself
+     */
+    systemFeeOverride?: number
+    /**
+     * an optional fee to be added to the calculated network fee
+     */
+    extraNetworkFee?: number,
+    /**
+     * for the cases you need to calculate the network fee by yourself
+     */
+    networkFeeOverride?: number
 }
 
 /**
@@ -482,20 +498,20 @@ export default class WcSdk {
         // verify invocations
         request.invocations.forEach((invocation: ContractInvocation, i) => {
             this.objectValidation(
-                invocation,
-                ['scriptHash', 'operation', 'args']
+              invocation,
+              ['scriptHash', 'operation', 'args']
             )
 
             if (!(invocation.scriptHash.length === 42 || invocation.scriptHash.length === 40)) {
                 throw new Error(`Invalid Script Hash: ${invocation.scriptHash}`)
             }
             request.invocations[i].scriptHash = (invocation.scriptHash.length === 42)
-                ? invocation.scriptHash : `0x${invocation.scriptHash}`
+              ? invocation.scriptHash : `0x${invocation.scriptHash}`
 
             invocation.args.forEach((arg: Argument) => {
                 this.objectValidation(
-                    arg,
-                    ['type', 'value']
+                  arg,
+                  ['type', 'value']
                 )
 
                 if (SUPPORTED_ARG_TYPES.includes(arg.type)) {
