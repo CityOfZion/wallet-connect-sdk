@@ -123,6 +123,9 @@ const resp = await wcSdk.invokeFunction({
     }]
 })
 ```
+You can also use this additional options:
+- `systemFeeOverride` to choose a specific amount as system fee OR `extraSystemFee` if you simply want to add more value to the minimum system fee.
+- `networkFeeOverride` to choose a specific amount as network fee OR `extraNetworkFee` if you simply want to add more value to the minimum network fee.
 
 ### Calling TestInvoke will not require user acceptance
 To retrieve information from a SmartContract without persisting any information on the blockchain you can use `testInvoke` method.
