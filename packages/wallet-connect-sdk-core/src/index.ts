@@ -87,6 +87,10 @@ export type Signer = {
      */
     scopes: WitnessScope
     /**
+     * An optional scriptHash to be used to sign, if no account is provided the user selected account will be used
+     */
+    account?: string
+    /**
      * When the scopes is `WitnessScope.CustomContracts`, you need to specify which contracts are allowed
      */
     allowedContracts?: string[]
