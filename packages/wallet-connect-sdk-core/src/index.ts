@@ -2,14 +2,30 @@ import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
 
+/**
+ * A number that will be compared by the wallet to check if it is compatible with the dApp
+ */
+export const COMPATIBILITY_VERSION = 2
+/**
+ * A list of blockchains supported by wallets
+ */
 export const SUPPORTED_BLOCKCHAINS = ['neo3'] as const
+/**
+ * A list of networks supported by wallets
+ */
 export const SUPPORTED_NETWORKS = ['neo3:private', 'neo3:testnet', 'neo3:mainnet'] as const
+/**
+ * A list of methods supported by wallets
+ */
 export const SUPPORTED_METHODS = [
     'invokeFunction',
     'testInvoke',
     'signMessage',
     'verifyMessage'
 ] as const
+/**
+ * A list of argument types supported by wallets
+ */
 export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'Hash160', 'Address', 'ScriptHash', 'Null', 'Hash256',
     'ByteArray', 'PublicKey', 'String', 'ByteString', 'Array', 'Buffer', 'InteropInterface', 'Void'] as const
 /**
@@ -258,8 +274,9 @@ export default class WcSdk {
     /**
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+     * @param uriCallback An optional callback to handle the connection URI. The Neon website will open if no callback is provided
      */
-    async connect (network: NetworkType): Promise<SessionTypes.Struct> {
+    async connect (network: NetworkType, uriCallback?: (uri: string) => void): Promise<SessionTypes.Struct> {
         const { uri, approval } = await this.signClient.connect({
             requiredNamespaces: {
                 [SUPPORTED_BLOCKCHAINS[0]]: {
@@ -271,7 +288,12 @@ export default class WcSdk {
         })
 
         if (uri) {
-            window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus()
+            const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
+            if (uriCallback) {
+                uriCallback(uriAndWccv)
+            } else {
+                window.open(`https://neon.coz.io/connect?uri=${uriAndWccv}`, '_blank')?.focus()
+            }
         }
 
         this.session = await approval()

@@ -213,8 +213,8 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         loadSession()
     }, [manageDisconnect, loadSession])
 
-    const connect = useCallback(async (network: NetworkType): Promise<void> => {
-        setSession(await getSdkOrError().connect(network))
+    const connect = useCallback(async (network: NetworkType, uriCallback?: (uri: string) => void): Promise<void> => {
+        setSession(await getSdkOrError().connect(network, uriCallback))
     }, [getSdkOrError])
 
     const invokeFunction = useCallback(async (params: ContractInvocationMulti): Promise<string> => {
