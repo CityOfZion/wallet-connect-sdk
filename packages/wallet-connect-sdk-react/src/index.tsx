@@ -53,7 +53,7 @@ interface IWalletConnectContext {
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      */
-    connect: (network: NetworkType) => Promise<void>
+    connect: (network: NetworkType, uriCallback?: (uri: string) => void) => Promise<void>
 
     /**
      * disconnects from the wallet
