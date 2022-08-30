@@ -26,7 +26,7 @@ yarn add @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@rc
 Before starting the development, you need to create an account on [Wallet Connect website](https://walletconnect.com/)
 and then create a new `Project`, it's super easy, with just a few fields on the form.
 
-Wrap WalletConnectContextProvider around your App and declare the options
+Wrap WalletConnectProvider around your App and declare the options
 ```jsx
 import {WalletConnectProvider} from "@cityofzion/wallet-connect-sdk-react";
 
@@ -43,9 +43,9 @@ const wcOptions = {
 
 ReactDOM.render(
   <>
-    <WalletConnectContextProvider autoManageSession={true} options={wcOptions}>
+    <WalletConnectProvider autoManageSession={true} options={wcOptions}>
       <App />
-    </WalletConnectContextProvider>
+    </WalletConnectProvider>
   </>,
   document.getElementById("root"),
 );
