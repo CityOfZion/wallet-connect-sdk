@@ -9,10 +9,14 @@
   <br/> Made by <b>COZ.IO</b>
 </p>
 
-To use without React, try out the [**Core SDK**](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core).
+- [Installation](#installation)
+- [Setup](#setup)
+- [Code examples](#code-examples)
+- [Wallet Connect Registry](#wallet-connect-registry)
+- [Using WITHOUT React.js](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-core)
 
 ## Installation
-Install the dependency on your client-side application
+Install the dependencies on your application
 ### NPM
 ```
 npm i @cityofzion/wallet-connect-sdk-react@beta @walletconnect/sign-client@rc @walletconnect/types@rc
@@ -50,6 +54,9 @@ ReactDOM.render(
   document.getElementById("root"),
 );
 ```
+On the previous versions we were using another `relayUrl`, make sure you are using this new URL.
+
+The `autoManageSession` will reload the user's connected session and subscribe to the `disconnect` event. If you don't want this on the initialization, set this option as `false` and call the method `manageSession` on the correct moment.
 
 ## Usage
 From now on, every time you need to use WalletConnect, you can simply use the `useWalletConnect` hook:
@@ -62,7 +69,7 @@ export default function MyComponent() {
 }
 ```
 
-## Recipes
+## Code examples
 
 ### Check if the user has a Session and get its Accounts
 
@@ -84,6 +91,11 @@ if (!wcSdk.isConnected()) {
   console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
 ```
+By default, the `connect` method will open a new browser tab to help the user to connect with it's wallet, but there is 
+an optional callback if you prefer to handle the connection URI by yourself:
+```ts
+await wcSdk.connect('neo3:testnet', (uri) => console.log(uri))
+```
 
 ### Disconnect
 It's interesting to have a button to allow the user to disconnect its wallet, call `disconnect` when this happens:
@@ -91,17 +103,19 @@ It's interesting to have a button to allow the user to disconnect its wallet, ca
 await wcSdk.disconnect();
 ```
 
-### Invoking a SmartContract method on Neo Blockchain
+### Invoking a SmartContract method on NEO 3 Blockchain
 To invoke a SmartContract method you can use `invokeFunction` method.
 
-On the example below we are invoking the `transfer` method of the `GAS` token. Neo blockchain expect params with
+Neo blockchain expect params with
 `{ type, value }` format, and on `type` you should provide one of the types mentioned
 [here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
-WcSdk has some special types to facilitate: `Address` and `ScriptHash`.
 
-For reference, developers should reference
-the contract manifest on the contracts details pages on dora to understand the methods and argument types needed.
-For this example: [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf)
+WcSdk has some special types to facilitate:
+- `Address` (the same thing as `Hash160`)
+- `ScriptHash` (the same thing as `Hash160` but transported to the wallet as HexString)
+
+To invoke a SmartContract, it's important to know the argument types of the method, this information can be found on Dora.
+On the example below we are invoking the `transfer` method of the [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf) token.
 
 Check it out:
 ```ts
@@ -126,8 +140,27 @@ const resp = await wcSdk.invokeFunction({
 You can also use this additional options:
 - `systemFeeOverride` to choose a specific amount as system fee OR `extraSystemFee` if you simply want to add more value to the minimum system fee.
 - `networkFeeOverride` to choose a specific amount as network fee OR `extraNetworkFee` if you simply want to add more value to the minimum network fee.
+- `account` inside each `signer` object, it should be the account's scripthash,
+otherwise the wallet will use the user's selected account to sign.
 
-### Calling TestInvoke will not require user acceptance
+Here is a more advanced example:
+```ts
+import WcSdk, { WitnessScope } from '@cityofzion/wallet-connect-sdk-core'
+// ...
+const resp = await wcSdk.invokeFunction({
+    invocations: [{
+        // ...
+    }],
+    signers: [{
+        scope: WitnessScope.Global,
+        account: '857a247939db5c7cd3a7bb14791280c09e824bea', // signer account scripthash
+    }],
+    extraSystemFee: 1000000, // minimum system fee + 1 GAS
+    networkFeeOverride: 3000000 // sending 3 GAS instead of the minimum network fee
+})
+```
+
+### Calling TestInvoke
 To retrieve information from a SmartContract without persisting any information on the blockchain you can use `testInvoke` method.
 
 On the example below we are invoking the `balanceOf` method of the `GAS` token.
@@ -156,7 +189,7 @@ const resp = await wcSdk.testInvoke({
 ### Sign and Verify message
 ```ts
 // 1) sign a message
-const mySignedMessage = await wcSdk.signMessage('My message')
+const mySignedMessage = await this.wcSdk.signMessage({ message: 'My message', version: 2 })
 
 // 2) store these information somewhere
 
