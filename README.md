@@ -53,4 +53,4 @@ on the [WC Core SDK](packages/wallet-connect-sdk-core/README.md).
 This SDK uses 
 [WalletConnect 2.0](https://docs.walletconnect.org/v/2.0/) protocol and was designed to work on the NEO 3 blockchain.
 You will need a Wallet application that fits these requirements, we recommend
-[Aero Web Wallet](https://aero-beta.coz.io/) for testing or [Neon Wallet](https://neonwallet.com/) for production.
+[Aero Web Wallet](https://melanke.github.io/aero-beta/) for testing or [Neon Wallet](https://neonwallet.com/) for production.
