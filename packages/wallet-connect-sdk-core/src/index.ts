@@ -1,6 +1,8 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
+import { WitnessScope } from '@cityofzion/neon-core/lib/tx'
+import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer } from '@cityofzion/neo3-invoker'
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -58,104 +60,6 @@ export class WcSdkError extends Error {
 }
 
 /**
- * An Enum that represents the different Signature Scopes of an invocation
- */
-export enum WitnessScope {
-    None = 0,
-    CalledByEntry = 1,
-    CustomContracts = 16,
-    CustomGroups = 32,
-    Global = 128
-}
-
-/**
- * A simple interface that defines the signing options, which privileges the user needs to give for the SmartContract.
- * Usually the default signer is enough: `{ scopes: WitnessScope.CalledByEntry }`
- * But you may need additional authorization, for instance, allow the SmartContract to invoke another specific contract:
- *
- * ```
- * {
- *   scopes: WitnessScope.CustomContracts,
- *   allowedContracts: ['0xf970f4ccecd765b63732b821775dc38c25d74f23']
- * }
- * ```
- *
- */
-export type Signer = {
-    /**
-     * The level of permission the invocation needs
-     */
-    scopes: WitnessScope
-    /**
-     * An optional scriptHash to be used to sign, if no account is provided the user selected account will be used
-     */
-    account?: string
-    /**
-     * When the scopes is `WitnessScope.CustomContracts`, you need to specify which contracts are allowed
-     */
-    allowedContracts?: string[]
-    /**
-     * When the scopes is `WitnessScope.CustomGroups`, you need to specify which groups are allowed
-     */
-    allowedGroups?: string[]
-}
-
-/**
- * A simple interface that defines the invocation options
- */
-export type ContractInvocation = {
-    /**
-     * The SmartContract ScriptHash
-     */
-    scriptHash: string
-    /**
-     * The SmartContract's method name
-     */
-    operation: string
-    /**
-     * The parameters to be sent to the method
-     */
-    args: Argument[]
-    /**
-     * When requesting multiple invocations, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
-     */
-    abortOnFail?: boolean
-    /**
-     * the signing options
-     */
-}
-
-/**
- * A simple interface that defines the MultiInvoke options
- */
-export type ContractInvocationMulti = {
-    /**
-     * the signing options
-     */
-    signers: Signer[]
-    /**
-     * The array of invocations
-     */
-    invocations: ContractInvocation[]
-    /**
-     * an optional fee to be added to the calculated system fee
-     */
-    extraSystemFee?: number
-    /**
-     * for the cases you need to calculate the system fee by yourself
-     */
-    systemFeeOverride?: number
-    /**
-     * an optional fee to be added to the calculated network fee
-     */
-    extraNetworkFee?: number,
-    /**
-     * for the cases you need to calculate the network fee by yourself
-     */
-    networkFeeOverride?: number
-}
-
-/**
  * A simple interface that defines the SignMessage payload, where version 1 is obsolete and version 2 is compatible with NeoFS
  */
 export type SignMessagePayload = {
@@ -191,7 +95,7 @@ export type SignedMessage = {
 /**
  * An adapter of SignClient to work easily with Neon Wallet
  */
-export default class WcSdk {
+export default class WcSdk implements Neo3Invoker {
     /**
      * The WalletConnect Library
      */

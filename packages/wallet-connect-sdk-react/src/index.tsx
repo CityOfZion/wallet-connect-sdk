@@ -2,14 +2,14 @@ import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, use
 import SignClient from "@walletconnect/sign-client";
 import {SessionTypes, SignClientTypes} from "@walletconnect/types";
 import WcSdk, {
-    ContractInvocationMulti,
     NetworkType,
     SignedMessage,
     SignMessagePayload,
     InvokeResult,
 } from "@cityofzion/wallet-connect-sdk-core";
+import { ContractInvocationMulti, Neo3Invoker } from '@cityofzion/neo3-invoker'
 
-interface IWalletConnectContext {
+interface IWalletConnectContext extends Neo3Invoker {
     /**
      * The WalletConnect Library
      */
@@ -59,91 +59,6 @@ interface IWalletConnectContext {
      * disconnects from the wallet
      */
     disconnect: () => Promise<void>
-
-    /**
-     * Sends an 'invokeFunction' request to the Wallet and it will communicate with the blockchain. It will consume gas and persist data to the blockchain.
-     *
-     * ```
-     * const invocations: ContractInvocation[] = [
-     *   {
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'getStream',
-     *     abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *     args: [
-     *       { type: 'Integer', value: 17 }
-     *     ]
-     *   },
-     *   {
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'transfer',
-     *     args: [
-     *       { type: 'Address', value: senderAddress },
-     *       { type: 'Address', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-     *       { type: 'Integer', value: 100000000 },
-     *       { type: 'Array', value: [] }
-     *     ]
-     *   }
-     * ]
-     *
-     * const signer: Signer[] = [
-     *   {
-     *     scopes: WitnessScope.Global
-     *   }
-     * ]
-     *
-     * const formattedRequest: ContractInvocationMulti = {
-     *   signer,
-     *   invocations
-     * }
-     * const resp = await invokeFunction(formattedRequest)
-     * ```
-     *
-     * @param params the contract invocation options
-     * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
-     */
-    invokeFunction: (params: ContractInvocationMulti) => Promise<string>
-
-    /**
-     * Sends a `testInvoke` request to the Wallet and it will communicate with the blockchain.
-     * It will not consume any gas but it will also not persist any data, this is often used to retrieve SmartContract information or check how much gas an invocation will cost.
-     * Also, the wallet might choose to not ask the user authorization for test invocations making them easy to use.
-     *
-     * ```
-     * const signers: Signer[] = [
-     *   {
-     *     scopes: WitnessScope.None
-     *   }
-     * ]
-     *
-     * const invocations: ContractInvocation[] = [
-     *   {
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'getStream',
-     *     abortOnFail: true, // if 'getStream' returns false the next invocation will not be made
-     *     args: [
-     *       { type: 'Integer', value: 17 }
-     *         ],
-     *   },
-     *   {
-     *     scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-     *     operation: 'balanceOf',
-     *     args: [
-     *       { type: 'Address', value: senderAddress }
-     *     ]
-     *   }
-     * ]
-     *
-     * const formattedRequest: ContractInvocationMulti = {
-     *   signers,
-     *   invocations
-     * }
-     * const resp = await testInvoke(formattedRequest)
-     * ```
-     *
-     * @param params the contract invocation options
-     * @return the call result promise
-     */
-    testInvoke: (params: ContractInvocationMulti) => Promise<InvokeResult>
 
     /**
      * Sends a `signMessage` request to the Wallet.
