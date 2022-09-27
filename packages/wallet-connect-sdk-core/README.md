@@ -20,11 +20,11 @@
 Install the dependencies on your application
 ### NPM
 ```
-npm i @cityofzion/wallet-connect-sdk-core@beta @walletconnect/sign-client@rc @walletconnect/types@rc
+npm i @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client@rc @walletconnect/types@rc
 ```
 ### YARN
 ```
-yarn add @cityofzion/wallet-connect-sdk-core@beta @walletconnect/sign-client@rc @walletconnect/types@rc
+yarn add @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client@rc @walletconnect/types@rc
 ```
 
 ## Setup
