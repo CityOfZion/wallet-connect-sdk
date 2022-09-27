@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-core",
+      "comment": "Add options to change the fees on invokeFunction",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-core"
+}

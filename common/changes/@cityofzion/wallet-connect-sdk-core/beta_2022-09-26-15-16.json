@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-core",
+      "comment": "Compatible with Neo3Invoker",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-core"
+}

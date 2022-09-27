@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-react",
+      "comment": "allow an optional scriptHash to be used to sign, if no account is provided the user selected account will be used",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-react"
+}

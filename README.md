@@ -1,11 +1,6 @@
 # WalletConnect SDK
-
-⚠ Warning: To stay compatible with the Wallets, all Dapps will need to upgrade. Read the [Migration Document](MIGRATION.md) to understand how and more important **when** to do it.
-
----
-
-A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built on
-top of [walletconnect](https://github.com/WalletConnect/walletconnect-monorepo).
+A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built to help the usage of
+[walletconnect](https://github.com/WalletConnect/walletconnect-monorepo) with NEO 3 Wallets.
 
 **WalletConnect integration is a secure solution for signing transactions sent to a blockchain, such as are needed when
 creating Decentralized Applications that require the user's account authentication. This SDK comes in handy to help on
@@ -56,7 +51,6 @@ on the [WC Core SDK](packages/wallet-connect-sdk-core/README.md).
 
 ## How to test my dApp?
 This SDK uses 
-[WalletConnect 2.0](https://docs.walletconnect.org/v/2.0/) protocol, you will need a Wallet application that works with
-it, if you plan to connect with the 
-[Neo blockchain](https://neo.org/) we recommend
-[Aero Web Wallet for testing](https://aero-dev.coz.io/).
+[WalletConnect 2.0](https://docs.walletconnect.org/v/2.0/) protocol and was designed to work on the NEO 3 blockchain.
+You will need a Wallet application that fits these requirements, we recommend
+[Aero Web Wallet](https://melanke.github.io/aero-beta/) for testing or [Neon Wallet](https://neonwallet.com/) for production.
