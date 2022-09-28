@@ -467,3 +467,5 @@ export default class WcSdk implements Neo3Invoker {
 }
 
 export type { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
+export type { WitnessScope } from '@cityofzion/neon-core/lib/tx'
+export * from "@cityofzion/neo3-invoker";
