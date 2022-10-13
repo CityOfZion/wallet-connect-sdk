@@ -1,7 +1,6 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
-import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
-import { WitnessScope } from '@cityofzion/neon-core/lib/tx'
+import { tx, rpc } from '@cityofzion/neon-core'
 import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer } from '@cityofzion/neo3-invoker'
 
 /**
@@ -327,7 +326,7 @@ export default class WcSdk implements Neo3Invoker {
      * @param params the contract invocation options
      * @return the call result promise
      */
-    async testInvoke (params: ContractInvocationMulti): Promise<InvokeResult> {
+    async testInvoke (params: ContractInvocationMulti): Promise<rpc.InvokeResult> {
         this.validateContractInvocationMulti(params)
 
         const request = {
@@ -337,7 +336,7 @@ export default class WcSdk implements Neo3Invoker {
             params
         }
 
-        const resp: InvokeResult | null = await this.signClient.request({
+        const resp: rpc.InvokeResult | null = await this.signClient.request({
             topic: this.session?.topic ?? '',
             chainId: this.getChainId() ?? '',
             request
@@ -410,7 +409,7 @@ export default class WcSdk implements Neo3Invoker {
 
         // verify signers
         request.signers.forEach((signer: Signer, i) => {
-            if (!(signer.scopes in WitnessScope)) {
+            if (!(signer.scopes in tx.WitnessScope)) {
                 throw new Error(`Invalid signature scopes: ${signer.scopes}`)
             }
 
