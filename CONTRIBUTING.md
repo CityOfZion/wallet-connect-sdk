@@ -32,3 +32,7 @@ rush change
 ```
 npm publish --tag beta
 ```
+
+## Depencencies are not installed?
+- remove the common/config/npm-shrinkwrap.json file
+- run `rush update`

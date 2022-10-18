@@ -8,8 +8,9 @@ import WcSdk, {
     InvokeResult,
 } from "@cityofzion/wallet-connect-sdk-core";
 import { ContractInvocationMulti, Neo3Invoker } from '@cityofzion/neo3-invoker'
+import { Neo3Signer } from '@cityofzion/neo3-signer'
 
-interface IWalletConnectContext extends Neo3Invoker {
+interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
     /**
      * The WalletConnect Library
      */

@@ -2,7 +2,8 @@ import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
 import { WitnessScope } from '@cityofzion/neon-core/lib/tx'
-import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer } from '@cityofzion/neo3-invoker'
+import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg } from '@cityofzion/neo3-invoker'
+import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -34,22 +35,6 @@ export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'H
  * A list of networks supported by wallets
  */
 export type NetworkType = typeof SUPPORTED_NETWORKS[number]
-/**
- * A list of methods supported by wallets
- */
-export type MethodType = typeof SUPPORTED_METHODS[number]
-/**
- * A list of types supported by wallets
- */
-export type ArgType = typeof SUPPORTED_ARG_TYPES[number]
-
-/**
- * An argument for a contract invocation.
- */
-export interface Argument {
-    type: ArgType,
-    value: string | number | boolean | Argument[]
-}
 
 export class WcSdkError extends Error {
     payload: unknown
@@ -60,42 +45,9 @@ export class WcSdkError extends Error {
 }
 
 /**
- * A simple interface that defines the SignMessage payload, where version 1 is obsolete and version 2 is compatible with NeoFS
- */
-export type SignMessagePayload = {
-    message: string,
-    version: number
-}
-
-/**
- * A simple interface that defines the Signed Message format
- */
-export type SignedMessage = {
-    /**
-     * signer's public key
-     */
-    publicKey: string
-
-    /**
-     * encrypted message
-     */
-    data: string
-
-    /**
-     * salt used to encrypt
-     */
-    salt: string
-
-    /**
-     * message hex
-     */
-    messageHex: string
-}
-
-/**
  * An adapter of SignClient to work easily with Neon Wallet
  */
-export default class WcSdk implements Neo3Invoker {
+export default class WcSdk implements Neo3Invoker, Neo3Signer {
     /**
      * The WalletConnect Library
      */
@@ -438,7 +390,7 @@ export default class WcSdk implements Neo3Invoker {
             request.invocations[i].scriptHash = (invocation.scriptHash.length === 42)
               ? invocation.scriptHash : `0x${invocation.scriptHash}`
 
-            invocation.args.forEach((arg: Argument) => {
+            invocation.args.forEach((arg: Arg) => {
                 this.objectValidation(
                   arg,
                   ['type', 'value']
@@ -454,7 +406,7 @@ export default class WcSdk implements Neo3Invoker {
         return true
     }
 
-    private objectValidation (object: Argument | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
+    private objectValidation (object: Arg | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
         const objectKeys = Object.keys(object)
 
         keys.forEach((req) => {
@@ -469,3 +421,4 @@ export default class WcSdk implements Neo3Invoker {
 export type { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
 export type { WitnessScope } from '@cityofzion/neon-core/lib/tx'
 export * from "@cityofzion/neo3-invoker";
+export * from "@cityofzion/neo3-signer";

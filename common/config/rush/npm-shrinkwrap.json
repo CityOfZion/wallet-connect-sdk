@@ -1257,12 +1257,17 @@
       "integrity": "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="
     },
     "@cityofzion/neo3-invoker": {
-      "version": "1.0.4",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.0.4.tgz",
-      "integrity": "sha512-N+peDiJSHcRdm6jPrIRdC/NO/k2jazwdcTH+RAEeeckmpxx9+fCNQE5zdfFfvCvinHnJ43eHyTHoymkt4mK2aQ==",
+      "version": "1.0.6",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.0.6.tgz",
+      "integrity": "sha512-ts7Lgl69YP5vr/Y+1f7lDeKoI8fLZQPBc7bhutBovbccjQyMrrfnDjG6F0PLEKp6oYu9YnZYqjCGz6o4qAqNBw==",
       "requires": {
         "@cityofzion/neon-core": "^5.2.0"
       }
+    },
+    "@cityofzion/neo3-signer": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.0.0.tgz",
+      "integrity": "sha512-jpaPVV+Hx8jhNYITu3rSiuiJfcUQGEBte27ZVJEvpjM8Me8JaEOQydyK6bh+unu6hjnAEIw75zMyG6DnmyvugQ=="
     },
     "@cityofzion/neon-core": {
       "version": "5.2.0",
@@ -2281,9 +2286,10 @@
     },
     "@rush-temp/wallet-connect-sdk-core": {
       "version": "file:projects/wallet-connect-sdk-core.tgz",
-      "integrity": "sha512-GobUvmZYRmsAyzpQHIp7z1XloFKYRZlhSfeU2bvBV9aSBOgRJlHCafjn52cBFVrY1Wkg2iTILvLwkHQAP1h1Gg==",
+      "integrity": "sha512-Rq/ivvp2OuSwwrpQo8wTHw4YhnQ0IHHX55l14tI6jFlDjKR3T7HiiBcu37hVqKmFGUed29s+UHjTj31xZO3WJA==",
       "requires": {
-        "@cityofzion/neo3-invoker": "1.0.4",
+        "@cityofzion/neo3-invoker": "1.0.6",
+        "@cityofzion/neo3-signer": "1.0.0",
         "@cityofzion/neon-core": "^5.0.0",
         "@walletconnect/sign-client": "2.0.0-rc.3",
         "@walletconnect/types": "2.0.0-rc.3",
@@ -2293,9 +2299,10 @@
     },
     "@rush-temp/wallet-connect-sdk-react": {
       "version": "file:projects/wallet-connect-sdk-react.tgz",
-      "integrity": "sha512-NsWpj+36Ti3jhWC2uUfYUWt7K05MYM3VN2gj9NSIsrkWGRyUxrD2HoCiQtTMRn1X6MEiOJphzsLkNFpMM8n+rQ==",
+      "integrity": "sha512-RS2F6NZfnRAYl6kJQl7RMXa8rHIpEfrXqknYhExNHfmH3niiejxBwZ9lpXZFybTAYkR0b+ccJrJBmJztd6uSGw==",
       "requires": {
-        "@cityofzion/neo3-invoker": "^1.0.4",
+        "@cityofzion/neo3-invoker": "1.0.6",
+        "@cityofzion/neo3-signer": "1.0.0",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.5.0",
         "@testing-library/user-event": "^7.2.1",
