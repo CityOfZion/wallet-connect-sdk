@@ -132,33 +132,40 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     }
 
     /**
-     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
+     * The difference between this method and `createConnection` is that this method will automatically open Neon connection website
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
-     * @param uriCallback An optional callback to handle the connection URI. The Neon website will open if no callback is provided
+     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
      */
-    async connect (network: NetworkType, uriCallback?: (uri: string) => void): Promise<SessionTypes.Struct> {
-        const { uri, approval } = await this.signClient.connect({
-            requiredNamespaces: {
-                [SUPPORTED_BLOCKCHAINS[0]]: {
-                    chains: [network],
-                    methods: [...SUPPORTED_METHODS],
-                    events: []
-                }
-            }
-        })
+    async connect(network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<SessionTypes.Struct> {
+        const { uri, approval } = await this.createConnection(network, methods)
 
         if (uri) {
             const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
-            if (uriCallback) {
-                uriCallback(uriAndWccv)
-            } else {
-                window.open(`https://neon.coz.io/connect?uri=${uriAndWccv}`, '_blank')?.focus()
-            }
+            window.open(`https://neon.coz.io/connect?uri=${uriAndWccv}`, '_blank')?.focus()
         }
 
         this.session = await approval()
 
         return this.session
+    }
+
+    /**
+     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     * The difference between this method and `connect` is that this method will not open Neon connection website, you will need to open it manually and await `approval` Promise to finish the connection.
+     * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
+     */
+    async createConnection (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
+        return await this.signClient.connect({
+            requiredNamespaces: {
+                [SUPPORTED_BLOCKCHAINS[0]]: {
+                    chains: [network],
+                    methods,
+                    events: []
+                }
+            }
+        })
     }
 
     /**

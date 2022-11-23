@@ -5,8 +5,8 @@ import WcSdk, {
     NetworkType,
     SignedMessage,
     SignMessagePayload,
-    InvokeResult,
-} from "@cityofzion/wallet-connect-sdk-core";
+    InvokeResult, SUPPORTED_METHODS,
+} from '@cityofzion/wallet-connect-sdk-core'
 import { ContractInvocationMulti, Neo3Invoker } from '@cityofzion/neo3-invoker'
 import { Neo3Signer } from '@cityofzion/neo3-signer'
 
@@ -51,10 +51,20 @@ interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
     manageSession: () => void
 
     /**
-     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
+     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
+     * The difference between this method and `createConnection` is that this method will automatically open Neon connection website and save the session state
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
      */
-    connect: (network: NetworkType, uriCallback?: (uri: string) => void) => Promise<void>
+    connect: (network: NetworkType, methods?: string[]) => Promise<void>
+
+    /**
+     * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
+     * The difference between this method and `connect` is that this method will not open Neon connection website and will not save the session state
+     * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
+     */
+    createConnection: (network: NetworkType, methods?: string[]) => Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}>
 
     /**
      * disconnects from the wallet
@@ -129,8 +139,12 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         loadSession()
     }, [manageDisconnect, loadSession])
 
-    const connect = useCallback(async (network: NetworkType, uriCallback?: (uri: string) => void): Promise<void> => {
-        setSession(await getSdkOrError().connect(network, uriCallback))
+    const connect = useCallback(async (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<void> => {
+        setSession(await getSdkOrError().connect(network, methods))
+    }, [getSdkOrError])
+
+    const createConnection = useCallback(async (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> => {
+        return await getSdkOrError().createConnection(network, methods)
     }, [getSdkOrError])
 
     const invokeFunction = useCallback(async (params: ContractInvocationMulti): Promise<string> => {
@@ -182,6 +196,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         loadSession,
         manageSession,
         connect,
+        createConnection,
         disconnect,
         invokeFunction,
         testInvoke,
