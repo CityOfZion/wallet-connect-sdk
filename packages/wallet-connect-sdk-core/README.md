@@ -77,10 +77,20 @@ if (!wcSdk.isConnected()) {
   console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
 ```
-By default, the `connect` method will open a new browser tab to help the user to connect with it's wallet, but there is
-an optional callback if you prefer to handle the connection URI by yourself:
+By default, the `connect` method will ask authorization for all methods, but you can be more specific on which methods you want to authorize:
+```js
+if (!wcSdk.isConnected()) {
+  await wcSdk.connect('neo3:testnet', ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage'])
+  console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
+}
+```
+The `connect` method will open a new browser tab to help the user to connect with its wallet, but instead, you can use
+`createConnection` to choose a different behavior, like opening a modal or another website.
 ```ts
-await wcSdk.connect('neo3:testnet', (uri) => console.log(uri))
+const { uri, approval } = await wcSdk.createConnection('neo3:testnet')
+window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus() // do whatever you want with the uri
+await approval()
+console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 ```
 
 ### Disconnect

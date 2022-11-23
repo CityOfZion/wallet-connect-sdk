@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-core",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "Wallet-Connect-SDK Core functionality",
   "keywords": [
     "wallet",
