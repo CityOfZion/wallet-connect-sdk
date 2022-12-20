@@ -1,7 +1,6 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
-import { WitnessScope } from '@cityofzion/neon-core/lib/tx'
 import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg } from '@cityofzion/neo3-invoker'
 import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
@@ -209,7 +208,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      *
      * const signer: Signer[] = [
      *   {
-     *     scopes: WitnessScope.Global
+     *     scopes: 'Global'
      *   }
      * ]
      *
@@ -254,7 +253,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * ```
      * const signers: Signer[] = [
      *   {
-     *     scopes: WitnessScope.None
+     *     scopes: 'None'
      *   }
      * ]
      *
@@ -369,10 +368,6 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
 
         // verify signers
         request.signers.forEach((signer: Signer, i) => {
-            if (!(signer.scopes in WitnessScope)) {
-                throw new Error(`Invalid signature scopes: ${signer.scopes}`)
-            }
-
             // format scripthashes
             if (signer.allowedContracts && signer.allowedContracts.length > 0) {
                 request.signers[i].allowedContracts = signer.allowedContracts.map((scriptHash) => {
@@ -426,6 +421,5 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
 }
 
 export type { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
-export type { WitnessScope } from '@cityofzion/neon-core/lib/tx'
 export * from "@cityofzion/neo3-invoker";
 export * from "@cityofzion/neo3-signer";

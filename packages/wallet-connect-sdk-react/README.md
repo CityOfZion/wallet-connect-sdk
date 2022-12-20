@@ -131,7 +131,7 @@ On the example below we are invoking the `transfer` method of the [GAS](https://
 
 Check it out:
 ```ts
-import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
+import {useWalletConnect} from "@cityofzion/wallet-connect-sdk-react";
 // ...
 const resp = await wcSdk.invokeFunction({
     invocations: [{
@@ -145,7 +145,7 @@ const resp = await wcSdk.invokeFunction({
         ]
     }],
     signers: [{
-        scope: WitnessScope.Global
+        scopes: 'Global'
     }]
 })
 ```
@@ -157,14 +157,14 @@ otherwise the wallet will use the user's selected account to sign.
 
 Here is a more advanced example:
 ```ts
-import WcSdk, { WitnessScope } from '@cityofzion/wallet-connect-sdk-core'
+import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 // ...
 const resp = await wcSdk.invokeFunction({
     invocations: [{
         // ...
     }],
     signers: [{
-        scope: WitnessScope.Global,
+        scopes: 'Global',
         account: '857a247939db5c7cd3a7bb14791280c09e824bea', // signer account scripthash
     }],
     extraSystemFee: 1000000, // minimum system fee + 1 GAS
@@ -181,7 +181,7 @@ Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
 ```ts
-import {useWalletConnect, WitnessScope} from "@cityofzion/wallet-connect-sdk-react";
+import {useWalletConnect} from "@cityofzion/wallet-connect-sdk-react";
 // ...
 const resp = await wcSdk.testInvoke({
     invocations: [{
@@ -192,7 +192,7 @@ const resp = await wcSdk.testInvoke({
         ]
     }],
     signers: [{
-        scopes: WitnessScope.Global
+        scopes: 'Global'
     }]
 })
 
