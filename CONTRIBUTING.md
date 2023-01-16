@@ -20,9 +20,9 @@ rush rebuild
 
 ## Before commit
 Build the project and run:
-    ```sh
-    rush change
-    ```
+```sh
+rush change
+```
 
 ## Publish
 - Build the project
