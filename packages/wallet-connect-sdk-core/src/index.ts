@@ -1,7 +1,7 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
-import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg } from '@cityofzion/neo3-invoker'
+import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
 /**
@@ -23,7 +23,8 @@ export const SUPPORTED_METHODS = [
     'invokeFunction',
     'testInvoke',
     'signMessage',
-    'verifyMessage'
+    'verifyMessage',
+    "traverseIterator"
 ] as const
 /**
  * A list of argument types supported by wallets
@@ -75,6 +76,32 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     isConnected (): boolean {
         return !!this.session
     }
+
+    
+  async traverseIterator(
+    sessionId: string,
+    iteratorId: string,
+    count: number
+  ): Promise<StackItemJson[]> {
+    const request = {
+      id: 1,
+      jsonrpc: "2.0",
+      method: "traverseIterator",
+      params: [sessionId, iteratorId, count],
+    };
+
+    const resp = await this.signClient.request({
+      topic: this.session?.topic ?? "",
+      chainId: this.getChainId() ?? "",
+      request,
+    });
+
+    if (!resp) {
+      throw new WcSdkError(resp);
+    }
+
+    return resp as StackItemJson[];
+  }
 
     /**
      * returns the chain id of the connected wallet

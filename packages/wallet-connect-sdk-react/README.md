@@ -209,6 +209,21 @@ const mySignedMessage = await this.wcSdk.signMessage({ message: 'My message', ve
 const valid = await wcSdk.verifyMessage(mySignedMessage)
 ```
 
+### Traverse iterator
+If you receive an iterator and you need to retrieve the items, you can use this method.
+
+Obs: The result is the first count of data traversed in the Iterator, and follow-up requests will continue traversing from count + 1.
+
+```ts
+// 1) sign a message
+const items = await this.wcSdk.traverseIterator(
+    "session id", // Session id returned from your rpc
+    "iterator id", // iterator id returned from your rpc
+    "count" // Number of items you want to retrieve
+)
+```
+
+
 ## Wallet Connect Registry
 After going to production, we really recommend you to register your dApp on the [Wallet Connect website](https://walletconnect.com/).
 Differently than the `Project`, which is necessary to use Wallet Connect services, the `Registry` is not mandatory but

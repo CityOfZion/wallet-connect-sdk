@@ -7,7 +7,7 @@ import WcSdk, {
     SignMessagePayload,
     InvokeResult, SUPPORTED_METHODS,
 } from '@cityofzion/wallet-connect-sdk-core'
-import { ContractInvocationMulti, Neo3Invoker } from '@cityofzion/neo3-invoker'
+import { ContractInvocationMulti, Neo3Invoker, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer } from '@cityofzion/neo3-signer'
 
 interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
@@ -163,6 +163,10 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         return await getSdkOrError().verifyMessage(params)
     },[getSdkOrError])
 
+    const traverseIterator = useCallback(async (sessionId: string, iteratorId: string, count:number): Promise<StackItemJson[]> => {
+        return await getSdkOrError().traverseIterator(sessionId, iteratorId, count)
+    },[getSdkOrError])
+
     useEffect(() => {
         (async () => {
             if (!setSignClient || !options || initRef.current) return
@@ -199,6 +203,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         createConnection,
         disconnect,
         invokeFunction,
+        traverseIterator,
         testInvoke,
         signMessage,
         verifyMessage,
