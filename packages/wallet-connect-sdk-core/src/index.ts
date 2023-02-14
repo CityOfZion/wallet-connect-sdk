@@ -77,31 +77,38 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         return !!this.session
     }
 
-    
-  async traverseIterator(
-    sessionId: string,
-    iteratorId: string,
-    count: number
-  ): Promise<StackItemJson[]> {
-    const request = {
-      id: 1,
-      jsonrpc: "2.0",
-      method: "traverseIterator",
-      params: [sessionId, iteratorId, count],
-    };
+    /**
+    * Call the method traverseiterator on the rpc. This method is used to get the result of an iterator.
+    * The result is the first count of data traversed in the Iterator, and follow-up requests will continue traversing from count + 1
+    * @param sessionId the session id of the iterator
+    * @param iteratorId the iterator id
+    * @param count the number of items to retrieve
+    * @return the call result promise
+    */
+    async traverseIterator(
+        sessionId: string,
+        iteratorId: string,
+        count: number
+    ): Promise<StackItemJson[]> {
+        const request = {
+        id: 1,
+        jsonrpc: "2.0",
+        method: "traverseIterator",
+        params: [sessionId, iteratorId, count],
+        };
 
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? "",
-      chainId: this.getChainId() ?? "",
-      request,
-    });
+        const resp = await this.signClient.request({
+        topic: this.session?.topic ?? "",
+        chainId: this.getChainId() ?? "",
+        request,
+        });
 
-    if (!resp) {
-      throw new WcSdkError(resp);
+        if (!resp) {
+        throw new WcSdkError(resp);
+        }
+
+        return resp as StackItemJson[];
     }
-
-    return resp as StackItemJson[];
-  }
 
     /**
      * returns the chain id of the connected wallet
