@@ -24,7 +24,7 @@ export const SUPPORTED_METHODS = [
     'testInvoke',
     'signMessage',
     'verifyMessage',
-    "traverseIterator"
+    // "traverseIterator"
 ] as const
 /**
  * A list of argument types supported by wallets
