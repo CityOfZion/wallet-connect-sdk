@@ -5,7 +5,9 @@ import WcSdk, {
     NetworkType,
     SignedMessage,
     SignMessagePayload,
-    InvokeResult, SUPPORTED_METHODS,
+    InvokeResult,
+    WalletInfo,
+    DEFAULT_METHODS,
 } from '@cityofzion/wallet-connect-sdk-core'
 import { ContractInvocationMulti, Neo3Invoker, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer } from '@cityofzion/neo3-signer'
@@ -86,6 +88,12 @@ interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
      * @return true if the signedMessage is acknowledged by the account
      */
     verifyMessage: (params: SignedMessage) => Promise<boolean>
+
+    /**
+     * Retrieves information about the user's wallet
+     * @return wallet information
+     */
+    getWalletInfo: () => Promise<WalletInfo>;
 }
 
 export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
@@ -139,11 +147,11 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         loadSession()
     }, [manageDisconnect, loadSession])
 
-    const connect = useCallback(async (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<void> => {
+    const connect = useCallback(async (network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<void> => {
         setSession(await getSdkOrError().connect(network, methods))
     }, [getSdkOrError])
 
-    const createConnection = useCallback(async (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> => {
+    const createConnection = useCallback(async (network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> => {
         return await getSdkOrError().createConnection(network, methods)
     }, [getSdkOrError])
 
@@ -165,6 +173,10 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
 
     const traverseIterator = useCallback(async (sessionId: string, iteratorId: string, count:number): Promise<StackItemJson[]> => {
         return await getSdkOrError().traverseIterator(sessionId, iteratorId, count)
+    },[getSdkOrError])
+
+    const getWalletInfo = useCallback(async (): Promise<WalletInfo> => {
+        return await getSdkOrError().getWalletInfo()
     },[getSdkOrError])
 
     useEffect(() => {
@@ -204,6 +216,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         disconnect,
         invokeFunction,
         traverseIterator,
+        getWalletInfo,
         testInvoke,
         signMessage,
         verifyMessage,
