@@ -19,12 +19,11 @@ export const SUPPORTED_NETWORKS = ['neo3:private', 'neo3:testnet', 'neo3:mainnet
 /**
  * A list of methods supported by wallets
  */
-export const SUPPORTED_METHODS = [
+export const DEFAULT_METHODS = [
     'invokeFunction',
     'testInvoke',
     'signMessage',
     'verifyMessage',
-    // "traverseIterator"
 ] as const
 /**
  * A list of argument types supported by wallets
@@ -42,6 +41,10 @@ export class WcSdkError extends Error {
         super()
         this.payload = payload
     }
+}
+
+export type WalletInfo = {
+    isLedger: boolean
 }
 
 /**
@@ -75,39 +78,6 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      */
     isConnected (): boolean {
         return !!this.session
-    }
-
-    /**
-    * Call the method traverseiterator on the rpc. This method is used to get the result of an iterator.
-    * The result is the first count of data traversed in the Iterator, and follow-up requests will continue traversing from count + 1
-    * @param sessionId the session id of the iterator
-    * @param iteratorId the iterator id
-    * @param count the number of items to retrieve
-    * @return the call result promise
-    */
-    async traverseIterator(
-        sessionId: string,
-        iteratorId: string,
-        count: number
-    ): Promise<StackItemJson[]> {
-        const request = {
-        id: 1,
-        jsonrpc: "2.0",
-        method: "traverseIterator",
-        params: [sessionId, iteratorId, count],
-        };
-
-        const resp = await this.signClient.request({
-        topic: this.session?.topic ?? "",
-        chainId: this.getChainId() ?? "",
-        request,
-        });
-
-        if (!resp) {
-        throw new WcSdkError(resp);
-        }
-
-        return resp as StackItemJson[];
     }
 
     /**
@@ -170,7 +140,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
      */
-    async connect(network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<SessionTypes.Struct> {
+    async connect(network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<SessionTypes.Struct> {
         const { uri, approval } = await this.createConnection(network, methods)
 
         if (uri) {
@@ -189,7 +159,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
      */
-    async createConnection (network: NetworkType, methods: string[] = [...SUPPORTED_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
+    async createConnection (network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
         return await this.signClient.connect({
             requiredNamespaces: {
                 [SUPPORTED_BLOCKCHAINS[0]]: {
@@ -394,6 +364,64 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         }
 
         return resp as boolean
+    }
+
+    /**
+     * Call the method traverseiterator on the rpc. This method is used to get the result of an iterator.
+     * The result is the first count of data traversed in the Iterator, and follow-up requests will continue traversing from count + 1
+     * @param sessionId the session id of the iterator
+     * @param iteratorId the iterator id
+     * @param count the number of items to retrieve
+     * @return the call result promise
+     */
+    async traverseIterator(
+        sessionId: string,
+        iteratorId: string,
+        count: number
+    ): Promise<StackItemJson[]> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "traverseIterator",
+            params: [sessionId, iteratorId, count],
+        };
+
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request,
+        });
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as StackItemJson[];
+    }
+
+    /**
+     * Retrieves information about the user's wallet
+     * @return wallet information
+     */
+    async getWalletInfo(): Promise<WalletInfo> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "getWalletInfo",
+            params: [],
+        };
+
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request,
+        });
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as WalletInfo;
     }
 
     private validateContractInvocationMulti (request: ContractInvocationMulti): boolean {
