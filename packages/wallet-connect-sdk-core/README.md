@@ -133,10 +133,6 @@ const resp = await wcSdk.invokeFunction({
     }]
 })
 ```
-Additional root options:
-- `systemFeeOverride`: to choose a specific amount as system fee OR `extraSystemFee` if you simply want to add more value to the minimum system fee.
-- `networkFeeOverride`: to choose a specific amount as network fee OR `extraNetworkFee` if you simply want to add more value to the minimum network fee.
-
 Options for each `signer`:
 - `scopes`: to specify which scopes should be used to sign the transaction, [learn more](https://developers.neo.org/docs/n3/foundation/Transactions#scopes). This property accepts them as a string as seen on the examples, or as a number, which can be imported from `WitnessScope` of `neon-js`. 
 - `account`: to specify which account's scripthash should be used to sign the transaction, otherwise the wallet will use the user's selected account to sign.
@@ -145,10 +141,14 @@ Options for each `signer`:
 - `rules`: to specify which rules should be used to sign the transaction, [learn more](https://developers.neo.org/docs/n3/foundation/Transactions#witnessrule).
 
 Options for each `invocation`:
-- `scriptHash`: The SmartContract ScriptHash
-- `operation`: The SmartContract's method name
-- `args`: The parameters to be sent to the method, as explained above
-- `abortOnFail`: When requesting multiple invocations, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
+- `scriptHash`: the SmartContract ScriptHash
+- `operation`: the SmartContract's method name
+- `args`: the parameters to be sent to the method, as explained above
+- `abortOnFail`: when requesting multiple invocations, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
+
+Additional root options:
+- `systemFeeOverride`: to choose a specific amount as system fee OR `extraSystemFee` if you simply want to add more value to the minimum system fee.
+- `networkFeeOverride`: to choose a specific amount as network fee OR `extraNetworkFee` if you simply want to add more value to the minimum network fee.
 
 Here is a more advanced example:
 ```ts
