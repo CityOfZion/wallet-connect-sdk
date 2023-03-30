@@ -429,9 +429,9 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         this.objectValidation(request, ['signers', 'invocations'])
 
         // verify signers
-        request.signers.forEach((signer: Signer, i) => {
+        request.signers?.forEach((signer: Signer, i) => {
             // format scripthashes
-            if (signer.allowedContracts && signer.allowedContracts.length > 0) {
+            if (signer.allowedContracts && signer.allowedContracts.length > 0 && request.signers) {
                 request.signers[i].allowedContracts = signer.allowedContracts.map((scriptHash) => {
                     if (!(scriptHash.length === 42 || scriptHash.length === 40)) {
                         throw new Error(`Invalid Script Hash (allowed contract): ${scriptHash}`)
@@ -444,20 +444,20 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         // verify invocations
         request.invocations.forEach((invocation: ContractInvocation, i) => {
             this.objectValidation(
-              invocation,
-              ['scriptHash', 'operation', 'args']
+                invocation,
+                ['scriptHash', 'operation', 'args']
             )
 
             if (!(invocation.scriptHash.length === 42 || invocation.scriptHash.length === 40)) {
                 throw new Error(`Invalid Script Hash: ${invocation.scriptHash}`)
             }
             request.invocations[i].scriptHash = (invocation.scriptHash.length === 42)
-              ? invocation.scriptHash : `0x${invocation.scriptHash}`
+                ? invocation.scriptHash : `0x${invocation.scriptHash}`
 
-            invocation.args.forEach((arg: Arg) => {
+            invocation.args?.forEach((arg: Arg) => {
                 this.objectValidation(
-                  arg,
-                  ['type', 'value']
+                    arg,
+                    ['type', 'value']
                 )
 
                 if (SUPPORTED_ARG_TYPES.includes(arg.type)) {
