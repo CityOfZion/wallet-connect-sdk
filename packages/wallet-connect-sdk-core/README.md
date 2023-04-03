@@ -200,26 +200,45 @@ const resp = await wcSdk.testInvoke({
 ### Sign and Verify message
 ```ts
 // 1) sign a message
-const mySignedMessage = await this.wcSdk.signMessage({ message: 'My message', version: 2 })
+const mySignedMessage = await wcSdk.signMessage({ message: 'My message', version: 2 })
 
 // 2) store these information somewhere
 
 // 3) check later if the message was signed by this account
-const valid = await this.wcSdk.verifyMessage(mySignedMessage)
+const valid = await wcSdk.verifyMessage(mySignedMessage)
 ```
 
 ### Traverse iterator
-If you receive an iterator and you need to retrieve the items, you can use this method.
+The traverseIterator method allows you to traverse an iterator returned by a SmartContract method.
 
-Obs: The result is the first count of data traversed in the Iterator, and follow-up requests will continue traversing from count + 1.
+To use this, your connection must be established with the `traverseIterator` method added.
 
+On the following example we are requesting all default methods and also the traverseIterator method.
 ```ts
-// 1) sign a message
-const items = await this.wcSdk.traverseIterator(
-    "session id", // Session id returned from your rpc
-    "iterator id", // iterator id returned from your rpc
-    "count" // Number of items you want to retrieve
-)
+import WcSdk, { DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-core'
+//...
+await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'traverseIterator'])
+```
+
+On the following example we are getting all the candidates from the
+[NEO token](https://dora.coz.io/contract/neo3/mainnet/ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5) and then traversing the
+iterator to get the first 10 items.
+```ts
+const resp = await wcSdk.testInvoke({
+    invocations: [
+        {
+            operation: "getAllCandidates",
+            scriptHash: "ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5", // neo token
+            args: [],
+        },
+    ],
+    signers: [{ scopes: "CalledByEntry" }],
+});
+
+const sessionId = resp.session as string;
+const iteratorId = resp.stack[0].id as string;
+
+const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 ```
 
 ## Wallet Connect Registry
