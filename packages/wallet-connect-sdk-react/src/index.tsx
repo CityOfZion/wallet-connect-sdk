@@ -8,6 +8,7 @@ import WcSdk, {
     InvokeResult,
     WalletInfo,
     DEFAULT_METHODS,
+    NetworkVersion,
 } from '@cityofzion/wallet-connect-sdk-core'
 import { ContractInvocationMulti, Neo3Invoker, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer } from '@cityofzion/neo3-signer'
@@ -94,6 +95,12 @@ interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
      * @return wallet information
      */
     getWalletInfo: () => Promise<WalletInfo>;
+
+    /**
+     * Retrieves information about the connection network
+     * @return network information
+     */
+    getNetworkVersion: () => Promise<NetworkVersion>
 }
 
 export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
@@ -179,6 +186,10 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         return await getSdkOrError().getWalletInfo()
     },[getSdkOrError])
 
+    const getNetworkVersion = useCallback(async (): Promise<NetworkVersion> => {
+        return await getSdkOrError().getNetworkVersion()
+    },[getSdkOrError])
+
     useEffect(() => {
         (async () => {
             if (!setSignClient || !options || initRef.current) return
@@ -217,9 +228,11 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         invokeFunction,
         traverseIterator,
         getWalletInfo,
+        getNetworkVersion,
         testInvoke,
         signMessage,
         verifyMessage,
+        
     }
 
     return (

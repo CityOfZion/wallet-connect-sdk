@@ -1,6 +1,6 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
-import { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
+import { InvokeResult, GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
 import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
@@ -45,6 +45,10 @@ export class WcSdkError extends Error {
 
 export type WalletInfo = {
     isLedger: boolean
+}
+
+export type NetworkVersion = GetVersionResult & {
+    rpcAddress: string
 }
 
 /**
@@ -422,6 +426,31 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         }
 
         return resp as WalletInfo;
+    }
+
+    /**
+     * Retrieves information about the connection network
+     * @return network information
+     */
+    async getNetworkVersion(): Promise<NetworkVersion> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "getNetworkVersion",
+            params: [],
+        };
+
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request,
+        });
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as NetworkVersion;
     }
 
     private validateContractInvocationMulti (request: ContractInvocationMulti): boolean {
