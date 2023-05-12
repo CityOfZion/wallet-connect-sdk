@@ -2,13 +2,13 @@ import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, use
 import SignClient from "@walletconnect/sign-client";
 import {SessionTypes, SignClientTypes} from "@walletconnect/types";
 import WcSdk, {
-    NetworkType,
     SignedMessage,
     SignMessagePayload,
     InvokeResult,
     WalletInfo,
     DEFAULT_METHODS,
     NetworkVersion,
+    NetworkType
 } from '@cityofzion/wallet-connect-sdk-core'
 import { ContractInvocationMulti, Neo3Invoker, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer } from '@cityofzion/neo3-signer'
