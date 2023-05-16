@@ -4,27 +4,47 @@ import { InvokeResult, GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
 import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
+export type Blockchain = "neo3"
+
+export type Chain = "private" | "testnet" | "mainnet"
+
+export type NetworkType = `${Blockchain}:${Chain}`
+
+export type Method = 'invokeFunction'| 'testInvoke'| 'signMessage'| 'verifyMessage'| 'traverseIterator'| 'getWalletInfo' | "getNetworkVersion"
+
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
  */
-export const COMPATIBILITY_VERSION = 2
+export const COMPATIBILITY_VERSION: number = 2
 /**
  * A list of blockchains supported by wallets
  */
-export const SUPPORTED_BLOCKCHAINS = ['neo3'] as const
+export const SUPPORTED_BLOCKCHAINS: Blockchain[] = ['neo3']
+
+/**
+ * The default blockchain supported by wallets
+ */
+export const DEFAULT_BLOCKCHAIN: Blockchain = 'neo3'
 /**
  * A list of networks supported by wallets
  */
-export const SUPPORTED_NETWORKS = ['neo3:private', 'neo3:testnet', 'neo3:mainnet'] as const
+export const SUPPORTED_NETWORKS: NetworkType[] = ['neo3:private', 'neo3:testnet', 'neo3:mainnet']
+
 /**
  * A list of methods supported by wallets
  */
-export const DEFAULT_METHODS = [
+export const DEFAULT_METHODS: Method[] = [
     'invokeFunction',
     'testInvoke',
     'signMessage',
     'verifyMessage',
-] as const
+]
+
+/**
+ * A list of auto accept methods supported by wallets
+ */
+export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke']
+
 /**
  * A list of argument types supported by wallets
  */
@@ -33,7 +53,6 @@ export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'H
 /**
  * A list of networks supported by wallets
  */
-export type NetworkType = typeof SUPPORTED_NETWORKS[number]
 
 export class WcSdkError extends Error {
     payload: unknown
