@@ -1,15 +1,15 @@
-import { SignClientTypes, SessionTypes } from '@walletconnect/types'
+import WalletConnectTypes from '@walletconnect/types'
 import { JsonRpcResult, ErrorResponse, JsonRpcError } from '@walletconnect/jsonrpc-utils'
 import { Chain, Method } from '@cityofzion/wallet-connect-sdk-core'
 import { WalletConnectNeo3Adapter } from './adapter'
 
-export type TSession = SessionTypes.Struct & {
+export type TSession = WalletConnectTypes.SessionTypes.Struct & {
   approvalUnix?: number
 }
 
-export type TSessionProposal = SignClientTypes.EventArguments['session_proposal']
+export type TSessionProposal = WalletConnectTypes.SignClientTypes.EventArguments['session_proposal']
 
-export type TSessionRequest = SignClientTypes.EventArguments['session_request']
+export type TSessionRequest = WalletConnectTypes.SignClientTypes.EventArguments['session_request']
 
 export enum EStatus {
   ERROR = 'ERROR',
@@ -27,7 +27,7 @@ export type TEvents = {
 export type TOptions = {
   autoAcceptMethods?: (Method | (string & Record<never, never>))[]
   methods?: (Method | (string & Record<never, never>))[]
-  clientOptions: SignClientTypes.Options
+  clientOptions: WalletConnectTypes.SignClientTypes.Options
   adapter?: WalletConnectNeo3Adapter
 }
 
@@ -46,11 +46,11 @@ export type TRequestResult = JsonRpcResult
 
 export type TRequestError = JsonRpcError
 
-export type TNamespaces = SessionTypes.Namespaces
+export type TNamespaces = WalletConnectTypes.SessionTypes.Namespaces
 
 export type TAdapterMethodParam = {
   request: TSessionRequest
   session: TSession
 }
 
-export * from '@cityofzion/wallet-connect-sdk-core'
+export { WalletConnectTypes }
