@@ -242,6 +242,62 @@ const iteratorId = resp.stack[0].id as string;
 const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 ```
 
+### Get Wallet Info
+To get information about the wallet, such as if it is a Ledger wallet, you can use the `getWalletInfo` method.
+
+To use this, your connection must be established with the `getWalletInfo` method added.
+
+On the following example we are requesting all default methods and also the getWalletInfo method.
+```ts
+import { useWalletConnect, DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-react'
+//...
+await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'getWalletInfo'])
+```
+
+On the following example we are getting the wallet info, which is returning `false` because it is not a Ledger wallet.
+```ts
+const walletInfo = await wcSdk.getWalletInfo()
+console.log(walletInfo) // { isLedger: false }
+```
+
+### Get Network Version
+To get the network version, you can use the `getNetworkVersion` method.
+
+To use this, your connection must be established with the `getNetworkVersion` method added.
+
+On the following example we are requesting all default methods and also the getNetworkVersion method.
+```ts
+import { useWalletConnect, DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-react'
+//...
+await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'getNetworkVersion'])
+```
+
+On the following example we are getting the network version.
+```ts
+const networkVersion = await wcSdk.getNetworkVersion()
+```
+It will return an object like this:
+```json
+{
+  "rpcAddress": "https://mainnet2.neo.coz.io:443",
+  "tcpport": 10333,
+  "wsport": 10334,
+  "nonce": 1708007624,
+  "useragent": "/Neo:3.5.0/",
+  "protocol": {
+    "addressversion": 53,
+    "network": 860833102,
+    "validatorscount": 7,
+    "msperblock": 15000,
+    "maxtraceableblocks": 2102400,
+    "maxvaliduntilblockincrement": 5760,
+    "maxtransactionsperblock": 512,
+    "memorypoolmaxtransactions": 50000,
+    "initialgasdistribution": 5200000000000000
+  }
+}
+```
+
 
 ## Wallet Connect Registry
 After going to production, we really recommend you to register your dApp on the [Wallet Connect website](https://walletconnect.com/).
