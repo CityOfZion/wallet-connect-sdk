@@ -1,5 +1,5 @@
 import { NeonSigner } from '@cityofzion/neon-signer'
-import Neon from '@cityofzion/neon-core'
+import * as Neon from '@cityofzion/neon-core'
 import { TAdapterMethodParam } from './types'
 import { NeonInvoker } from '@cityofzion/neon-invoker'
 import {
