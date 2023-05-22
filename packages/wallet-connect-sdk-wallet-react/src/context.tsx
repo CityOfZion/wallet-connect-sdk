@@ -19,7 +19,7 @@ export const WalletConnectWalletContext = React.createContext({} as IWalletConne
  * @param children React children
  * @param options.clientOptions SignClient Startup options of the original WalletConnect library
  * @param options.adapter [adapter] The initial adapter
- * @param options.methods [methods=DEFAULT_METHODS] An array of valid methods used on your application
+ * @param options.methods [methods] An array of valid methods used on your application
  * @param options.autoAcceptMethods [autoAcceptMethods=DEFAULT_AUTO_ACCEPT_METHODS] An array of valid auto accepted methods used on your application
  */
 export const WalletConnectWalletProvider = ({ children, options }: TWalletConnectWalletProps) => {

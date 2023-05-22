@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
-  "version": "2.3.5",
+  "version": "2.4.0",
   "description": "Wallet-Connect-SDK wallet-side core functionality",
   "keywords": [
     "wallet",
@@ -35,7 +35,7 @@
     "@cityofzion/neon-core": "5.4.0",
     "@cityofzion/neon-invoker": "1.4.0",
     "@cityofzion/neon-signer": "1.0.1",
-    "@cityofzion/wallet-connect-sdk-core": "2.3.5",
+    "@cityofzion/wallet-connect-sdk-core": "2.4.0",
     "@walletconnect/sign-client": "2.7.3",
     "@walletconnect/types": "2.7.3",
     "moment": "^2.29.4"

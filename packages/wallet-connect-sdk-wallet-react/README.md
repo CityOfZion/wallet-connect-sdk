@@ -95,6 +95,7 @@ import { WalletConnectWalletProvider, TOptions } from '@cityofzion/wallet-connec
 
 const options: TOptions = {
   clientOptions: {}, // SignClient options
+  methods: ['methods', 'to', 'authorize'],
   adapter: new YourAdapter(),
 }
 
@@ -122,26 +123,6 @@ export default function MyComponent() {
 }
 ```
 
-By default, the sdk will ask authorization for the default methods, but you can be more specific on which methods you want to authorize:
-
-```ts
-import { WalletConnectWalletProvider, TOptions } from '@cityofzion/wallet-connect-sdk-wallet-react'
-
-const options: TOptions = {
-  clientOptions: {}, // SignClient options
-  methods: ['your', 'custom', 'methods'],
-}
-
-ReactDOM.render(
-  <>
-    <WalletConnectWalletProvider option={options}>
-      <App />
-    </WalletConnectWalletProvider>
-  </>,
-  document.getElementById('root')
-)
-```
-
 By default, the sdk won't ask authorization for some request methods, you are able to switch what methods it will happens:
 
 ```ts
@@ -149,6 +130,7 @@ import { WalletConnectWalletProvider, TOptions } from '@cityofzion/wallet-connec
 
 const options: TOptions = {
   clientOptions: {}, // SignClient options
+  methods: ['methods', 'to', 'authorize'],
   autoAcceptMethods: ['your', 'auto', 'accept', 'methods'],
 }
 
