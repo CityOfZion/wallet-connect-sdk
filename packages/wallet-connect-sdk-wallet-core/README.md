@@ -71,6 +71,7 @@ Passing in the sdk constructor.
 ```ts
 const sdk = new WcWalletSDK({
   clientOptions: {}, // SignClient options
+  methods: ['methods', 'to', 'authorize'],
   adapter: new YourAdapter(),
 })
 ```
@@ -80,18 +81,10 @@ Or, assigning directly to the `sdk.adapter` property.
 ```ts
 const sdk = new WcWalletSDK({
   clientOptions: {}, // SignClient options
+  methods: ['methods', 'to', 'authorize'],
 })
 
 sdk.adapter = new YourAdapter()
-```
-
-By default, the sdk will ask authorization for the default methods, but you can be more specific on which methods you want to authorize:
-
-```ts
-const sdk = new WcWalletSDK({
-  clientOptions: {}, // SignClient options
-  methods: ['your', 'custom', 'methods'],
-})
 ```
 
 By default, the sdk won't ask authorization for some request methods, you are able to switch what methods it will happens:
@@ -110,6 +103,7 @@ If you need to listen when the sessions, proposals, requests or status change, y
 ```ts
 const sdk = new WcWalletSDK({
   clientOptions: {}, // SignClient options
+  methods: ['methods', 'to', 'authorize'],
 })
 
 sdk.emitter.on('proposals', items => {

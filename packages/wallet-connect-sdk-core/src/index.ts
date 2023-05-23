@@ -4,6 +4,12 @@ import { InvokeResult, GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
 import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, StackItemJson } from '@cityofzion/neo3-invoker'
 import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
 
+/**
+ * If JavaScript users try to use the connect methods without the methods, they will receive a warning.
+ * This constant should be removed on later versions.
+ */
+const defaultMethodRemovedWarning = "The default value of methods has been deprecated, in future versions you will need to pass a list of method names"
+
 export type Blockchain = "neo3"
 
 export type Chain = "private" | "testnet" | "mainnet"
@@ -29,16 +35,6 @@ export const DEFAULT_BLOCKCHAIN: Blockchain = 'neo3'
  * A list of networks supported by wallets
  */
 export const SUPPORTED_NETWORKS: NetworkType[] = ['neo3:private', 'neo3:testnet', 'neo3:mainnet']
-
-/**
- * A list of methods supported by wallets
- */
-export const DEFAULT_METHODS: Method[] = [
-    'invokeFunction',
-    'testInvoke',
-    'signMessage',
-    'verifyMessage',
-]
 
 /**
  * A list of auto accept methods supported by wallets
@@ -161,9 +157,14 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
      * The difference between this method and `createConnection` is that this method will automatically open Neon connection website
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
-     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
+     * @param methods An array of methods used on your application, choose between the methods of the documentation
      */
-    async connect(network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<SessionTypes.Struct> {
+    async connect(network: NetworkType, methods: Method[]): Promise<SessionTypes.Struct> {
+        if (methods === undefined){
+            console.warn(defaultMethodRemovedWarning)
+            methods = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage']
+        }
+
         const { uri, approval } = await this.createConnection(network, methods)
 
         if (uri) {
@@ -180,9 +181,14 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet
      * The difference between this method and `connect` is that this method will not open Neon connection website, you will need to open it manually and await `approval` Promise to finish the connection.
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
-     * @param methods An array of methods used on your application, choose between 'invokeFunction', 'testInvoke', 'signMessage' or 'verifyMessage'. Leave it empty to use all methods.
+     * @param methods An array of methods used on your application, choose between the methods of the documentation.
      */
-    async createConnection (network: NetworkType, methods: string[] = [...DEFAULT_METHODS]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
+    async createConnection (network: NetworkType, methods: Method[]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
+        if (methods === undefined){
+            console.warn(defaultMethodRemovedWarning)
+            methods = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage']
+        }
+
         return await this.signClient.connect({
             requiredNamespaces: {
                 [SUPPORTED_BLOCKCHAINS[0]]: {

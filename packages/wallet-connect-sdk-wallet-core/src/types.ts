@@ -26,7 +26,7 @@ export type TEvents = {
 }
 export type TOptions = {
   autoAcceptMethods?: (Method | (string & Record<never, never>))[]
-  methods?: (Method | (string & Record<never, never>))[]
+  methods: Method[]
   clientOptions: WalletConnectTypes.SignClientTypes.Options
   adapter?: WalletConnectNeo3Adapter
 }

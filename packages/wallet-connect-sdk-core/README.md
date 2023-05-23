@@ -17,21 +17,28 @@
 - [Using with React.js](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react)
 
 ## Installation
+
 Install the dependencies on your application
+
 ### NPM
+
 ```
 npm i @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client @walletconnect/types
 ```
+
 ### YARN
+
 ```
 yarn add @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client @walletconnect/types
 ```
 
 ## Setup
+
 Before starting the development, you need to create an account on [Wallet Connect website](https://walletconnect.com/)
 and then create a new `Project`, it's super easy, with just a few fields on the form.
 
 Initialize the client:
+
 ```js
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 import SignClient from '@walletconnect/sign-client'
@@ -47,10 +54,13 @@ const wcSdk = new WcSdk(await SignClient.init({
     }
 }))
 ```
+
 On the previous versions we were using another `relayUrl`, make sure you are using this new URL.
 
 ### Manage Session
+
 Just after initializing the client you can call `manageSession`, just once, it will reload the user's connected session and subscribe to the `disconnect` event.
+
 ```js
 await wcSdk.manageSession()
 ```
@@ -69,37 +79,38 @@ if (wcSdk.isConnected()) {
 ```
 
 ### Connect to the Wallet
-Start the process of establishing a new connection, to be used when there is no `wcSdk.session`
+
+Start the process of establishing a new connection to be used when there is no `wcSdk.session`. You'll need to specify which methods you want to authorize:
+
 ```js
 if (!wcSdk.isConnected()) {
-  await wcSdk.connect('neo3:testnet')  // choose between neo3:mainnet, neo3:testnet or neo3:private
+  // choose between neo3:mainnet, neo3:testnet or neo3:private, and the methods you want to use
+  await wcSdk.connect('neo3:testnet', ['invokeFunction', 'testInvoke', 'signMessage','verifyMessage'])  
   // and check if there is a connection
   console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 }
 ```
-By default, the `connect` method will ask authorization for all methods, but you can be more specific on which methods you want to authorize:
-```js
-if (!wcSdk.isConnected()) {
-  await wcSdk.connect('neo3:testnet', ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage'])
-  console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
-}
-```
+
 The `connect` method will open a new browser tab to help the user to connect with its wallet, but instead, you can use
 `createConnection` to choose a different behavior, like opening a modal or another website.
+
 ```ts
-const { uri, approval } = await wcSdk.createConnection('neo3:testnet')
+const { uri, approval } = await wcSdk.createConnection('neo3:testnet',['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage'])
 window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus() // do whatever you want with the uri
 await approval()
 console.log(wcSdk.isConnected() ? 'Connected successfully' : 'Connection refused')
 ```
 
 ### Disconnect
+
 It's interesting to have a button to allow the user to disconnect its wallet, call `disconnect` when this happens:
+
 ```js
 await wcSdk.disconnect();
 ```
 
 ### Invoking a SmartContract method on NEO 3 Blockchain
+
 To invoke a SmartContract method you can use `invokeFunction` method.
 
 Neo blockchain expect params with
@@ -107,6 +118,7 @@ Neo blockchain expect params with
 [here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
 
 WcSdk has some special types to facilitate:
+
 - `Address` (the same thing as `Hash160`)
 - `ScriptHash` (the same thing as `Hash160` but transported to the wallet as HexString)
 
@@ -114,6 +126,7 @@ To invoke a SmartContract, it's important to know the argument types of the meth
 On the example below we are invoking the `transfer` method of the [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf) token.
 
 Check it out:
+
 ```ts
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 // ...
@@ -133,24 +146,29 @@ const resp = await wcSdk.invokeFunction({
     }]
 })
 ```
+
 Options for each `signer`:
-- `scopes`: to specify which scopes should be used to sign the transaction, [learn more](https://developers.neo.org/docs/n3/foundation/Transactions#scopes). This property accepts them as a string as seen on the examples, or as a number, which can be imported from `WitnessScope` of `neon-js`. 
+
+- `scopes`: to specify which scopes should be used to sign the transaction, [learn more](https://developers.neo.org/docs/n3/foundation/Transactions#scopes). This property accepts them as a string as seen on the examples, or as a number, which can be imported from `WitnessScope` of `neon-js`.
 - `account`: to specify which account's scripthash should be used to sign the transaction, otherwise the wallet will use the user's selected account to sign.
 - `allowedContracts`: when the `scopes` property is set as `CustomContracts`, you should use this property to specify which contracts are allowed
 - `allowedGroups`: when the `scopes` property is set as `CustomGroups`, you should use this property to specify which groups are allowed
 - `rules`: to specify which rules should be used to sign the transaction, [learn more](https://developers.neo.org/docs/n3/foundation/Transactions#witnessrule).
 
 Options for each `invocation`:
+
 - `scriptHash`: the SmartContract ScriptHash
 - `operation`: the SmartContract's method name
 - `args`: the parameters to be sent to the method, as explained above
 - `abortOnFail`: when requesting multiple invocations, you can set `abortOnFail` to true on some invocations so the VM will abort the rest of the calls if this invocation returns `false`
 
 Additional root options:
+
 - `systemFeeOverride`: to choose a specific amount as system fee OR `extraSystemFee` if you simply want to add more value to the minimum system fee.
 - `networkFeeOverride`: to choose a specific amount as network fee OR `extraNetworkFee` if you simply want to add more value to the minimum network fee.
 
 Here is a more advanced example:
+
 ```ts
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 // ...
@@ -172,6 +190,7 @@ const resp = await wcSdk.invokeFunction({
 ```
 
 ### Calling TestInvoke
+
 To retrieve information from a SmartContract without persisting any information on the blockchain you can use `testInvoke` method.
 
 On the example below we are invoking the `balanceOf` method of the `GAS` token.
@@ -179,6 +198,7 @@ On the example below we are invoking the `balanceOf` method of the `GAS` token.
 Is expected for the Wallets to not ask the user for authorization on testInvoke.
 
 Check it out:
+
 ```ts
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 // ...
@@ -198,6 +218,7 @@ const resp = await wcSdk.testInvoke({
 ```
 
 ### Sign and Verify message
+
 ```ts
 // 1) sign a message
 const mySignedMessage = await wcSdk.signMessage({ message: 'My message', version: 2 })
@@ -209,20 +230,21 @@ const valid = await wcSdk.verifyMessage(mySignedMessage)
 ```
 
 ### Traverse iterator
+
 The traverseIterator method allows you to traverse an iterator returned by a SmartContract method.
 
 To use this, your connection must be established with the `traverseIterator` method added.
 
-On the following example we are requesting all default methods and also the traverseIterator method.
 ```ts
-import WcSdk, { DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-core'
+import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 //...
-await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'traverseIterator'])
+await wcSdk.connect(networkType, ['traverseIterator'])
 ```
 
 On the following example we are getting all the candidates from the
 [NEO token](https://dora.coz.io/contract/neo3/mainnet/ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5) and then traversing the
 iterator to get the first 10 items.
+
 ```ts
 const resp = await wcSdk.testInvoke({
     invocations: [
@@ -242,40 +264,44 @@ const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 ```
 
 ### Get Wallet Info
+
 To get information about the wallet, such as if it is a Ledger wallet, you can use the `getWalletInfo` method.
 
 To use this, your connection must be established with the `getWalletInfo` method added.
 
-On the following example we are requesting all default methods and also the getWalletInfo method.
 ```ts
-import { useWalletConnect, DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-core'
+import { useWalletConnect } from '@cityofzion/wallet-connect-sdk-core'
 //...
-await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'getWalletInfo'])
+await wcSdk.connect(networkType, ['getWalletInfo'])
 ```
 
 On the following example we are getting the wallet info, which is returning `false` because it is not a Ledger wallet.
+
 ```ts
 const walletInfo = await wcSdk.getWalletInfo()
 console.log(walletInfo) // { isLedger: false }
 ```
 
 ### Get Network Version
+
 To get the network version, you can use the `getNetworkVersion` method.
 
 To use this, your connection must be established with the `getNetworkVersion` method added.
 
-On the following example we are requesting all default methods and also the getNetworkVersion method.
 ```ts
-import { useWalletConnect, DEFAULT_METHODS } from '@cityofzion/wallet-connect-sdk-core'
+import { useWalletConnect } from '@cityofzion/wallet-connect-sdk-core'
 //...
-await wcSdk.connect(networkType, [...DEFAULT_METHODS, 'getNetworkVersion'])
+await wcSdk.connect(networkType, ['getNetworkVersion'])
 ```
 
 On the following example we are getting the network version.
+
 ```ts
 const networkVersion = await wcSdk.getNetworkVersion()
 ```
+
 It will return an object like this:
+
 ```json
 {
   "rpcAddress": "https://mainnet2.neo.coz.io:443",
@@ -298,9 +324,11 @@ It will return an object like this:
 ```
 
 ## Wallet Connect Registry
+
 After going to production, we really recommend you to register your dApp on the [Wallet Connect website](https://walletconnect.com/).
 Differently than the `Project`, which is necessary to use Wallet Connect services, the `Registry` is not mandatory but
 lists your dApp on their website and helps Wallet Connect users to know your dApp.
 
 ## Read the Docs
+
 There is more information of each method on the [documentation website](https://neon.coz.io/wksdk/core/modules.html)

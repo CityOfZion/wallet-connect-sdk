@@ -21,7 +21,6 @@ import {
 import {
   DEFAULT_AUTO_ACCEPT_METHODS,
   DEFAULT_BLOCKCHAIN,
-  DEFAULT_METHODS,
   Method,
 } from '@cityofzion/wallet-connect-sdk-core'
 import { WalletConnectNeo3Adapter } from './adapter'
@@ -55,14 +54,14 @@ export class WcWalletSDK {
    * To initialize the SDK you need to provide the options
    * @param options.clientOptions SignClient Startup options of the original WalletConnect library
    * @param options.adapter [adapter] The initial adapter
-   * @param options.methods [methods=DEFAULT_METHODS] An array of valid methods used on your application
+   * @param options.methods [methods] An array of valid methods used on your application
    * @param options.autoAcceptMethods [autoAcceptMethods=DEFAULT_AUTO_ACCEPT_METHODS] An array of valid auto accepted methods used on your application
    */
   constructor(options: TOptions) {
     this.options = {
       clientOptions: options.clientOptions,
       autoAcceptMethods: options.autoAcceptMethods ?? DEFAULT_AUTO_ACCEPT_METHODS,
-      methods: options.methods ?? DEFAULT_METHODS,
+      methods: options.methods,
     }
 
     this.adapter = options.adapter
