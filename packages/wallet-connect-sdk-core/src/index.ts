@@ -8,7 +8,7 @@ import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-
  * If JavaScript users try to use the connect methods without the methods, they will receive a warning.
  * This constant should be removed on later versions.
  */
-const defaultMethodRemovedWarning = "The default value of methods was depreciated, on future versions you'll need to pass a list of methods names"
+const defaultMethodRemovedWarning = "The default value of methods has been deprecated, in future versions you will need to pass a list of method names"
 
 export type Blockchain = "neo3"
 
