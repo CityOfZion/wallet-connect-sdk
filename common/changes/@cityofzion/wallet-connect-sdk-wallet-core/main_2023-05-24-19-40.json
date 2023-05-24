@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-core",
+      "comment": "Changes on WcWalletSDK constructor signature, the `methods` option is now mandatory",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-core"
+}

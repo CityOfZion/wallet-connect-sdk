@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-react",
+      "comment": "Changes on `connect` method signature, the `methods` argument is now mandatory",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-react"
+}
