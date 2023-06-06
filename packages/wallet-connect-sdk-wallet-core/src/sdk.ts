@@ -18,12 +18,8 @@ import {
   EStatus,
   TAdapterMethodParam,
 } from './types'
-import {
-  DEFAULT_AUTO_ACCEPT_METHODS,
-  DEFAULT_BLOCKCHAIN,
-  Method,
-} from '@cityofzion/wallet-connect-sdk-core'
-import { WalletConnectNeo3Adapter } from './adapter'
+import { DEFAULT_AUTO_ACCEPT_METHODS, DEFAULT_BLOCKCHAIN, Method } from '@cityofzion/wallet-connect-sdk-core'
+import { AbstractWalletConnectNeonAdapter } from './adapter'
 
 const APPROVAL_UNIX_STORAGE_KEY = 'wc-sdk:approvalsUnix'
 const INIT_TIMEOUT = 7000
@@ -37,7 +33,7 @@ export class WcWalletSDK {
   /**
    * The Adapter to perform the WalletConnect requests
    */
-  public adapter: WalletConnectNeo3Adapter | undefined
+  public adapter: AbstractWalletConnectNeonAdapter | undefined
 
   /**
    * The EventEmitter to listen for some property changes
@@ -267,7 +263,7 @@ export class WcWalletSDK {
           message: 'Rejected by the user',
         },
       })
-    } catch (error) {
+    } finally {
       const filteredProposal = this.proposals.filter(({ id }) => id !== proposal.id)
       this.proposals = filteredProposal
     }

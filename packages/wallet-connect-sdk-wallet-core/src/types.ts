@@ -1,7 +1,7 @@
 import WalletConnectTypes from '@walletconnect/types'
 import { JsonRpcResult, ErrorResponse, JsonRpcError } from '@walletconnect/jsonrpc-utils'
 import { Chain, Method } from '@cityofzion/wallet-connect-sdk-core'
-import { WalletConnectNeo3Adapter } from './adapter'
+import { AbstractWalletConnectNeonAdapter } from './adapter'
 
 export type TSession = WalletConnectTypes.SessionTypes.Struct & {
   approvalUnix?: number
@@ -28,7 +28,7 @@ export type TOptions = {
   autoAcceptMethods?: (Method | (string & Record<never, never>))[]
   methods: Method[]
   clientOptions: WalletConnectTypes.SignClientTypes.Options
-  adapter?: WalletConnectNeo3Adapter
+  adapter?: AbstractWalletConnectNeonAdapter
 }
 
 export type TApproveSessionOptions = {

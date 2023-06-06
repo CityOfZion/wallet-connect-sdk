@@ -2116,7 +2116,7 @@
     },
     "@rush-temp/wallet-connect-sdk-react": {
       "version": "file:projects/wallet-connect-sdk-react.tgz",
-      "integrity": "sha512-QqP16lXNQC1UQeAKg1iZH/ANSD/aAH8CavYQAnHHJk8AqfTw8jXFtY8qQ+3ufxU6olL3JUPOn8gvVj1vRaoACw==",
+      "integrity": "sha512-omjx9Rf2nxWizawrw+0ed6KNavXVyYG9313/bJ28YTabT6sHZsA8bKUJYl2s8KLo6WNkSQZXiK5oa/rZpC5LDQ==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.3.0",
         "@cityofzion/neo3-signer": "1.0.1",
@@ -2145,7 +2145,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-core": {
       "version": "file:projects/wallet-connect-sdk-wallet-core.tgz",
-      "integrity": "sha512-lkzEc8TtzZJAuidZuK5M85ofAVTTg9fSJlasvcOOLobx+fbxNTZEztQtB5Iapsap2yOLe99lllqQaQvEvRqgsg==",
+      "integrity": "sha512-AF+qrV544A03mLE8+TJ9AFDINJtVQIs9hrYWNfmg636mo9B1wiCf6Sjs+GUefJM273p3hDxMUpBr9jAc9eDz6g==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.4.0",
         "@cityofzion/neo3-signer": "1.0.1",
@@ -2419,7 +2419,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-react": {
       "version": "file:projects/wallet-connect-sdk-wallet-react.tgz",
-      "integrity": "sha512-J2B8kLDWyncAJ54ApJ4YHnkdlo8w2tzsNgjb3ZVdNxejoKeVvFtxgk+L0BY8Qah1ETRjaw4RL3znN+XGT75ukw==",
+      "integrity": "sha512-sUsB0u2EP/L7ibfo9i98XHE/reIrFXiXvPBJBOzTLJoetbdCTMXHlEH9JcBWv5ZUnyKeZy7VfRpNNBhZAWUaHA==",
       "requires": {
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
