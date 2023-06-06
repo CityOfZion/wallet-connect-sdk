@@ -8,7 +8,7 @@ import {
   TSession,
   TSessionProposal,
   TSessionRequest,
-  WalletConnectNeo3Adapter,
+  AbstractWalletConnectNeonAdapter,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
 import { ReactNode } from 'react'
 
@@ -93,7 +93,7 @@ export interface IWalletConnectWalletContext {
    * @param adapter The Adapter to perform the WalletConnect requests
    *  @return {void}
    */
-  setAdapter(adapter: WalletConnectNeo3Adapter): void
+  setAdapter(adapter: AbstractWalletConnectNeonAdapter): void
 }
 
 export type TWalletConnectWalletProps = {

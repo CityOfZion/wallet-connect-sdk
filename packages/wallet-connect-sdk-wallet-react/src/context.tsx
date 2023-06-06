@@ -9,7 +9,7 @@ import {
   TSession,
   TSessionProposal,
   TSessionRequest,
-  WalletConnectNeo3Adapter,
+  AbstractWalletConnectNeonAdapter,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
 
 export const WalletConnectWalletContext = React.createContext({} as IWalletConnectWalletContext)
@@ -57,7 +57,7 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
     return await sdk.current.rejectRequest(request, reason)
   }, [])
 
-  const setAdapter = useCallback((adapter: WalletConnectNeo3Adapter) => {
+  const setAdapter = useCallback((adapter: AbstractWalletConnectNeonAdapter) => {
     sdk.current.adapter = adapter
   }, [])
 

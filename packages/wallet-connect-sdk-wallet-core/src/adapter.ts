@@ -9,7 +9,7 @@ import {
   WalletInfo,
   NetworkVersion,
 } from '@cityofzion/wallet-connect-sdk-core'
-export abstract class WalletConnectNeo3Adapter {
+export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
     const rpcURL = await this.getRPCUrl(args)
     const accountString = await this.getAccountString(args)
