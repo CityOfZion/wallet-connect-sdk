@@ -4,7 +4,8 @@ import { Chain, Method } from '@cityofzion/wallet-connect-sdk-core'
 import { AbstractWalletConnectNeonAdapter } from './adapter'
 
 export type TSession = WalletConnectTypes.SessionTypes.Struct & {
-  approvalUnix?: number
+  approvalUnix: number
+  wccv: number
 }
 
 export type TSessionProposal = WalletConnectTypes.SignClientTypes.EventArguments['session_proposal']
@@ -35,9 +36,10 @@ export type TApproveSessionOptions = {
   account: { address: string; chain: Chain }
 }
 
-export type TApprovalDateStorage = {
+export type TSessionExtendedStorage = {
   topic: string
-  approvalUnix: number | undefined
+  approvalUnix: number
+  wccv: number
 }
 
 export type TRejectReason = ErrorResponse

@@ -1292,6 +1292,11 @@
       "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.4.1.tgz",
       "integrity": "sha512-2BNSQRydNuGZi7wam/kdvCoTw8m3wq1zbC6QBkkS9maRO/gliLEgDj0hjBazaP+slqtwR8DMdQsgbonJ9oIYEA=="
     },
+    "@cityofzion/neo3-parser": {
+      "version": "1.6.5",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-parser/-/neo3-parser-1.6.5.tgz",
+      "integrity": "sha512-0pv+odXwLA0X661f4UJZO7HErkt/2KZ22M9lHd98OAUT99M22i+XBaGrK2GqbLuzVAvoOEW73kSyhhz6Z9uUYg=="
+    },
     "@cityofzion/neo3-signer": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.1.tgz",
@@ -1337,6 +1342,16 @@
       "requires": {
         "@cityofzion/neon-api": "^5.2.2",
         "@cityofzion/neon-core": "^5.3.0"
+      }
+    },
+    "@cityofzion/neon-parser": {
+      "version": "1.6.5",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neon-parser/-/neon-parser-1.6.5.tgz",
+      "integrity": "sha512-ekSHeYJdbf+07+X3gK2AS1LVT4xyxBBfgJmgENYbaVjIXQrGHAyZUy+vA9vocR5hJ3ABPjYoa4a5lCqWrQv0Iw==",
+      "requires": {
+        "@cityofzion/neo3-parser": "1.6.5",
+        "@cityofzion/neon-core": "5.3.0",
+        "@cityofzion/neon-js": "5.3.0"
       }
     },
     "@cityofzion/neon-signer": {
@@ -2054,9 +2069,9 @@
     },
     "@rush-temp/wallet-connect-sdk-core": {
       "version": "file:projects/wallet-connect-sdk-core.tgz",
-      "integrity": "sha512-x0XtkjDjO+kO2N6Ts6AC+mA1Cgd0CCnkuJ6zqYXpaUUxQ8jUrCyRauMq80u8pjtMr0JE9SxnAFeakmVepbYr1Q==",
+      "integrity": "sha512-psGDwcO0f7o8YfvMS6b/MygB2wT11ypz/306X10pXM+Tainc4AgzQS5FUPZZo7I2HS2NjhfOhgfn1M4WqJcQnw==",
       "requires": {
-        "@cityofzion/neo3-invoker": "1.3.0",
+        "@cityofzion/neo3-invoker": "1.4.1",
         "@cityofzion/neo3-signer": "1.1.0",
         "@cityofzion/neon-core": "5.3.0",
         "@walletconnect/sign-client": "2.0.0-rc.3",
@@ -2065,11 +2080,6 @@
         "typescript": "^4.3.2"
       },
       "dependencies": {
-        "@cityofzion/neo3-invoker": {
-          "version": "1.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.3.0.tgz",
-          "integrity": "sha512-VoBaEjb6gxO6otL27WmyrzwhAUPUX5qev86yot+HZGbZ/tMh8FSkmFdVfOMIvb3C5nLZMj7kiPNlgr484kxqMQ=="
-        },
         "@cityofzion/neo3-signer": {
           "version": "1.1.0",
           "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.0.tgz",
@@ -2079,9 +2089,9 @@
     },
     "@rush-temp/wallet-connect-sdk-react": {
       "version": "file:projects/wallet-connect-sdk-react.tgz",
-      "integrity": "sha512-9QNZ5TNOo6EBe3Pwp6sioWCyJSWXTqQoUS0P2jB1YAIuuUKaEQt2AMSQISkDlE40PVMj26Rsy9CvIltTbh9zsw==",
+      "integrity": "sha512-d8EAjVsZ3JJU6DVWpjzo48YBM2Tr7cxLeg/ymyZsqY0eMeWG0CGce4jxCRUw8P6hC+IOPOBiX/Q7YlQPSn6lsg==",
       "requires": {
-        "@cityofzion/neo3-invoker": "1.3.0",
+        "@cityofzion/neo3-invoker": "1.4.1",
         "@cityofzion/neo3-signer": "1.1.0",
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
@@ -2099,11 +2109,6 @@
         "typescript": "^4.3.2"
       },
       "dependencies": {
-        "@cityofzion/neo3-invoker": {
-          "version": "1.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.3.0.tgz",
-          "integrity": "sha512-VoBaEjb6gxO6otL27WmyrzwhAUPUX5qev86yot+HZGbZ/tMh8FSkmFdVfOMIvb3C5nLZMj7kiPNlgr484kxqMQ=="
-        },
         "@cityofzion/neo3-signer": {
           "version": "1.1.0",
           "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.0.tgz",
@@ -2113,12 +2118,14 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-core": {
       "version": "file:projects/wallet-connect-sdk-wallet-core.tgz",
-      "integrity": "sha512-+KQVYTSM1IRGPoP3Xcg0x5DjLnwfHGVjA5yXkP9x2nXJYVBYJw5mVE2wYKx29HeiyesUdndPitiYIaeADk0fmw==",
+      "integrity": "sha512-TTFURVtQulG+mhHNBWqYYRzTgX5LzCG+s93seWhDRu30FXOxG2k/HcvoYpX+RSsjqAvu1csT6+br8nvQgNHD1A==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.4.1",
+        "@cityofzion/neo3-parser": "1.6.5",
         "@cityofzion/neo3-signer": "1.1.1",
         "@cityofzion/neon-core": "5.3.0",
         "@cityofzion/neon-invoker": "1.4.1",
+        "@cityofzion/neon-parser": "1.6.5",
         "@cityofzion/neon-signer": "1.1.1",
         "@types/node": "^20.1.3",
         "@walletconnect/sign-client": "2.7.3",
@@ -2129,20 +2136,10 @@
         "typescript": "^4.3.2"
       },
       "dependencies": {
-        "@stablelib/x25519": {
-          "version": "1.0.3",
-          "resolved": "https://registry.npmjs.org/@stablelib/x25519/-/x25519-1.0.3.tgz",
-          "integrity": "sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==",
-          "requires": {
-            "@stablelib/keyagreement": "^1.0.1",
-            "@stablelib/random": "^1.0.2",
-            "@stablelib/wipe": "^1.0.1"
-          }
-        },
         "@types/node": {
-          "version": "20.3.0",
-          "resolved": "https://registry.npmjs.org/@types/node/-/node-20.3.0.tgz",
-          "integrity": "sha512-cumHmIAf6On83X7yP+LrsEyUOf/YlociZelmpRYaGFydoaPdxdt80MAbu6vWerQT2COCp2nPvHdsbD7tHn/YlQ=="
+          "version": "20.3.1",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-20.3.1.tgz",
+          "integrity": "sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg=="
         },
         "@walletconnect/core": {
           "version": "2.7.3",
@@ -2302,45 +2299,6 @@
             "events": "^3.3.0"
           }
         },
-        "@walletconnect/utils": {
-          "version": "2.7.3",
-          "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.7.3.tgz",
-          "integrity": "sha512-ecKnoks3N8CaP5KYIrgJct5YNmvlfp1Ec8BuiXw5Gmta1HFnKpzvjmAG1627XGEfB2UVc9O2Rmbx+UmhuyB5KQ==",
-          "requires": {
-            "@stablelib/chacha20poly1305": "1.0.1",
-            "@stablelib/hkdf": "1.0.1",
-            "@stablelib/random": "^1.0.2",
-            "@stablelib/sha256": "1.0.1",
-            "@stablelib/x25519": "^1.0.3",
-            "@walletconnect/jsonrpc-utils": "^1.0.7",
-            "@walletconnect/relay-api": "^1.0.9",
-            "@walletconnect/safe-json": "^1.0.2",
-            "@walletconnect/time": "^1.0.2",
-            "@walletconnect/types": "2.7.3",
-            "@walletconnect/window-getters": "^1.0.1",
-            "@walletconnect/window-metadata": "^1.0.1",
-            "detect-browser": "5.3.0",
-            "query-string": "7.1.3",
-            "uint8arrays": "^3.1.0"
-          }
-        },
-        "@walletconnect/window-getters": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/window-getters/-/window-getters-1.0.1.tgz",
-          "integrity": "sha512-vHp+HqzGxORPAN8gY03qnbTMnhqIwjeRJNOMOAzePRg4xVEEE2WvYsI9G2NMjOknA8hnuYbU3/hwLcKbjhc8+Q==",
-          "requires": {
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/window-metadata": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/window-metadata/-/window-metadata-1.0.1.tgz",
-          "integrity": "sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==",
-          "requires": {
-            "@walletconnect/window-getters": "^1.0.1",
-            "tslib": "1.14.1"
-          }
-        },
         "pino": {
           "version": "7.11.0",
           "resolved": "https://registry.npmjs.org/pino/-/pino-7.11.0.tgz",
@@ -2364,17 +2322,6 @@
           "resolved": "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz",
           "integrity": "sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q=="
         },
-        "query-string": {
-          "version": "7.1.3",
-          "resolved": "https://registry.npmjs.org/query-string/-/query-string-7.1.3.tgz",
-          "integrity": "sha512-hh2WYhq4fi8+b+/2Kg9CEge4fDPvHS534aOOvOZeQ3+Vf2mCFsaFBYj0i+iXcAq6I9Vzp5fjMFBlONvayDC1qg==",
-          "requires": {
-            "decode-uri-component": "^0.2.2",
-            "filter-obj": "^1.1.0",
-            "split-on-first": "^1.0.0",
-            "strict-uri-encode": "^2.0.0"
-          }
-        },
         "sonic-boom": {
           "version": "2.8.0",
           "resolved": "https://registry.npmjs.org/sonic-boom/-/sonic-boom-2.8.0.tgz",
@@ -2387,7 +2334,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-react": {
       "version": "file:projects/wallet-connect-sdk-wallet-react.tgz",
-      "integrity": "sha512-lyYS/yrejUDA3iaUKvgCuQgA3rHl040JJYkdRnds1B4gZp06LH1DKjRZlnSIAEHJaQ6AGysnyvd3K6tdd0DlLg==",
+      "integrity": "sha512-ITfbdEftVMBjB5us7pJE46OMsrF+l4gRxgAHItUGwxiwezSgQlGv9thZRHtTpNNvEPQ5ldOoDWBN86egww+wnw==",
       "requires": {
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
@@ -3139,6 +3086,39 @@
         "pino": "6.7.0",
         "pino-pretty": "4.3.0",
         "uint8arrays": "3.1.0"
+      },
+      "dependencies": {
+        "@stablelib/random": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@stablelib/random/-/random-1.0.1.tgz",
+          "integrity": "sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ==",
+          "requires": {
+            "@stablelib/binary": "^1.0.1",
+            "@stablelib/wipe": "^1.0.1"
+          }
+        },
+        "@walletconnect/utils": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.0.0-rc.3.tgz",
+          "integrity": "sha512-ThMv+uLZiU9iSEN28cLZy98/LyQmHQ6eq29P9qsET9ZginF5QplmvTRKQvLSeLrU4K4rcRaXs/FndhxxiRhPcQ==",
+          "requires": {
+            "@stablelib/chacha20poly1305": "1.0.1",
+            "@stablelib/hkdf": "1.0.1",
+            "@stablelib/random": "1.0.1",
+            "@stablelib/sha256": "1.0.1",
+            "@stablelib/x25519": "1.0.2",
+            "@walletconnect/jsonrpc-utils": "1.0.3",
+            "@walletconnect/relay-api": "1.0.6",
+            "@walletconnect/safe-json": "1.0.0",
+            "@walletconnect/time": "1.0.1",
+            "@walletconnect/types": "2.0.0-rc.3",
+            "@walletconnect/window-getters": "1.0.0",
+            "@walletconnect/window-metadata": "1.0.0",
+            "detect-browser": "5.3.0",
+            "query-string": "7.1.1",
+            "uint8arrays": "3.1.0"
+          }
+        }
       }
     },
     "@walletconnect/environment": {
@@ -3261,6 +3241,39 @@
         "@walletconnect/utils": "2.0.0-rc.3",
         "pino": "6.7.0",
         "pino-pretty": "4.3.0"
+      },
+      "dependencies": {
+        "@stablelib/random": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@stablelib/random/-/random-1.0.1.tgz",
+          "integrity": "sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ==",
+          "requires": {
+            "@stablelib/binary": "^1.0.1",
+            "@stablelib/wipe": "^1.0.1"
+          }
+        },
+        "@walletconnect/utils": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.0.0-rc.3.tgz",
+          "integrity": "sha512-ThMv+uLZiU9iSEN28cLZy98/LyQmHQ6eq29P9qsET9ZginF5QplmvTRKQvLSeLrU4K4rcRaXs/FndhxxiRhPcQ==",
+          "requires": {
+            "@stablelib/chacha20poly1305": "1.0.1",
+            "@stablelib/hkdf": "1.0.1",
+            "@stablelib/random": "1.0.1",
+            "@stablelib/sha256": "1.0.1",
+            "@stablelib/x25519": "1.0.2",
+            "@walletconnect/jsonrpc-utils": "1.0.3",
+            "@walletconnect/relay-api": "1.0.6",
+            "@walletconnect/safe-json": "1.0.0",
+            "@walletconnect/time": "1.0.1",
+            "@walletconnect/types": "2.0.0-rc.3",
+            "@walletconnect/window-getters": "1.0.0",
+            "@walletconnect/window-metadata": "1.0.0",
+            "detect-browser": "5.3.0",
+            "query-string": "7.1.1",
+            "uint8arrays": "3.1.0"
+          }
+        }
       }
     },
     "@walletconnect/time": {
@@ -3290,34 +3303,179 @@
       }
     },
     "@walletconnect/utils": {
-      "version": "2.0.0-rc.3",
-      "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.0.0-rc.3.tgz",
-      "integrity": "sha512-ThMv+uLZiU9iSEN28cLZy98/LyQmHQ6eq29P9qsET9ZginF5QplmvTRKQvLSeLrU4K4rcRaXs/FndhxxiRhPcQ==",
+      "version": "2.7.3",
+      "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.7.3.tgz",
+      "integrity": "sha512-ecKnoks3N8CaP5KYIrgJct5YNmvlfp1Ec8BuiXw5Gmta1HFnKpzvjmAG1627XGEfB2UVc9O2Rmbx+UmhuyB5KQ==",
       "requires": {
         "@stablelib/chacha20poly1305": "1.0.1",
         "@stablelib/hkdf": "1.0.1",
-        "@stablelib/random": "1.0.1",
+        "@stablelib/random": "^1.0.2",
         "@stablelib/sha256": "1.0.1",
-        "@stablelib/x25519": "1.0.2",
-        "@walletconnect/jsonrpc-utils": "1.0.3",
-        "@walletconnect/relay-api": "1.0.6",
-        "@walletconnect/safe-json": "1.0.0",
-        "@walletconnect/time": "1.0.1",
-        "@walletconnect/types": "2.0.0-rc.3",
-        "@walletconnect/window-getters": "1.0.0",
-        "@walletconnect/window-metadata": "1.0.0",
+        "@stablelib/x25519": "^1.0.3",
+        "@walletconnect/jsonrpc-utils": "^1.0.7",
+        "@walletconnect/relay-api": "^1.0.9",
+        "@walletconnect/safe-json": "^1.0.2",
+        "@walletconnect/time": "^1.0.2",
+        "@walletconnect/types": "2.7.3",
+        "@walletconnect/window-getters": "^1.0.1",
+        "@walletconnect/window-metadata": "^1.0.1",
         "detect-browser": "5.3.0",
-        "query-string": "7.1.1",
-        "uint8arrays": "3.1.0"
+        "query-string": "7.1.3",
+        "uint8arrays": "^3.1.0"
       },
       "dependencies": {
-        "@stablelib/random": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@stablelib/random/-/random-1.0.1.tgz",
-          "integrity": "sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ==",
+        "@stablelib/x25519": {
+          "version": "1.0.3",
+          "resolved": "https://registry.npmjs.org/@stablelib/x25519/-/x25519-1.0.3.tgz",
+          "integrity": "sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==",
           "requires": {
-            "@stablelib/binary": "^1.0.1",
+            "@stablelib/keyagreement": "^1.0.1",
+            "@stablelib/random": "^1.0.2",
             "@stablelib/wipe": "^1.0.1"
+          }
+        },
+        "@walletconnect/events": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/events/-/events-1.0.1.tgz",
+          "integrity": "sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/heartbeat": {
+          "version": "1.2.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/heartbeat/-/heartbeat-1.2.1.tgz",
+          "integrity": "sha512-yVzws616xsDLJxuG/28FqtZ5rzrTA4gUjdEMTbWB5Y8V1XHRmqq4efAxCw5ie7WjbXFSUyBHaWlMR+2/CpQC5Q==",
+          "requires": {
+            "@walletconnect/events": "^1.0.1",
+            "@walletconnect/time": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/jsonrpc-utils": {
+          "version": "1.0.8",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-utils/-/jsonrpc-utils-1.0.8.tgz",
+          "integrity": "sha512-vdeb03bD8VzJUL6ZtzRYsFMq1eZQcM3EAzT0a3st59dyLfJ0wq+tKMpmGH7HlB7waD858UWgfIcudbPFsbzVdw==",
+          "requires": {
+            "@walletconnect/environment": "^1.0.1",
+            "@walletconnect/jsonrpc-types": "^1.0.3",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/keyvaluestorage": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/keyvaluestorage/-/keyvaluestorage-1.0.2.tgz",
+          "integrity": "sha512-U/nNG+VLWoPFdwwKx0oliT4ziKQCEoQ27L5Hhw8YOFGA2Po9A9pULUYNWhDgHkrb0gYDNt//X7wABcEWWBd3FQ==",
+          "requires": {
+            "safe-json-utils": "^1.1.1",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/logger": {
+          "version": "2.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/logger/-/logger-2.0.1.tgz",
+          "integrity": "sha512-SsTKdsgWm+oDTBeNE/zHxxr5eJfZmE9/5yp/Ku+zJtcTAjELb3DXueWkDXmE9h8uHIbJzIb5wj5lPdzyrjT6hQ==",
+          "requires": {
+            "pino": "7.11.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/relay-api": {
+          "version": "1.0.9",
+          "resolved": "https://registry.npmjs.org/@walletconnect/relay-api/-/relay-api-1.0.9.tgz",
+          "integrity": "sha512-Q3+rylJOqRkO1D9Su0DPE3mmznbAalYapJ9qmzDgK28mYF9alcP3UwG/og5V7l7CFOqzCLi7B8BvcBUrpDj0Rg==",
+          "requires": {
+            "@walletconnect/jsonrpc-types": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/safe-json": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/safe-json/-/safe-json-1.0.2.tgz",
+          "integrity": "sha512-Ogb7I27kZ3LPC3ibn8ldyUr5544t3/STow9+lzz7Sfo808YD7SBWk7SAsdBFlYgP2zDRy2hS3sKRcuSRM0OTmA==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/time": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/time/-/time-1.0.2.tgz",
+          "integrity": "sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/types": {
+          "version": "2.7.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.7.3.tgz",
+          "integrity": "sha512-01U/GwrtokgBfBzLwZQQogkYh/+HBvClO4Oet3bClnyzHZ//Jv3Xf3X9LluNrHaulzPqdc9g7wnFkpjkVqKicQ==",
+          "requires": {
+            "@walletconnect/events": "^1.0.1",
+            "@walletconnect/heartbeat": "1.2.1",
+            "@walletconnect/jsonrpc-types": "^1.0.2",
+            "@walletconnect/keyvaluestorage": "^1.0.2",
+            "@walletconnect/logger": "^2.0.1",
+            "events": "^3.3.0"
+          }
+        },
+        "@walletconnect/window-getters": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/window-getters/-/window-getters-1.0.1.tgz",
+          "integrity": "sha512-vHp+HqzGxORPAN8gY03qnbTMnhqIwjeRJNOMOAzePRg4xVEEE2WvYsI9G2NMjOknA8hnuYbU3/hwLcKbjhc8+Q==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/window-metadata": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/window-metadata/-/window-metadata-1.0.1.tgz",
+          "integrity": "sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==",
+          "requires": {
+            "@walletconnect/window-getters": "^1.0.1",
+            "tslib": "1.14.1"
+          }
+        },
+        "pino": {
+          "version": "7.11.0",
+          "resolved": "https://registry.npmjs.org/pino/-/pino-7.11.0.tgz",
+          "integrity": "sha512-dMACeu63HtRLmCG8VKdy4cShCPKaYDR4youZqoSWLxl5Gu99HUw8bw75thbPv9Nip+H+QYX8o3ZJbTdVZZ2TVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0",
+            "fast-redact": "^3.0.0",
+            "on-exit-leak-free": "^0.2.0",
+            "pino-abstract-transport": "v0.5.0",
+            "pino-std-serializers": "^4.0.0",
+            "process-warning": "^1.0.0",
+            "quick-format-unescaped": "^4.0.3",
+            "real-require": "^0.1.0",
+            "safe-stable-stringify": "^2.1.0",
+            "sonic-boom": "^2.2.1",
+            "thread-stream": "^0.15.1"
+          }
+        },
+        "pino-std-serializers": {
+          "version": "4.0.0",
+          "resolved": "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz",
+          "integrity": "sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q=="
+        },
+        "query-string": {
+          "version": "7.1.3",
+          "resolved": "https://registry.npmjs.org/query-string/-/query-string-7.1.3.tgz",
+          "integrity": "sha512-hh2WYhq4fi8+b+/2Kg9CEge4fDPvHS534aOOvOZeQ3+Vf2mCFsaFBYj0i+iXcAq6I9Vzp5fjMFBlONvayDC1qg==",
+          "requires": {
+            "decode-uri-component": "^0.2.2",
+            "filter-obj": "^1.1.0",
+            "split-on-first": "^1.0.0",
+            "strict-uri-encode": "^2.0.0"
+          }
+        },
+        "sonic-boom": {
+          "version": "2.8.0",
+          "resolved": "https://registry.npmjs.org/sonic-boom/-/sonic-boom-2.8.0.tgz",
+          "integrity": "sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0"
           }
         }
       }

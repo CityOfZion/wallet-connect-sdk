@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-react",
-  "version": "2.4.5",
+  "version": "2.5.0",
   "description": "Wallet-Connect-SDK to be used on React Apps",
   "keywords": [
     "wallet",
@@ -35,10 +35,10 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "2.4.5",
+    "@cityofzion/wallet-connect-sdk-core": "2.5.0",
     "@walletconnect/sign-client": "2.0.0-rc.3",
     "@walletconnect/types": "2.0.0-rc.3",
-    "@cityofzion/neo3-invoker": "1.3.0",
+    "@cityofzion/neo3-invoker": "1.4.1",
     "@cityofzion/neo3-signer": "1.1.0"
   },
   "peerDependencies": {
