@@ -1,5 +1,6 @@
 import { NeonSigner } from '@cityofzion/neon-signer'
 import * as Neon from '@cityofzion/neon-core'
+import { NeonParser } from '@cityofzion/neon-parser'
 import { TAdapterMethodParam } from './types'
 import { NeonInvoker } from '@cityofzion/neon-invoker'
 import {
@@ -9,6 +10,7 @@ import {
   WalletInfo,
   NetworkVersion,
 } from '@cityofzion/wallet-connect-sdk-core'
+import { ContractInvocationMulti } from '@cityofzion/wallet-connect-sdk-core'
 export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
     const rpcURL = await this.getRPCUrl(args)
@@ -28,14 +30,41 @@ export abstract class AbstractWalletConnectNeonAdapter {
     }
   }
 
+  protected convertParams({ session, request }: TAdapterMethodParam) {
+    const params = request.params.request.params as ContractInvocationMulti
+
+    if (session.wccv >= 3) return params
+
+    const invocations = params.invocations.map(invocation => {
+      const args = invocation.args?.map(arg => {
+        if (arg.type === 'ByteArray') {
+          arg.value = NeonParser.base64ToHex(arg.value)
+        }
+        return arg
+      })
+
+      return {
+        ...invocation,
+        args,
+      }
+    })
+
+    return {
+      ...params,
+      invocations,
+    }
+  }
+
   async invokeFunction(args: TAdapterMethodParam): Promise<string> {
     const { invoker } = await this.getServices(args)
-    return await invoker.invokeFunction(args.request.params.request.params)
+    const params = this.convertParams(args)
+    return await invoker.invokeFunction(params)
   }
 
   async testInvoke(args: TAdapterMethodParam): Promise<InvokeResult> {
     const { invoker } = await this.getServices(args)
-    return await invoker.testInvoke(args.request.params.request.params)
+    const params = this.convertParams(args)
+    return await invoker.testInvoke(params)
   }
 
   async signMessage(args: TAdapterMethodParam): Promise<SignedMessage> {

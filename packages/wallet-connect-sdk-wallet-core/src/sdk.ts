@@ -3,8 +3,9 @@ import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
 import EventEmitter from 'events'
 import TypedEmitter from 'typed-emitter'
 import moment from 'moment'
+import queryString from 'querystring'
 import {
-  TApprovalDateStorage,
+  TSessionExtendedStorage,
   TEvents,
   TRejectReason,
   TRequestResult,
@@ -18,10 +19,15 @@ import {
   EStatus,
   TAdapterMethodParam,
 } from './types'
-import { DEFAULT_AUTO_ACCEPT_METHODS, DEFAULT_BLOCKCHAIN, Method } from '@cityofzion/wallet-connect-sdk-core'
+import {
+  DEFAULT_AUTO_ACCEPT_METHODS,
+  DEFAULT_BLOCKCHAIN,
+  Method,
+  COMPATIBILITY_VERSION,
+} from '@cityofzion/wallet-connect-sdk-core'
 import { AbstractWalletConnectNeonAdapter } from './adapter'
 
-const APPROVAL_UNIX_STORAGE_KEY = 'wc-sdk:approvalsUnix'
+const SESSION_EXTENDED_STORAGE_KEY = 'wc-sdk:extended-session'
 const INIT_TIMEOUT = 7000
 
 export class WcWalletSDK {
@@ -45,6 +51,7 @@ export class WcWalletSDK {
   private _requests: TSessionRequest[] = []
   private _status: EStatus = EStatus.NOT_STARTED
   private options: Required<Omit<TOptions, 'adapter'>>
+  private wccvs: Map<string, number> = new Map()
 
   /**
    * To initialize the SDK you need to provide the options
@@ -95,8 +102,12 @@ export class WcWalletSDK {
     this._sessions = sessions
     this.emitter.emit('sessions', sessions)
 
-    const approvals = sessions.map<TApprovalDateStorage>(({ topic, approvalUnix }) => ({ topic, approvalUnix }))
-    this.client?.core.storage.setItem<TApprovalDateStorage[]>(APPROVAL_UNIX_STORAGE_KEY, approvals)
+    const extendedSession = sessions.map<TSessionExtendedStorage>(({ topic, approvalUnix, wccv }) => ({
+      topic,
+      approvalUnix,
+      wccv,
+    }))
+    this.client?.core.storage.setItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY, extendedSession)
   }
 
   /**
@@ -164,15 +175,23 @@ export class WcWalletSDK {
           this.sessions = filtered
         })
 
-        const approvals = await client.core.storage.getItem<TApprovalDateStorage[]>(APPROVAL_UNIX_STORAGE_KEY)
-        this.sessions = client.session.values.map(session => {
-          const approvalUnixStorage = approvals?.find(({ topic }) => topic === session.topic)
+        const extendedSessions = await client.core.storage.getItem<TSessionExtendedStorage[]>(
+          SESSION_EXTENDED_STORAGE_KEY
+        )
+        this.sessions = extendedSessions
+          ? client.session.values
+              .map(session => {
+                const storage = extendedSessions.find(({ topic }) => topic === session.topic)
+                if (!storage) return undefined
 
-          return {
-            ...session,
-            approvalUnix: approvalUnixStorage?.approvalUnix,
-          }
-        })
+                return {
+                  ...session,
+                  approvalUnix: storage.approvalUnix,
+                  wccv: storage.wccv,
+                }
+              })
+              .filter((session): session is TSession => !!session)
+          : []
 
         this.status = EStatus.STARTED
         this.client = client
@@ -190,7 +209,14 @@ export class WcWalletSDK {
    * @return {Promise.void}
    */
   public async connect(uri: string): Promise<void> {
-    await this.signClient.pair({ uri })
+    const [, uriQueryString] = uri.split('?')
+    const queryParams = queryString.parse(uriQueryString)
+    const wccv = Number(queryParams.wccv)
+    if (!wccv) throw new Error('Invalid URI')
+    if (wccv > COMPATIBILITY_VERSION) throw new Error('Incompatible WCCV. Update your wallet to use new features.')
+
+    const { topic } = await this.signClient.pair({ uri })
+    this.wccvs.set(topic, wccv)
   }
 
   /**
@@ -236,7 +262,11 @@ export class WcWalletSDK {
 
       const session = await acknowledged()
       const approvalUnix = moment.utc().unix()
-      const extendedSession = { ...session, approvalUnix }
+
+      const wccv = this.wccvs.get(session.pairingTopic)
+      if (!wccv) throw new Error('WCCV not set')
+
+      const extendedSession = { ...session, approvalUnix, wccv }
       this.sessions = [...this.sessions, extendedSession]
 
       return extendedSession
@@ -245,6 +275,8 @@ export class WcWalletSDK {
     } finally {
       const filteredProposal = this.proposals.filter(({ id }) => id !== proposal.id)
       this.proposals = filteredProposal
+
+      if (proposal.params.pairingTopic) this.wccvs.delete(proposal.params.pairingTopic)
     }
   }
 

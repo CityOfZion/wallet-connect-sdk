@@ -9,12 +9,17 @@
   <br/> Made by <b>COZ.IO</b>
 </p>
 
+- [Compatibility](#compatibility)
 - [Installation](#installation)
 - [Setup](#setup)
 - [Code examples](#code-examples)
 - [Wallet Connect Registry](#wallet-connect-registry)
 - [Complete documentation of each method](https://neon.coz.io/wksdk/core/index.html)
 - [Using with React.js](https://www.npmjs.com/package/@cityofzion/wallet-connect-sdk-react)
+
+## Compatibility
+
+**Compatible with @cityofzion/neo3-invoker@2.4.1.** Check the docs [here](https://github.com/CityOfZion/neo3-invoker)
 
 ## Installation
 
@@ -114,13 +119,10 @@ await wcSdk.disconnect();
 To invoke a SmartContract method you can use `invokeFunction` method.
 
 Neo blockchain expect params with
-`{ type, value }` format, and on `type` you should provide one of the types mentioned
-[here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
+`{ type, value }` format, and on `type` you should provide one of the types mentioned [here](https://neon.coz.io/wksdk/core/interfaces/Argument.html).
 
-WcSdk has some special types to facilitate:
 
-- `Address` (the same thing as `Hash160`)
-- `ScriptHash` (the same thing as `Hash160` but transported to the wallet as HexString)
+WcSdk follows the same interface declared by neo3-invoker, so you can check the examples [here](https://github.com/CityOfZion/neo3-invoker/blob/master/packages/neo3-invoker/README.MD#arguments-examples) if you are unsure about the supported types and values:
 
 To invoke a SmartContract, it's important to know the argument types of the method, this information can be found on Dora.
 On the example below we are invoking the `transfer` method of the [GAS](https://dora.coz.io/contract/neo3/mainnet/0xd2a4cff31913016155e38e474a2c06d08be276cf) token.

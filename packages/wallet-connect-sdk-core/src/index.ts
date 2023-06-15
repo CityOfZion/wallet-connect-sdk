@@ -21,7 +21,7 @@ export type Method = 'invokeFunction'| 'testInvoke'| 'signMessage'| 'verifyMessa
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
  */
-export const COMPATIBILITY_VERSION: number = 2
+export const COMPATIBILITY_VERSION: number = 3
 /**
  * A list of blockchains supported by wallets
  */
@@ -39,16 +39,8 @@ export const SUPPORTED_NETWORKS: NetworkType[] = ['neo3:private', 'neo3:testnet'
 /**
  * A list of auto accept methods supported by wallets
  */
-export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke']
+export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke', "getWalletInfo", "traverseIterator", "getNetworkVersion"]
 
-/**
- * A list of argument types supported by wallets
- */
-export const SUPPORTED_ARG_TYPES = ['Any', 'Signature', 'Boolean', 'Integer', 'Hash160', 'Address', 'ScriptHash', 'Null', 'Hash256',
-    'ByteArray', 'PublicKey', 'String', 'ByteString', 'Array', 'Buffer', 'InteropInterface', 'Void'] as const
-/**
- * A list of networks supported by wallets
- */
 
 export class WcSdkError extends Error {
     payload: unknown
@@ -189,15 +181,22 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
             methods = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage']
         }
 
-        return await this.signClient.connect({
-            requiredNamespaces: {
-                [SUPPORTED_BLOCKCHAINS[0]]: {
-                    chains: [network],
-                    methods,
-                    events: []
-                }
-            }
+        const { approval, uri } = await this.signClient.connect({
+          requiredNamespaces: {
+            [SUPPORTED_BLOCKCHAINS[0]]: {
+              chains: [network],
+              methods,
+              events: [],
+            },
+          },
         })
+        
+        const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
+        
+        return {
+          approval,
+          uri: uriAndWccv,
+        }
     }
 
     /**
@@ -513,11 +512,6 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
                     arg,
                     ['type', 'value']
                 )
-
-                if (SUPPORTED_ARG_TYPES.includes(arg.type)) {
-                    return
-                }
-                throw new Error(`Invalid argument type: ${arg.type}`)
             })
         })
 
