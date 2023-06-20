@@ -1,5 +1,6 @@
 import { NeonSigner } from '@cityofzion/neon-signer'
-import * as Neon from '@cityofzion/neon-core'
+import * as NeonCore from '@cityofzion/neon-core'
+import * as NeonJs from '@cityofzion/neon-js'
 import { NeonParser } from '@cityofzion/neon-parser'
 import { TAdapterMethodParam } from './types'
 import { NeonInvoker } from '@cityofzion/neon-invoker'
@@ -13,19 +14,24 @@ import {
 import { ContractInvocationMulti } from '@cityofzion/wallet-connect-sdk-core'
 export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
-    const rpcURL = await this.getRPCUrl(args)
+    const rpcAddress = await this.getRPCUrl(args)
     const accountString = await this.getAccountString(args)
-    const account = new Neon.wallet.Account(accountString)
+    const account = new NeonCore.wallet.Account(accountString)
+    const signingCallback = await this.getSigningCallback(args)
 
-    const invoker = await NeonInvoker.init(rpcURL, account)
+    const invoker = await NeonInvoker.init({
+      rpcAddress,
+      account,
+      signingCallback,
+    })
     const signer = new NeonSigner(account)
-    const rpcClient = new Neon.rpc.RPCClient(rpcURL)
+    const rpcClient = new NeonCore.rpc.RPCClient(rpcAddress)
 
     return {
       invoker,
       signer,
       rpcClient,
-      rpcURL,
+      rpcAddress,
       account,
     }
   }
@@ -84,12 +90,16 @@ export abstract class AbstractWalletConnectNeonAdapter {
   }
 
   async getNetworkVersion(args: TAdapterMethodParam): Promise<NetworkVersion> {
-    const { rpcClient, rpcURL } = await this.getServices(args)
+    const { rpcClient, rpcAddress } = await this.getServices(args)
     const response = await rpcClient.getVersion()
     return {
-      rpcAddress: rpcURL,
+      rpcAddress,
       ...response,
     }
+  }
+
+  async getSigningCallback(args: TAdapterMethodParam): Promise<NeonJs.api.SigningFunction | undefined> {
+    return undefined
   }
 
   abstract getWalletInfo(args: TAdapterMethodParam): Promise<WalletInfo>

@@ -34,7 +34,7 @@
     "prepare": "run-s build"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-wallet-core": "2.5.0"
+    "@cityofzion/wallet-connect-sdk-wallet-core": "2.5.1"
   },
   "peerDependencies": {
     "react": "*"
