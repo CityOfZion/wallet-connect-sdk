@@ -1288,9 +1288,9 @@
       "integrity": "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="
     },
     "@cityofzion/neo3-invoker": {
-      "version": "1.5.0",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.5.0.tgz",
-      "integrity": "sha512-hfu/D0oHLVjxLT5Dvkllqd1prqYOo2/Xq4Tg+Ycq0MNZdEocux9UbpH0NsJd/vatauzTLOnDsErZj8QCUeD4vw=="
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.5.1.tgz",
+      "integrity": "sha512-P1w9Ajxa3S5lT+cvsjF/ZDpZFuvvg3e/bVC87PBbpD+FysVFsONlZCIomevkSV4LnzCgrxDQ00KzmYOiNHvWcg=="
     },
     "@cityofzion/neo3-parser": {
       "version": "1.6.5",
@@ -1326,11 +1326,11 @@
       }
     },
     "@cityofzion/neon-invoker": {
-      "version": "1.5.0",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-invoker/-/neon-invoker-1.5.0.tgz",
-      "integrity": "sha512-LhfdAalgTyu3cutGXZecFDY0CQ7LoyoIL9px5L0x+TZQyzUnTq1GtggH7/vjzS811G2eknC7oYWoB1/2OhPSJw==",
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neon-invoker/-/neon-invoker-1.5.1.tgz",
+      "integrity": "sha512-71eUsYTSm9MzuZcrNspzak+CQ2s4XHQAqNV+M++rwCCSSKqxMWb8GKuLGAI7muEBZv4l8a19PSlbMASWDfegKA==",
       "requires": {
-        "@cityofzion/neo3-invoker": "1.5.0",
+        "@cityofzion/neo3-invoker": "1.5.1",
         "@cityofzion/neon-core": "5.3.0",
         "@cityofzion/neon-js": "5.3.0",
         "chai": "~4.3.7"
@@ -2095,7 +2095,7 @@
     },
     "@rush-temp/wallet-connect-sdk-react": {
       "version": "file:projects/wallet-connect-sdk-react.tgz",
-      "integrity": "sha512-aBu/74DVxtE+o0HvRObl6a1v+pPhyL/sXjN548TNfTa3D3hu4xLbsdtAXNTnhdSf1KkZnEqc5fWtqSxixMCO8A==",
+      "integrity": "sha512-s5eC6ZOuxO5VYLxDLlLpMQoS77mFeM+FltJWhih2Kq7OZZm1V23rlTy5rZBmA2yJ2AkObJD8OVcAmZWbIvTT5w==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.4.1",
         "@cityofzion/neo3-signer": "1.1.0",
@@ -2129,13 +2129,13 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-core": {
       "version": "file:projects/wallet-connect-sdk-wallet-core.tgz",
-      "integrity": "sha512-n5IttRNrics0YjDOWk8pacH3E8uWRjAWaIDFD0/VxRZTkwpHokEVFMC4Xhm0Ov9YWfmpjc0gKSNXdTOlixUkiw==",
+      "integrity": "sha512-5nC0YcUeouQvUz8hIciDOH3dSWCtVtJqOrQrVZVzJGuKN1uDbjLA+i+SzeepmZQf2kMeQvfh2OSOe6VwbeKzxg==",
       "requires": {
-        "@cityofzion/neo3-invoker": "1.5.0",
+        "@cityofzion/neo3-invoker": "1.5.1",
         "@cityofzion/neo3-parser": "1.6.5",
         "@cityofzion/neo3-signer": "1.1.1",
         "@cityofzion/neon-core": "5.3.0",
-        "@cityofzion/neon-invoker": "1.5.0",
+        "@cityofzion/neon-invoker": "1.5.1",
         "@cityofzion/neon-js": "5.3.0",
         "@cityofzion/neon-parser": "1.6.5",
         "@cityofzion/neon-signer": "1.1.1",
@@ -2346,7 +2346,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-react": {
       "version": "file:projects/wallet-connect-sdk-wallet-react.tgz",
-      "integrity": "sha512-PJYVTM5fuuvfTEh6hl/ZB6MbcNPDLRxQga5lD7fgBozMOalZivuWqbaPmGJ6/w7sLp48VAeg+rsMXejaDdehUw==",
+      "integrity": "sha512-IgEUIJ7ttnAGGHt/d4B9h8jkLyCA7Hwh+I++Lf/MUXDAy44UYyH/zhtzQdMGcEIhe8zvTTbJrP7jqz4iwQzmag==",
       "requires": {
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
