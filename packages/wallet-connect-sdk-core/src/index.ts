@@ -160,8 +160,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         const { uri, approval } = await this.createConnection(network, methods)
 
         if (uri) {
-            const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
-            window.open(`https://neon.coz.io/connect?uri=${uriAndWccv}`, '_blank')?.focus()
+            window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus()
         }
 
         this.session = await approval()
