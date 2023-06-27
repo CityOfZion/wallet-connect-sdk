@@ -2095,7 +2095,7 @@
     },
     "@rush-temp/wallet-connect-sdk-react": {
       "version": "file:projects/wallet-connect-sdk-react.tgz",
-      "integrity": "sha512-s5eC6ZOuxO5VYLxDLlLpMQoS77mFeM+FltJWhih2Kq7OZZm1V23rlTy5rZBmA2yJ2AkObJD8OVcAmZWbIvTT5w==",
+      "integrity": "sha512-KB8tXlFN1DtKubbOFNxQxX3m+7mvBijRuOBOm36BmYt/MJP6deu+N2CJOJcrZ5xAiB1WM37JBPKyUUfEmMWsZg==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.4.1",
         "@cityofzion/neo3-signer": "1.1.0",
@@ -2129,7 +2129,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-core": {
       "version": "file:projects/wallet-connect-sdk-wallet-core.tgz",
-      "integrity": "sha512-5nC0YcUeouQvUz8hIciDOH3dSWCtVtJqOrQrVZVzJGuKN1uDbjLA+i+SzeepmZQf2kMeQvfh2OSOe6VwbeKzxg==",
+      "integrity": "sha512-KEpLeFjFkePJCFb+Hre+ZogX9higYZvvRkiLWv9fU53vNIjAvoBLafhJXXp4fukftj+voD2PtEu+31vP3b7u1Q==",
       "requires": {
         "@cityofzion/neo3-invoker": "1.5.1",
         "@cityofzion/neo3-parser": "1.6.5",
@@ -2149,9 +2149,9 @@
       },
       "dependencies": {
         "@types/node": {
-          "version": "20.3.1",
-          "resolved": "https://registry.npmjs.org/@types/node/-/node-20.3.1.tgz",
-          "integrity": "sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg=="
+          "version": "20.3.2",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-20.3.2.tgz",
+          "integrity": "sha512-vOBLVQeCQfIcF/2Y7eKFTqrMnizK5lRNQ7ykML/5RuwVXVWxYkgwS7xbt4B6fKCUPgbSL5FSsjHQpaGQP/dQmw=="
         },
         "@walletconnect/core": {
           "version": "2.7.3",
@@ -2346,7 +2346,7 @@
     },
     "@rush-temp/wallet-connect-sdk-wallet-react": {
       "version": "file:projects/wallet-connect-sdk-wallet-react.tgz",
-      "integrity": "sha512-IgEUIJ7ttnAGGHt/d4B9h8jkLyCA7Hwh+I++Lf/MUXDAy44UYyH/zhtzQdMGcEIhe8zvTTbJrP7jqz4iwQzmag==",
+      "integrity": "sha512-qPOM8mO9U/G8V1AjX27yRQo3Wju2BDRujR2zVA8eJXmhaljyeJRzo1LJKA2qhq+9dzP0WfOemDRbFUFXw60Yfg==",
       "requires": {
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
