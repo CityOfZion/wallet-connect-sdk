@@ -26,9 +26,11 @@ import {
   COMPATIBILITY_VERSION,
 } from '@cityofzion/wallet-connect-sdk-core'
 import { AbstractWalletConnectNeonAdapter } from './adapter'
+import { sleep } from './utils'
 
 const SESSION_EXTENDED_STORAGE_KEY = 'wc-sdk:extended-session'
 const INIT_TIMEOUT = 7000
+const MIN_TIME_OF_EXECUTION = 250
 
 export class WcWalletSDK {
   /**
@@ -321,7 +323,12 @@ export class WcWalletSDK {
       const adapterMethod = this.adapter[method] as (params: TAdapterMethodParam) => Promise<any>
       if (!adapterMethod || typeof adapterMethod !== 'function') throw new Error('Invalid request method')
 
+      const startExecutionTime = performance.now()
+
       const result = await adapterMethod.apply(this.adapter, [{ request, session }])
+
+      const executionTime = performance.now() - startExecutionTime
+      if (executionTime < MIN_TIME_OF_EXECUTION) await sleep(MIN_TIME_OF_EXECUTION - executionTime)
 
       response = {
         id: request.id,

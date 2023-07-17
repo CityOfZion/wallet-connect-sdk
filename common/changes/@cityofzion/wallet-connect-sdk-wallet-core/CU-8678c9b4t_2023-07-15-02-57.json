@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-core",
+      "comment": "Fix problem in the execution speed of the adapter method",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-core"
+}
