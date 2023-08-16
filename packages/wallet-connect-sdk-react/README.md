@@ -227,6 +227,7 @@ const mySignedMessage = await wcSdk.signMessage({ message: 'My message', version
 // 3) check later if the message was signed by this account
 const valid = await wcSdk.verifyMessage(mySignedMessage)
 ```
+You can use different **versions**, the default is `2`, but you can use `3` to sign a message without salt, and `1` to use the legacy version.
 
 ### Traverse iterator
 
