@@ -1,0 +1,19 @@
+{
+  "name": "wc-vanilla",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.4.0"
+  },
+  "dependencies": {
+    "@cityofzion/wallet-connect-sdk-core": "^2.5.4",
+    "@walletconnect/sign-client": "^2.9.1",
+    "@walletconnect/types": "^2.9.1"
+  }
+}
