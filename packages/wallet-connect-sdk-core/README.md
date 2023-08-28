@@ -1,13 +1,4 @@
-<p align="center">
-  <img
-    src="https://raw.githubusercontent.com/CityOfZion/wallet-connect-sdk/main/.github/resources/images/coz.png"
-    width="200px;">
-</p>
-
-<p align="center">
-  WalletConnect 2.0 Core SDK for Neo
-  <br/> Made by <b>COZ.IO</b>
-</p>
+# WalletConnect SDK Core
 
 - [Installation](#installation)
 - [Setup](#setup)

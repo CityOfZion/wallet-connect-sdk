@@ -1,5 +1,16 @@
+<p align="center">
+  <img
+    src=".github/resources/images/coz.png"
+    width="200px;">
+</p>
+
+<p align="center">
+  A WalletConnect SDK for the Neo3 ecosystem.
+  <br/> Made with ❤ by <b>COZ.IO</b>
+</p>
+
 # WalletConnect SDK
-A COZ WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built to help the usage of
+A [COZ](https://www.coz.io/) WalletConnect 2.0 SDK for ecosystem tools. WcSdk is an auxiliary library built to help the usage of
 [walletconnect](https://github.com/WalletConnect/walletconnect-monorepo) with NEO 3 Wallets.
 
 - [Installation and Setup](#installation-and-setup)

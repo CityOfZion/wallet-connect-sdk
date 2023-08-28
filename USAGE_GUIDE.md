@@ -1,8 +1,8 @@
-## Usage Guide
+# Usage Guide
 
-Before continuing, make sure you followed the [installation and Setup](README.md#installation-and-setup).
+Before continuing, make sure you followed the [Installation and Setup](README.md#installation-and-setup).
 
-### Check if the user is connected
+## Check if the user is connected
 Before doing anything, you should check if the user is connected, to do so, use the `isConnected` method:
 ```js
 if (wcSdk.isConnected()) {
@@ -13,7 +13,7 @@ if (wcSdk.isConnected()) {
 }
 ```
 
-### Connect to the Wallet
+## Connect to the Wallet
 
 Start the process of establishing a new connection to be used when there is no `wcSdk.session`. You'll need to specify which methods you want to authorize:
 
@@ -38,7 +38,7 @@ wcSdk.setSession(session)
 console.log(session ? 'Connected successfully' : 'Connection refused')
 ```
 
-### Disconnect
+## Disconnect
 
 It's interesting to have a button to allow the user to disconnect its wallet, call `disconnect` when this happens:
 
@@ -46,7 +46,7 @@ It's interesting to have a button to allow the user to disconnect its wallet, ca
 await wcSdk.disconnect();
 ```
 
-### Invoking a SmartContract method on NEO 3 Blockchain
+## Invoking a SmartContract method on NEO 3 Blockchain
 
 To invoke a SmartContract method you can use `invokeFunction` method.
 
@@ -104,7 +104,7 @@ const resp = await wcSdk.invokeFunction({
 })
 ```
 
-### Calling TestInvoke
+## Calling TestInvoke
 
 To retrieve information from a SmartContract without persisting any information on the blockchain you can use `testInvoke` method.
 
@@ -130,7 +130,7 @@ const resp = await wcSdk.testInvoke({
 
 ```
 
-### Sign and Verify message
+## Sign and Verify message
 The process of signing and then verifying a message is useful to prove that the user owns a specific account and have
 truly signed your message, stating he agrees with the content. 
 ```ts
@@ -144,7 +144,7 @@ const valid = await wcSdk.verifyMessage(mySignedMessage)
 ```
 You can use different **versions**, the default is `2`, but you can use `3` to sign a message without salt, and `1` to use the legacy version.
 
-### Traverse iterator
+## Traverse iterator
 
 The traverseIterator method allows you to traverse an iterator returned by a SmartContract method.
 
@@ -178,7 +178,7 @@ const iteratorId = resp.stack[0].id as string;
 const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 ```
 
-### Get Wallet Info
+## Get Wallet Info
 
 To get information about the wallet, such as if it is a Ledger wallet, you can use the `getWalletInfo` method.
 
@@ -195,7 +195,7 @@ const walletInfo = await wcSdk.getWalletInfo()
 console.log(walletInfo) // { isLedger: false }
 ```
 
-### Get Network Version
+## Get Network Version
 
 To get the network version, you can use the `getNetworkVersion` method.
 
