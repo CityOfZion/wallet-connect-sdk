@@ -10,8 +10,7 @@ import WcSdk, {
     NetworkType,
     Method
 } from '@cityofzion/wallet-connect-sdk-core'
-import { ContractInvocationMulti, Neo3Invoker, StackItemJson } from '@cityofzion/neo3-invoker'
-import { Neo3Signer } from '@cityofzion/neo3-signer'
+import { ContractInvocationMulti, EncryptedPayload, Neo3Invoker, Neo3Signer, RpcResponseStackItem } from '@cityofzion/neon-dappkit-types'
 
 interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
     /**
@@ -178,7 +177,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         return await getSdkOrError().verifyMessage(params)
     },[getSdkOrError])
 
-    const traverseIterator = useCallback(async (sessionId: string, iteratorId: string, count:number): Promise<StackItemJson[]> => {
+    const traverseIterator = useCallback(async (sessionId: string, iteratorId: string, count:number): Promise<RpcResponseStackItem[]> => {
         return await getSdkOrError().traverseIterator(sessionId, iteratorId, count)
     },[getSdkOrError])
 
@@ -189,6 +188,18 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
     const getNetworkVersion = useCallback(async (): Promise<NetworkVersion> => {
         return await getSdkOrError().getNetworkVersion()
     },[getSdkOrError])
+
+    const decrypt = useCallback(async (payload: EncryptedPayload): Promise<string> => {
+        return await getSdkOrError().decrypt(payload)
+    }, [getSdkOrError])
+
+    const encrypt = useCallback(async (message: string, publicKeys: string[]) => {
+        return await getSdkOrError().encrypt(message, publicKeys)
+    }, [getSdkOrError])
+
+    const decryptFromArray = useCallback(async (payloads: EncryptedPayload[]) => {
+        return await getSdkOrError().decryptFromArray(payloads)
+    }, [getSdkOrError])
 
     useEffect(() => {
         (async () => {
@@ -232,7 +243,9 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         testInvoke,
         signMessage,
         verifyMessage,
-        
+        encrypt,
+        decrypt,
+        decryptFromArray
     }
 
     return (

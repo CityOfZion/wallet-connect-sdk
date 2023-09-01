@@ -1,9 +1,7 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
-import { InvokeResult, GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
-import { ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, StackItemJson } from '@cityofzion/neo3-invoker'
-import { Neo3Signer, SignMessagePayload, SignedMessage } from '@cityofzion/neo3-signer'
-
+import { GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
+import { Neo3Signer, SignMessagePayload, SignedMessage, ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, RpcResponseStackItem, EncryptedPayload, InvokeResult, DecryptFromArrayResult } from '@cityofzion/neon-dappkit-types'
 /**
  * If JavaScript users try to use the connect methods without the methods, they will receive a warning.
  * This constant should be removed on later versions.
@@ -16,7 +14,7 @@ export type Chain = "private" | "testnet" | "mainnet"
 
 export type NetworkType = `${Blockchain}:${Chain}`
 
-export type Method = 'invokeFunction'| 'testInvoke'| 'signMessage'| 'verifyMessage'| 'traverseIterator'| 'getWalletInfo' | "getNetworkVersion"
+export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion"
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -44,7 +42,7 @@ export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke', "getWalletIn
 
 export class WcSdkError extends Error {
     payload: unknown
-    constructor (payload: unknown) {
+    constructor(payload: unknown) {
         super()
         this.payload = payload
     }
@@ -77,7 +75,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param client SignClient of the original WalletConnect library
      * @param initSession An optional existing session object
      */
-    constructor (client: SignClient, initSession?: SessionTypes.Struct) {
+    constructor(client: SignClient, initSession?: SessionTypes.Struct) {
         this.signClient = client
         if (initSession) {
             this.session = initSession
@@ -87,14 +85,14 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     /**
      * returns if the session is connected
      */
-    isConnected (): boolean {
+    isConnected(): boolean {
         return !!this.session
     }
 
     /**
      * returns the chain id of the connected wallet
      */
-    getChainId (): NetworkType | string | null {
+    getChainId(): NetworkType | string | null {
         const info = this.getAccountInfo()
         return info && `${info[0]}:${info[1]}`
     }
@@ -102,12 +100,12 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     /**
      * returns the address of the connected account of the wallet
      */
-    getAccountAddress (): string | null {
+    getAccountAddress(): string | null {
         const info = this.getAccountInfo()
         return info && info[2]
     }
 
-    private getAccountInfo (): string[] | null {
+    private getAccountInfo(): string[] | null {
         const theOnlyBlockchain = SUPPORTED_BLOCKCHAINS[0]
         const accounts = this.session?.namespaces[theOnlyBlockchain].accounts
         if (!accounts?.length) {
@@ -119,7 +117,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     /**
      * subscribe to disconnect events and finishes the session
      */
-    manageDisconnect (): void {
+    manageDisconnect(): void {
         this.signClient.on('session_delete', async () => {
             this.session = null
         })
@@ -128,7 +126,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     /**
      * loads the session to be used on the application
      */
-    loadSession (): SessionTypes.Struct | null {
+    loadSession(): SessionTypes.Struct | null {
         if (this.signClient.session.values[0]) {
             this.session = this.signClient.session.values[0]
         }
@@ -140,7 +138,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * Executes `managePairing` and `manageDisconnect`
      * The perfect combination to be executed after the page load
      */
-    async manageSession (): Promise<SessionTypes.Struct | null> {
+    async manageSession(): Promise<SessionTypes.Struct | null> {
         this.manageDisconnect()
         return this.loadSession()
     }
@@ -152,7 +150,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param methods An array of methods used on your application, choose between the methods of the documentation
      */
     async connect(network: NetworkType, methods: Method[]): Promise<SessionTypes.Struct> {
-        if (methods === undefined){
+        if (methods === undefined) {
             console.warn(defaultMethodRemovedWarning)
             methods = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage']
         }
@@ -174,34 +172,34 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
      * @param methods An array of methods used on your application, choose between the methods of the documentation.
      */
-    async createConnection (network: NetworkType, methods: Method[]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct>}> {
-        if (methods === undefined){
+    async createConnection(network: NetworkType, methods: Method[]): Promise<{ uri?: string, approval: () => Promise<SessionTypes.Struct> }> {
+        if (methods === undefined) {
             console.warn(defaultMethodRemovedWarning)
             methods = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage']
         }
 
         const { approval, uri } = await this.signClient.connect({
-          requiredNamespaces: {
-            [SUPPORTED_BLOCKCHAINS[0]]: {
-              chains: [network],
-              methods,
-              events: [],
+            requiredNamespaces: {
+                [SUPPORTED_BLOCKCHAINS[0]]: {
+                    chains: [network],
+                    methods,
+                    events: [],
+                },
             },
-          },
         })
-        
+
         const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
-        
+
         return {
-          approval,
-          uri: uriAndWccv,
+            approval,
+            uri: uriAndWccv,
         }
     }
 
     /**
      * disconnects from the wallet
      */
-    async disconnect (): Promise<void> {
+    async disconnect(): Promise<void> {
         if (!this.session) return
 
         await this.signClient.disconnect({
@@ -253,7 +251,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param params the contract invocation options
      * @return the call result promise. It might only contain the transactionId, another call to the blockchain might be necessary to check the result.
      */
-    async invokeFunction (params: ContractInvocationMulti): Promise<string> {
+    async invokeFunction(params: ContractInvocationMulti): Promise<string> {
         this.validateContractInvocationMulti(params)
 
         const request = {
@@ -316,7 +314,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
      * @param params the contract invocation options
      * @return the call result promise
      */
-    async testInvoke (params: ContractInvocationMulti): Promise<InvokeResult> {
+    async testInvoke(params: ContractInvocationMulti): Promise<InvokeResult> {
         this.validateContractInvocationMulti(params)
 
         const request = {
@@ -405,7 +403,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         sessionId: string,
         iteratorId: string,
         count: number
-    ): Promise<StackItemJson[]> {
+    ): Promise<RpcResponseStackItem[]> {
         const request = {
             id: 1,
             jsonrpc: "2.0",
@@ -423,7 +421,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
             throw new WcSdkError(resp);
         }
 
-        return resp as StackItemJson[];
+        return resp as RpcResponseStackItem[];
     }
 
     /**
@@ -476,7 +474,67 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         return resp as NetworkVersion;
     }
 
-    private validateContractInvocationMulti (request: ContractInvocationMulti): boolean {
+    async encrypt(message: string, publicKeys: string[]): Promise<EncryptedPayload[]> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "encrypt",
+            params: [message, publicKeys]
+        }
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request
+        })
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as EncryptedPayload[]
+    }
+
+    async decrypt(payload: EncryptedPayload): Promise<string> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "decrypt",
+            params: [payload]
+        }
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request
+        })
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as string
+    }
+
+    async decryptFromArray(payloads: EncryptedPayload[]): Promise<DecryptFromArrayResult> {
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "decryptFromArray",
+            params: [payloads]
+        }
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? "",
+            chainId: this.getChainId() ?? "",
+            request
+        })
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as DecryptFromArrayResult
+    }
+
+    private validateContractInvocationMulti(request: ContractInvocationMulti): boolean {
         // verify fields
         this.objectValidation(request, ['signers', 'invocations'])
 
@@ -517,7 +575,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         return true
     }
 
-    private objectValidation (object: Arg | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
+    private objectValidation(object: Arg | ContractInvocation | ContractInvocationMulti, keys: string[]): boolean {
         const objectKeys = Object.keys(object)
 
         keys.forEach((req) => {
@@ -529,6 +587,4 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     }
 }
 
-export type { InvokeResult } from '@cityofzion/neon-core/lib/rpc'
-export * from "@cityofzion/neo3-invoker";
-export * from "@cityofzion/neo3-signer";
+export * from "@cityofzion/neon-dappkit-types"

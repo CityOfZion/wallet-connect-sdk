@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-react",
+      "comment": "New encryption methods: The encrypt, decrypt, and encrypt From Array methods have been implemented",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-react"
+}
