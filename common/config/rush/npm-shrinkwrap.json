@@ -1279,21 +1279,6 @@
       "resolved": "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz",
       "integrity": "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="
     },
-    "@cityofzion/neo3-invoker": {
-      "version": "1.4.1",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.4.1.tgz",
-      "integrity": "sha512-2BNSQRydNuGZi7wam/kdvCoTw8m3wq1zbC6QBkkS9maRO/gliLEgDj0hjBazaP+slqtwR8DMdQsgbonJ9oIYEA=="
-    },
-    "@cityofzion/neo3-parser": {
-      "version": "1.6.5",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-parser/-/neo3-parser-1.6.5.tgz",
-      "integrity": "sha512-0pv+odXwLA0X661f4UJZO7HErkt/2KZ22M9lHd98OAUT99M22i+XBaGrK2GqbLuzVAvoOEW73kSyhhz6Z9uUYg=="
-    },
-    "@cityofzion/neo3-signer": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.0.tgz",
-      "integrity": "sha512-mUJNF5gOuX1aGdbuOwZ+nke03y2GavzYwnti8dr8kzm6lNbn5npLsy4vSHxfgS+gt+TYEeZTtnlf87QkjkEiNQ=="
-    },
     "@cityofzion/neon-api": {
       "version": "5.4.0",
       "resolved": "https://registry.npmjs.org/@cityofzion/neon-api/-/neon-api-5.4.0.tgz",
@@ -1317,16 +1302,40 @@
       }
     },
     "@cityofzion/neon-dappkit": {
-      "version": "0.0.5",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-dappkit/-/neon-dappkit-0.0.5.tgz",
-      "integrity": "sha512-rbGp0Fq1VkeZhXvrQUsfYUarqUL6a1Swb9e485RWbHxMbwwjIP2Sq0JotnM8gYyGRoMYhziDUuVqt4eEGkpRYQ==",
+      "version": "0.0.6",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neon-dappkit/-/neon-dappkit-0.0.6.tgz",
+      "integrity": "sha512-LiuT8oqDvQ7pHWBMncpXyvdBDQ+mxrEGTjU+xZTKEdw+tKGLcLM2wuPi4HrP4n+3EBRGQmKXihmsgYLxYFHmWQ==",
       "requires": {
-        "@cityofzion/neon-core": "5.5.0",
-        "@cityofzion/neon-dappkit-types": "0.0.5",
-        "@cityofzion/neon-js": "5.5.0",
+        "@cityofzion/neon-core": "5.5.1",
+        "@cityofzion/neon-dappkit-types": "0.0.6",
+        "@cityofzion/neon-js": "5.5.1",
         "crypto-js": "^4.1.1",
         "elliptic": "^6.5.4",
         "randombytes": "^2.1.0"
+      },
+      "dependencies": {
+        "@cityofzion/neon-core": {
+          "version": "5.5.1",
+          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.5.1.tgz",
+          "integrity": "sha512-cqJ+RYTdUVoUl2e3I5bqgAvYFuqGd2M8lmgUgH/+kf0zS0b8EuKwliauJ2EA56fudwaXtCmmHZTfRBFs+RJ2vw==",
+          "requires": {
+            "bn.js": "5.2.1",
+            "bs58": "5.0.0",
+            "buffer": "6.0.3",
+            "cross-fetch": "^3.1.5",
+            "crypto-js": "4.1.1",
+            "elliptic": "6.5.4",
+            "ethereum-cryptography": "2.0.0",
+            "lodash": "4.17.21",
+            "loglevel": "1.8.1",
+            "loglevel-plugin-prefix": "0.8.4"
+          }
+        },
+        "@cityofzion/neon-dappkit-types": {
+          "version": "0.0.6",
+          "resolved": "https://registry.npmjs.org/@cityofzion/neon-dappkit-types/-/neon-dappkit-types-0.0.6.tgz",
+          "integrity": "sha512-Q4tkH5SFQhdRBf+tky8H0oCu2BNPALlwadENWsFLgbd5U6LhsAKZtU7mEh/3dQ9v4jq2ll2ZW9Aab+ntXXgOVg=="
+        }
       }
     },
     "@cityofzion/neon-dappkit-types": {
@@ -1334,529 +1343,30 @@
       "resolved": "https://registry.npmjs.org/@cityofzion/neon-dappkit-types/-/neon-dappkit-types-0.0.5.tgz",
       "integrity": "sha512-SRjmfzgI1aNhXdKby4gRrJBveFeSAdttSaLwNfQ/Xq19VwM2NOf2NATg7wDrtTY4sQLKwCyPjPaAePZwKLP8Xw=="
     },
-    "@cityofzion/neon-invoker": {
-      "version": "1.5.1",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-invoker/-/neon-invoker-1.5.1.tgz",
-      "integrity": "sha512-71eUsYTSm9MzuZcrNspzak+CQ2s4XHQAqNV+M++rwCCSSKqxMWb8GKuLGAI7muEBZv4l8a19PSlbMASWDfegKA==",
-      "requires": {
-        "@cityofzion/neo3-invoker": "1.5.1",
-        "@cityofzion/neon-core": "5.3.0",
-        "@cityofzion/neon-js": "5.3.0",
-        "chai": "~4.3.7"
-      },
-      "dependencies": {
-        "@cityofzion/neo3-invoker": {
-          "version": "1.5.1",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.5.1.tgz",
-          "integrity": "sha512-P1w9Ajxa3S5lT+cvsjF/ZDpZFuvvg3e/bVC87PBbpD+FysVFsONlZCIomevkSV4LnzCgrxDQ00KzmYOiNHvWcg=="
-        },
-        "@cityofzion/neon-core": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.3.0.tgz",
-          "integrity": "sha512-iOHY7rFuDZavH87klFIxOYpu3PnPm6pS1xY7qhkFrRtcuTqRBMzhoZstE70XLDh01ujC5y2+gXvgz4OOpzgdXQ==",
-          "requires": {
-            "abort-controller": "3.0.0",
-            "bn.js": "5.2.0",
-            "bs58": "5.0.0",
-            "buffer": "6.0.3",
-            "cross-fetch": "^3.1.5",
-            "crypto-js": "4.1.1",
-            "elliptic": "6.5.4",
-            "lodash": "4.17.21",
-            "loglevel": "1.8.0",
-            "loglevel-plugin-prefix": "0.8.4",
-            "scrypt-js": "3.0.1"
-          }
-        },
-        "@cityofzion/neon-js": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.3.0.tgz",
-          "integrity": "sha512-mtKBtYJoTJjJFnGw6Lrlo0OU2XGfPR4w71XIFfDfmoroadbRrZdVDn8KLhuJRXJP+atYJB3f0DmW6e6Ptp0M6g==",
-          "requires": {
-            "@cityofzion/neon-api": "^5.2.2",
-            "@cityofzion/neon-core": "^5.3.0"
-          }
-        },
-        "bn.js": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
-          "integrity": "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-        },
-        "loglevel": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz",
-          "integrity": "sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA=="
-        }
-      }
-    },
     "@cityofzion/neon-js": {
-      "version": "5.5.0",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.5.0.tgz",
-      "integrity": "sha512-S6lYJa9+2UQnRAkCytoNbQaynMsPhdJBTrsvvV1PoAUhVVaaO5aR0rJB+mMMk686y537Bn8vJFXbT+HSAdw1Kg==",
+      "version": "5.5.1",
+      "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.5.1.tgz",
+      "integrity": "sha512-iCoE5PGKy3Kj36dR3aevkVOKK4yB1Mq/0WEUQzrzMkGOGBNJXa2+cTtmSi39tDkgxSHibvS77S5oZ6QGIXMCdg==",
       "requires": {
         "@cityofzion/neon-api": "^5.4.0",
-        "@cityofzion/neon-core": "^5.5.0"
-      }
-    },
-    "@cityofzion/neon-parser": {
-      "version": "1.6.5",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-parser/-/neon-parser-1.6.5.tgz",
-      "integrity": "sha512-ekSHeYJdbf+07+X3gK2AS1LVT4xyxBBfgJmgENYbaVjIXQrGHAyZUy+vA9vocR5hJ3ABPjYoa4a5lCqWrQv0Iw==",
-      "requires": {
-        "@cityofzion/neo3-parser": "1.6.5",
-        "@cityofzion/neon-core": "5.3.0",
-        "@cityofzion/neon-js": "5.3.0"
+        "@cityofzion/neon-core": "^5.5.1"
       },
       "dependencies": {
         "@cityofzion/neon-core": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.3.0.tgz",
-          "integrity": "sha512-iOHY7rFuDZavH87klFIxOYpu3PnPm6pS1xY7qhkFrRtcuTqRBMzhoZstE70XLDh01ujC5y2+gXvgz4OOpzgdXQ==",
+          "version": "5.5.1",
+          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.5.1.tgz",
+          "integrity": "sha512-cqJ+RYTdUVoUl2e3I5bqgAvYFuqGd2M8lmgUgH/+kf0zS0b8EuKwliauJ2EA56fudwaXtCmmHZTfRBFs+RJ2vw==",
           "requires": {
-            "abort-controller": "3.0.0",
-            "bn.js": "5.2.0",
+            "bn.js": "5.2.1",
             "bs58": "5.0.0",
             "buffer": "6.0.3",
             "cross-fetch": "^3.1.5",
             "crypto-js": "4.1.1",
             "elliptic": "6.5.4",
+            "ethereum-cryptography": "2.0.0",
             "lodash": "4.17.21",
-            "loglevel": "1.8.0",
-            "loglevel-plugin-prefix": "0.8.4",
-            "scrypt-js": "3.0.1"
-          }
-        },
-        "@cityofzion/neon-js": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.3.0.tgz",
-          "integrity": "sha512-mtKBtYJoTJjJFnGw6Lrlo0OU2XGfPR4w71XIFfDfmoroadbRrZdVDn8KLhuJRXJP+atYJB3f0DmW6e6Ptp0M6g==",
-          "requires": {
-            "@cityofzion/neon-api": "^5.2.2",
-            "@cityofzion/neon-core": "^5.3.0"
-          }
-        },
-        "bn.js": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
-          "integrity": "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-        },
-        "loglevel": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz",
-          "integrity": "sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA=="
-        }
-      }
-    },
-    "@cityofzion/neon-signer": {
-      "version": "1.1.1",
-      "resolved": "https://registry.npmjs.org/@cityofzion/neon-signer/-/neon-signer-1.1.1.tgz",
-      "integrity": "sha512-lOQF9B1XsGwkkHbUuSprWfE+HOhlgbLdoLQeFpvnqmb4NA806wWXxbAgRKN4Xt1SLu7Z8MioM4JOVBxXVooO4Q==",
-      "requires": {
-        "@cityofzion/neo3-signer": "1.1.1",
-        "@cityofzion/neon-core": "5.3.0",
-        "@cityofzion/neon-js": "5.3.0",
-        "randombytes": "^2.1.0"
-      },
-      "dependencies": {
-        "@cityofzion/neo3-signer": {
-          "version": "1.1.1",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.1.tgz",
-          "integrity": "sha512-f0JtZajh+brWzXTAp8O9HgM6uLRTHnj6SIGdT/sb9UYHXBd2zB/phrAd9SDJ+tvUFSz7D6Jrek/crCUIaka0Fg=="
-        },
-        "@cityofzion/neon-core": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.3.0.tgz",
-          "integrity": "sha512-iOHY7rFuDZavH87klFIxOYpu3PnPm6pS1xY7qhkFrRtcuTqRBMzhoZstE70XLDh01ujC5y2+gXvgz4OOpzgdXQ==",
-          "requires": {
-            "abort-controller": "3.0.0",
-            "bn.js": "5.2.0",
-            "bs58": "5.0.0",
-            "buffer": "6.0.3",
-            "cross-fetch": "^3.1.5",
-            "crypto-js": "4.1.1",
-            "elliptic": "6.5.4",
-            "lodash": "4.17.21",
-            "loglevel": "1.8.0",
-            "loglevel-plugin-prefix": "0.8.4",
-            "scrypt-js": "3.0.1"
-          }
-        },
-        "@cityofzion/neon-js": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.3.0.tgz",
-          "integrity": "sha512-mtKBtYJoTJjJFnGw6Lrlo0OU2XGfPR4w71XIFfDfmoroadbRrZdVDn8KLhuJRXJP+atYJB3f0DmW6e6Ptp0M6g==",
-          "requires": {
-            "@cityofzion/neon-api": "^5.2.2",
-            "@cityofzion/neon-core": "^5.3.0"
-          }
-        },
-        "bn.js": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
-          "integrity": "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-        },
-        "loglevel": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz",
-          "integrity": "sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA=="
-        }
-      }
-    },
-    "@cityofzion/wallet-connect-sdk-core": {
-      "version": "2.5.4",
-      "resolved": "https://registry.npmjs.org/@cityofzion/wallet-connect-sdk-core/-/wallet-connect-sdk-core-2.5.4.tgz",
-      "integrity": "sha512-vPkwpRuPsrJ0sIGvPkbKQmVgqESpGIR2BnNatCZoBZr0k5mTi66ji+CqZi68/mbIh01AIOs0Mdg9MnXCHkmhBA==",
-      "requires": {
-        "@cityofzion/neo3-invoker": "1.4.1",
-        "@cityofzion/neo3-signer": "1.1.0",
-        "@cityofzion/neon-core": "5.3.0",
-        "@walletconnect/sign-client": "2.0.0-rc.3",
-        "@walletconnect/types": "2.0.0-rc.3"
-      },
-      "dependencies": {
-        "@cityofzion/neon-core": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.3.0.tgz",
-          "integrity": "sha512-iOHY7rFuDZavH87klFIxOYpu3PnPm6pS1xY7qhkFrRtcuTqRBMzhoZstE70XLDh01ujC5y2+gXvgz4OOpzgdXQ==",
-          "requires": {
-            "abort-controller": "3.0.0",
-            "bn.js": "5.2.0",
-            "bs58": "5.0.0",
-            "buffer": "6.0.3",
-            "cross-fetch": "^3.1.5",
-            "crypto-js": "4.1.1",
-            "elliptic": "6.5.4",
-            "lodash": "4.17.21",
-            "loglevel": "1.8.0",
-            "loglevel-plugin-prefix": "0.8.4",
-            "scrypt-js": "3.0.1"
-          }
-        },
-        "bn.js": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
-          "integrity": "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-        },
-        "loglevel": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz",
-          "integrity": "sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA=="
-        }
-      }
-    },
-    "@cityofzion/wallet-connect-sdk-wallet-core": {
-      "version": "2.5.4",
-      "resolved": "https://registry.npmjs.org/@cityofzion/wallet-connect-sdk-wallet-core/-/wallet-connect-sdk-wallet-core-2.5.4.tgz",
-      "integrity": "sha512-+G5CCtzBdFgCbCpDWn0Tk32qP1d4WMqEgxATGcLCWNV/G8mM35wXDXLcQ5B2NrGZtZ/4p1INhhXmViOZ5kbxkg==",
-      "requires": {
-        "@cityofzion/neo3-invoker": "1.5.1",
-        "@cityofzion/neo3-parser": "1.6.5",
-        "@cityofzion/neo3-signer": "1.1.1",
-        "@cityofzion/neon-core": "5.3.0",
-        "@cityofzion/neon-invoker": "1.5.1",
-        "@cityofzion/neon-js": "5.3.0",
-        "@cityofzion/neon-parser": "1.6.5",
-        "@cityofzion/neon-signer": "1.1.1",
-        "@cityofzion/wallet-connect-sdk-core": "2.5.4",
-        "@walletconnect/sign-client": "2.7.3",
-        "@walletconnect/types": "2.7.3",
-        "moment": "^2.29.4"
-      },
-      "dependencies": {
-        "@cityofzion/neo3-invoker": {
-          "version": "1.5.1",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-invoker/-/neo3-invoker-1.5.1.tgz",
-          "integrity": "sha512-P1w9Ajxa3S5lT+cvsjF/ZDpZFuvvg3e/bVC87PBbpD+FysVFsONlZCIomevkSV4LnzCgrxDQ00KzmYOiNHvWcg=="
-        },
-        "@cityofzion/neo3-signer": {
-          "version": "1.1.1",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neo3-signer/-/neo3-signer-1.1.1.tgz",
-          "integrity": "sha512-f0JtZajh+brWzXTAp8O9HgM6uLRTHnj6SIGdT/sb9UYHXBd2zB/phrAd9SDJ+tvUFSz7D6Jrek/crCUIaka0Fg=="
-        },
-        "@cityofzion/neon-core": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-core/-/neon-core-5.3.0.tgz",
-          "integrity": "sha512-iOHY7rFuDZavH87klFIxOYpu3PnPm6pS1xY7qhkFrRtcuTqRBMzhoZstE70XLDh01ujC5y2+gXvgz4OOpzgdXQ==",
-          "requires": {
-            "abort-controller": "3.0.0",
-            "bn.js": "5.2.0",
-            "bs58": "5.0.0",
-            "buffer": "6.0.3",
-            "cross-fetch": "^3.1.5",
-            "crypto-js": "4.1.1",
-            "elliptic": "6.5.4",
-            "lodash": "4.17.21",
-            "loglevel": "1.8.0",
-            "loglevel-plugin-prefix": "0.8.4",
-            "scrypt-js": "3.0.1"
-          }
-        },
-        "@cityofzion/neon-js": {
-          "version": "5.3.0",
-          "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.3.0.tgz",
-          "integrity": "sha512-mtKBtYJoTJjJFnGw6Lrlo0OU2XGfPR4w71XIFfDfmoroadbRrZdVDn8KLhuJRXJP+atYJB3f0DmW6e6Ptp0M6g==",
-          "requires": {
-            "@cityofzion/neon-api": "^5.2.2",
-            "@cityofzion/neon-core": "^5.3.0"
-          }
-        },
-        "@stablelib/x25519": {
-          "version": "1.0.3",
-          "resolved": "https://registry.npmjs.org/@stablelib/x25519/-/x25519-1.0.3.tgz",
-          "integrity": "sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==",
-          "requires": {
-            "@stablelib/keyagreement": "^1.0.1",
-            "@stablelib/random": "^1.0.2",
-            "@stablelib/wipe": "^1.0.1"
-          }
-        },
-        "@walletconnect/core": {
-          "version": "2.7.3",
-          "resolved": "https://registry.npmjs.org/@walletconnect/core/-/core-2.7.3.tgz",
-          "integrity": "sha512-Ldb9ZE74jpivioW+Z65Lc5XVuddDQcqmXjmuZleliQwwg8USKi4qjiC3A3796jzGUCIdgKVHN1ZkudkXo2CSNw==",
-          "requires": {
-            "@walletconnect/heartbeat": "1.2.1",
-            "@walletconnect/jsonrpc-provider": "^1.0.12",
-            "@walletconnect/jsonrpc-utils": "^1.0.7",
-            "@walletconnect/jsonrpc-ws-connection": "^1.0.11",
-            "@walletconnect/keyvaluestorage": "^1.0.2",
-            "@walletconnect/logger": "^2.0.1",
-            "@walletconnect/relay-api": "^1.0.9",
-            "@walletconnect/relay-auth": "^1.0.4",
-            "@walletconnect/safe-json": "^1.0.2",
-            "@walletconnect/time": "^1.0.2",
-            "@walletconnect/types": "2.7.3",
-            "@walletconnect/utils": "2.7.3",
-            "events": "^3.3.0",
-            "lodash.isequal": "4.5.0",
-            "uint8arrays": "^3.1.0"
-          }
-        },
-        "@walletconnect/events": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/events/-/events-1.0.1.tgz",
-          "integrity": "sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==",
-          "requires": {
-            "keyvaluestorage-interface": "^1.0.0",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/heartbeat": {
-          "version": "1.2.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/heartbeat/-/heartbeat-1.2.1.tgz",
-          "integrity": "sha512-yVzws616xsDLJxuG/28FqtZ5rzrTA4gUjdEMTbWB5Y8V1XHRmqq4efAxCw5ie7WjbXFSUyBHaWlMR+2/CpQC5Q==",
-          "requires": {
-            "@walletconnect/events": "^1.0.1",
-            "@walletconnect/time": "^1.0.2",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/jsonrpc-provider": {
-          "version": "1.0.13",
-          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-provider/-/jsonrpc-provider-1.0.13.tgz",
-          "integrity": "sha512-K73EpThqHnSR26gOyNEL+acEex3P7VWZe6KE12ZwKzAt2H4e5gldZHbjsu2QR9cLeJ8AXuO7kEMOIcRv1QEc7g==",
-          "requires": {
-            "@walletconnect/jsonrpc-utils": "^1.0.8",
-            "@walletconnect/safe-json": "^1.0.2",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/jsonrpc-utils": {
-          "version": "1.0.8",
-          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-utils/-/jsonrpc-utils-1.0.8.tgz",
-          "integrity": "sha512-vdeb03bD8VzJUL6ZtzRYsFMq1eZQcM3EAzT0a3st59dyLfJ0wq+tKMpmGH7HlB7waD858UWgfIcudbPFsbzVdw==",
-          "requires": {
-            "@walletconnect/environment": "^1.0.1",
-            "@walletconnect/jsonrpc-types": "^1.0.3",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/jsonrpc-ws-connection": {
-          "version": "1.0.13",
-          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-ws-connection/-/jsonrpc-ws-connection-1.0.13.tgz",
-          "integrity": "sha512-mfOM7uFH4lGtQxG+XklYuFBj6dwVvseTt5/ahOkkmpcAEgz2umuzu7fTR+h5EmjQBdrmYyEBOWADbeaFNxdySg==",
-          "requires": {
-            "@walletconnect/jsonrpc-utils": "^1.0.6",
-            "@walletconnect/safe-json": "^1.0.2",
-            "events": "^3.3.0",
-            "tslib": "1.14.1",
-            "ws": "^7.5.1"
-          }
-        },
-        "@walletconnect/keyvaluestorage": {
-          "version": "1.0.2",
-          "resolved": "https://registry.npmjs.org/@walletconnect/keyvaluestorage/-/keyvaluestorage-1.0.2.tgz",
-          "integrity": "sha512-U/nNG+VLWoPFdwwKx0oliT4ziKQCEoQ27L5Hhw8YOFGA2Po9A9pULUYNWhDgHkrb0gYDNt//X7wABcEWWBd3FQ==",
-          "requires": {
-            "safe-json-utils": "^1.1.1",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/logger": {
-          "version": "2.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/logger/-/logger-2.0.1.tgz",
-          "integrity": "sha512-SsTKdsgWm+oDTBeNE/zHxxr5eJfZmE9/5yp/Ku+zJtcTAjELb3DXueWkDXmE9h8uHIbJzIb5wj5lPdzyrjT6hQ==",
-          "requires": {
-            "pino": "7.11.0",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/relay-api": {
-          "version": "1.0.9",
-          "resolved": "https://registry.npmjs.org/@walletconnect/relay-api/-/relay-api-1.0.9.tgz",
-          "integrity": "sha512-Q3+rylJOqRkO1D9Su0DPE3mmznbAalYapJ9qmzDgK28mYF9alcP3UwG/og5V7l7CFOqzCLi7B8BvcBUrpDj0Rg==",
-          "requires": {
-            "@walletconnect/jsonrpc-types": "^1.0.2",
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/relay-auth": {
-          "version": "1.0.4",
-          "resolved": "https://registry.npmjs.org/@walletconnect/relay-auth/-/relay-auth-1.0.4.tgz",
-          "integrity": "sha512-kKJcS6+WxYq5kshpPaxGHdwf5y98ZwbfuS4EE/NkQzqrDFm5Cj+dP8LofzWvjrrLkZq7Afy7WrQMXdLy8Sx7HQ==",
-          "requires": {
-            "@stablelib/ed25519": "^1.0.2",
-            "@stablelib/random": "^1.0.1",
-            "@walletconnect/safe-json": "^1.0.1",
-            "@walletconnect/time": "^1.0.2",
-            "tslib": "1.14.1",
-            "uint8arrays": "^3.0.0"
-          }
-        },
-        "@walletconnect/safe-json": {
-          "version": "1.0.2",
-          "resolved": "https://registry.npmjs.org/@walletconnect/safe-json/-/safe-json-1.0.2.tgz",
-          "integrity": "sha512-Ogb7I27kZ3LPC3ibn8ldyUr5544t3/STow9+lzz7Sfo808YD7SBWk7SAsdBFlYgP2zDRy2hS3sKRcuSRM0OTmA==",
-          "requires": {
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/sign-client": {
-          "version": "2.7.3",
-          "resolved": "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.7.3.tgz",
-          "integrity": "sha512-QDlgBv0EoMt1OQ7SjUJA8DSx3zcKvBcKDueETYUPwP29i1Mc5gSozrpzEoSLcH3TVTt4bTcTEkqVvGvWsglJig==",
-          "requires": {
-            "@walletconnect/core": "2.7.3",
-            "@walletconnect/events": "^1.0.1",
-            "@walletconnect/heartbeat": "1.2.1",
-            "@walletconnect/jsonrpc-utils": "^1.0.7",
-            "@walletconnect/logger": "^2.0.1",
-            "@walletconnect/time": "^1.0.2",
-            "@walletconnect/types": "2.7.3",
-            "@walletconnect/utils": "2.7.3",
-            "events": "^3.3.0"
-          }
-        },
-        "@walletconnect/time": {
-          "version": "1.0.2",
-          "resolved": "https://registry.npmjs.org/@walletconnect/time/-/time-1.0.2.tgz",
-          "integrity": "sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==",
-          "requires": {
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/types": {
-          "version": "2.7.3",
-          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.7.3.tgz",
-          "integrity": "sha512-01U/GwrtokgBfBzLwZQQogkYh/+HBvClO4Oet3bClnyzHZ//Jv3Xf3X9LluNrHaulzPqdc9g7wnFkpjkVqKicQ==",
-          "requires": {
-            "@walletconnect/events": "^1.0.1",
-            "@walletconnect/heartbeat": "1.2.1",
-            "@walletconnect/jsonrpc-types": "^1.0.2",
-            "@walletconnect/keyvaluestorage": "^1.0.2",
-            "@walletconnect/logger": "^2.0.1",
-            "events": "^3.3.0"
-          }
-        },
-        "@walletconnect/utils": {
-          "version": "2.7.3",
-          "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.7.3.tgz",
-          "integrity": "sha512-ecKnoks3N8CaP5KYIrgJct5YNmvlfp1Ec8BuiXw5Gmta1HFnKpzvjmAG1627XGEfB2UVc9O2Rmbx+UmhuyB5KQ==",
-          "requires": {
-            "@stablelib/chacha20poly1305": "1.0.1",
-            "@stablelib/hkdf": "1.0.1",
-            "@stablelib/random": "^1.0.2",
-            "@stablelib/sha256": "1.0.1",
-            "@stablelib/x25519": "^1.0.3",
-            "@walletconnect/jsonrpc-utils": "^1.0.7",
-            "@walletconnect/relay-api": "^1.0.9",
-            "@walletconnect/safe-json": "^1.0.2",
-            "@walletconnect/time": "^1.0.2",
-            "@walletconnect/types": "2.7.3",
-            "@walletconnect/window-getters": "^1.0.1",
-            "@walletconnect/window-metadata": "^1.0.1",
-            "detect-browser": "5.3.0",
-            "query-string": "7.1.3",
-            "uint8arrays": "^3.1.0"
-          }
-        },
-        "@walletconnect/window-getters": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/window-getters/-/window-getters-1.0.1.tgz",
-          "integrity": "sha512-vHp+HqzGxORPAN8gY03qnbTMnhqIwjeRJNOMOAzePRg4xVEEE2WvYsI9G2NMjOknA8hnuYbU3/hwLcKbjhc8+Q==",
-          "requires": {
-            "tslib": "1.14.1"
-          }
-        },
-        "@walletconnect/window-metadata": {
-          "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/window-metadata/-/window-metadata-1.0.1.tgz",
-          "integrity": "sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==",
-          "requires": {
-            "@walletconnect/window-getters": "^1.0.1",
-            "tslib": "1.14.1"
-          }
-        },
-        "bn.js": {
-          "version": "5.2.0",
-          "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
-          "integrity": "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-        },
-        "loglevel": {
-          "version": "1.8.0",
-          "resolved": "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz",
-          "integrity": "sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA=="
-        },
-        "pino": {
-          "version": "7.11.0",
-          "resolved": "https://registry.npmjs.org/pino/-/pino-7.11.0.tgz",
-          "integrity": "sha512-dMACeu63HtRLmCG8VKdy4cShCPKaYDR4youZqoSWLxl5Gu99HUw8bw75thbPv9Nip+H+QYX8o3ZJbTdVZZ2TVg==",
-          "requires": {
-            "atomic-sleep": "^1.0.0",
-            "fast-redact": "^3.0.0",
-            "on-exit-leak-free": "^0.2.0",
-            "pino-abstract-transport": "v0.5.0",
-            "pino-std-serializers": "^4.0.0",
-            "process-warning": "^1.0.0",
-            "quick-format-unescaped": "^4.0.3",
-            "real-require": "^0.1.0",
-            "safe-stable-stringify": "^2.1.0",
-            "sonic-boom": "^2.2.1",
-            "thread-stream": "^0.15.1"
-          }
-        },
-        "pino-std-serializers": {
-          "version": "4.0.0",
-          "resolved": "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz",
-          "integrity": "sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q=="
-        },
-        "query-string": {
-          "version": "7.1.3",
-          "resolved": "https://registry.npmjs.org/query-string/-/query-string-7.1.3.tgz",
-          "integrity": "sha512-hh2WYhq4fi8+b+/2Kg9CEge4fDPvHS534aOOvOZeQ3+Vf2mCFsaFBYj0i+iXcAq6I9Vzp5fjMFBlONvayDC1qg==",
-          "requires": {
-            "decode-uri-component": "^0.2.2",
-            "filter-obj": "^1.1.0",
-            "split-on-first": "^1.0.0",
-            "strict-uri-encode": "^2.0.0"
-          }
-        },
-        "sonic-boom": {
-          "version": "2.8.0",
-          "resolved": "https://registry.npmjs.org/sonic-boom/-/sonic-boom-2.8.0.tgz",
-          "integrity": "sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==",
-          "requires": {
-            "atomic-sleep": "^1.0.0"
+            "loglevel": "1.8.1",
+            "loglevel-plugin-prefix": "0.8.4"
           }
         }
       }
@@ -2648,6 +2158,28 @@
         "typescript": "^4.3.2"
       },
       "dependencies": {
+        "@cityofzion/neon-dappkit": {
+          "version": "0.0.5",
+          "resolved": "https://registry.npmjs.org/@cityofzion/neon-dappkit/-/neon-dappkit-0.0.5.tgz",
+          "integrity": "sha512-rbGp0Fq1VkeZhXvrQUsfYUarqUL6a1Swb9e485RWbHxMbwwjIP2Sq0JotnM8gYyGRoMYhziDUuVqt4eEGkpRYQ==",
+          "requires": {
+            "@cityofzion/neon-core": "5.5.0",
+            "@cityofzion/neon-dappkit-types": "0.0.5",
+            "@cityofzion/neon-js": "5.5.0",
+            "crypto-js": "^4.1.1",
+            "elliptic": "^6.5.4",
+            "randombytes": "^2.1.0"
+          }
+        },
+        "@cityofzion/neon-js": {
+          "version": "5.5.0",
+          "resolved": "https://registry.npmjs.org/@cityofzion/neon-js/-/neon-js-5.5.0.tgz",
+          "integrity": "sha512-S6lYJa9+2UQnRAkCytoNbQaynMsPhdJBTrsvvV1PoAUhVVaaO5aR0rJB+mMMk686y537Bn8vJFXbT+HSAdw1Kg==",
+          "requires": {
+            "@cityofzion/neon-api": "^5.4.0",
+            "@cityofzion/neon-core": "^5.5.0"
+          }
+        },
         "@stablelib/x25519": {
           "version": "1.0.3",
           "resolved": "https://registry.npmjs.org/@stablelib/x25519/-/x25519-1.0.3.tgz",
@@ -4438,11 +3970,6 @@
         }
       }
     },
-    "assertion-error": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/assertion-error/-/assertion-error-1.1.0.tgz",
-      "integrity": "sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw=="
-    },
     "assign-symbols": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/assign-symbols/-/assign-symbols-1.0.0.tgz",
@@ -5393,20 +4920,6 @@
       "resolved": "https://registry.npmjs.org/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.3.0.tgz",
       "integrity": "sha512-/4YgnZS8y1UXXmC02xD5rRrBEu6T5ub+mQHLNRj0fzTRbgdBYhsNo2V5EqwgqrExjxsjtF/OpAKAMkKsxbD5XQ=="
     },
-    "chai": {
-      "version": "4.3.8",
-      "resolved": "https://registry.npmjs.org/chai/-/chai-4.3.8.tgz",
-      "integrity": "sha512-vX4YvVVtxlfSZ2VecZgFUTU5qPCYsobVI2O9FmwEXBhDigYGQA6jRXCycIs1yJnnWbZ6/+a2zNIF5DfVCcJBFQ==",
-      "requires": {
-        "assertion-error": "^1.1.0",
-        "check-error": "^1.0.2",
-        "deep-eql": "^4.1.2",
-        "get-func-name": "^2.0.0",
-        "loupe": "^2.3.1",
-        "pathval": "^1.1.1",
-        "type-detect": "^4.0.5"
-      }
-    },
     "chalk": {
       "version": "4.1.2",
       "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
@@ -5456,11 +4969,6 @@
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/char-regex/-/char-regex-1.0.2.tgz",
       "integrity": "sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw=="
-    },
-    "check-error": {
-      "version": "1.0.2",
-      "resolved": "https://registry.npmjs.org/check-error/-/check-error-1.0.2.tgz",
-      "integrity": "sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA=="
     },
     "check-types": {
       "version": "11.2.2",
@@ -6575,14 +6083,6 @@
       "version": "0.7.0",
       "resolved": "https://registry.npmjs.org/dedent/-/dedent-0.7.0.tgz",
       "integrity": "sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA=="
-    },
-    "deep-eql": {
-      "version": "4.1.3",
-      "resolved": "https://registry.npmjs.org/deep-eql/-/deep-eql-4.1.3.tgz",
-      "integrity": "sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==",
-      "requires": {
-        "type-detect": "^4.0.0"
-      }
     },
     "deep-equal": {
       "version": "1.1.1",
@@ -8949,11 +8449,6 @@
       "version": "2.0.5",
       "resolved": "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz",
       "integrity": "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg=="
-    },
-    "get-func-name": {
-      "version": "2.0.0",
-      "resolved": "https://registry.npmjs.org/get-func-name/-/get-func-name-2.0.0.tgz",
-      "integrity": "sha512-Hm0ixYtaSZ/V7C8FJrtZIuBBI+iSgL+1Aq82zSu8VQNB4S3Gk8e7Qs3VwBDJAhmRZcFqkl3tQu36g/Foh5I5ig=="
     },
     "get-intrinsic": {
       "version": "1.2.1",
@@ -11455,14 +10950,6 @@
         "js-tokens": "^3.0.0 || ^4.0.0"
       }
     },
-    "loupe": {
-      "version": "2.3.6",
-      "resolved": "https://registry.npmjs.org/loupe/-/loupe-2.3.6.tgz",
-      "integrity": "sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==",
-      "requires": {
-        "get-func-name": "^2.0.0"
-      }
-    },
     "lower-case": {
       "version": "2.0.2",
       "resolved": "https://registry.npmjs.org/lower-case/-/lower-case-2.0.2.tgz",
@@ -12844,11 +12331,6 @@
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz",
       "integrity": "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw=="
-    },
-    "pathval": {
-      "version": "1.1.1",
-      "resolved": "https://registry.npmjs.org/pathval/-/pathval-1.1.1.tgz",
-      "integrity": "sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ=="
     },
     "pbkdf2": {
       "version": "3.1.2",
