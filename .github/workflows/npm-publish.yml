@@ -1,0 +1,43 @@
+name: Publish all Wallet Connect Libs (Core, React, Wallet-Core and Wallet-react)
+
+on: workflow_dispatch
+
+env:
+  NODE_VERSION: 16.x
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Setup Node Version ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Config Git Properties
+        run: |
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+      - name: Install RushJS
+        run: npm install -g @microsoft/rush
+      - name: Verify Change Logs
+        run: rush change --verify
+      - name: Update package.json version(s)
+        run: rush version --bump
+      - name: Install dependencies
+        run: rush update
+      - name: Build Projects
+        run: rush rebuild
+      - name: Publish Projects
+        run: rush publish --apply --target-branch main --publish --npm-auth-token ${{ secrets.NPM_TOKEN }} --add-commit-details --include-all
+      - name: Commit and Push package.json version update
+        run: |
+          git add .
+          git commit -m "Update package.json version(s)"
+          git push
