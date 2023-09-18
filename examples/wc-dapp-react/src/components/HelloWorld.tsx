@@ -194,7 +194,7 @@ function HelloWorld () {
                         value={networkType}>
                     {Object.keys(networks).map((key) => (<option value={key} key={key}>{networks[key as NetworkType].name}</option>))}
                 </select>
-                <button onClick={connect}>Connect</button>
+                <button data-testid="hello-world__wallet-connect" onClick={connect}>Connect</button>
             </>}
             {wcSdk.isConnected() && <>
                 <button onClick={disconnect}>Disconnect</button>

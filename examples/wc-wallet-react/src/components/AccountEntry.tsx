@@ -104,7 +104,7 @@ export default function AccountEntry(props: DividerProps): any {
                            _placeholder={{color: '#373d4a'}} mt="0.5rem" w="20rem"
                     />
                 </>}
-                <Button onClick={() => setChoseNetwork(true)} h="2.75rem" mt="1.5rem" bg="#373d4a" borderRadius={0} _hover={{bg: 'black'}}>
+                <Button data-testid="account-entry__continue" onClick={() => setChoseNetwork(true)} h="2.75rem" mt="1.5rem" bg="#373d4a" borderRadius={0} _hover={{bg: 'black'}}>
                     Continue</Button>
             </>
             : !accountCtx.account ? <>
@@ -112,9 +112,10 @@ export default function AccountEntry(props: DividerProps): any {
                 <Flex h="2.75rem" mt="1.5rem">
                     <Button onClick={importAccount} h="100%" bg="#373d4a" borderRadius={0} _hover={{bg: 'black'}}>
                         Yes! Import File</Button>
-                    <Button onClick={createAccount} h="100%" bg="#373d4a" borderRadius={0} _hover={{bg: 'black'}}
+                    <Button data-testid="account-entry__create-new-account" onClick={createAccount} h="100%" bg="#373d4a" borderRadius={0} _hover={{bg: 'black'}}
                             ml="0.5rem">
-                        No, Generate a new one</Button>
+                        No, Generate a new one
+                    </Button>
                 </Flex>
             </> : <Flex>
                     <Flex as="form" onSubmit={login} direction="column" align="center">
@@ -123,14 +124,16 @@ export default function AccountEntry(props: DividerProps): any {
                         }</Text>
                         <Flex align="center" mt="0.8rem">
                             <Image w="1.875rem" src="https://cryptologos.cc/logos/neo-neo-logo.svg"/>
-                            <Text fontSize="0.875rem" ml="0.5rem">{accountCtx.account.address}</Text>
+                            <Text data-testid="account-entry__account-address"  fontSize="0.875rem" ml="0.5rem">{accountCtx.account.address}</Text>
                         </Flex>
                         <Input type={`password`} onChange={(e: any) => accountCtx.setAccountPassword(e.target.value)}
                                borderColor="#373d4a" borderRadius={0} bg="#1a202b"
                                _placeholder={{color: '#373d4a'}} mt="1rem"
+                               data-testid="account-entry__password-input"
                                placeholder={!creatingNew ? `Type your password` : `Type a new password`}
                         />
                         <Button type="submit" w="6.5rem" h="2.75rem" bg="#373d4a" borderRadius={0} mt="1rem"
+                                data-testid="account-entry__login-or-create"
                                 _hover={{bg: 'black'}}>{
                             !creatingNew ? `Login` : `Create`
                         }</Button>
