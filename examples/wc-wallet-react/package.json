@@ -8,6 +8,8 @@
     "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint ./src/**/*.ts*",
     "test": "react-app-rewired test",
+    "test:e2e": "playwright test --headed",
+    "test:e2e:headless": "playwright test",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -19,6 +21,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@json-rpc-tools/utils": "^1.7.2",
+    "@playwright/test": "^1.38.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -34,6 +37,7 @@
     "crypto-browserify": "^3.12.0",
     "framer-motion": "^4.1.16",
     "keyvaluestorage": "^0.7.1",
+    "playwright": "^1.38.0",
     "prop-types": "^15.7.2",
     "querystring-es3": "^0.2.1",
     "randombytes": "^2.1.0",

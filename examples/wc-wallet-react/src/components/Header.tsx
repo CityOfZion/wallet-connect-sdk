@@ -77,7 +77,7 @@ export default function Header(): any {
                             <Image src={chainMeta.logo} alt={chainMeta.name} title={chainMeta.name} w="1.6rem"
                                 mr="0.5rem" />
                             <Flex direction="column">
-                                <Text fontSize="0.875rem">{ellipseAddress(accountCtx.account.address, 8)}</Text>
+                                <Text data-testid="header__ellipse-address" fontSize="0.875rem">{ellipseAddress(accountCtx.account.address, 8)}</Text>
                                 <Text fontSize="0.6rem">GAS: {balance}</Text>
                                 <Link fontSize="0.875rem" mt="-0.3rem" color="#888888" onClick={exportAccount}>
                                     Download JSON File

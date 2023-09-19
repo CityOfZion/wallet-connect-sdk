@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@cityofzion/wallet-connect-sdk-react": "^2.5.3",
+    "@playwright/test": "^1.38.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -14,6 +15,7 @@
     "@walletconnect/sign-client": "^2.8.6",
     "@walletconnect/types": "^2.8.6",
     "gh-pages": "^4.0.0",
+    "playwright": "^1.38.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
@@ -26,6 +28,8 @@
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
+    "test:e2e": "playwright test --headed",
+    "test:e2e:headless": "playwright test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
