@@ -92,7 +92,7 @@ export abstract class AbstractWalletConnectNeonAdapter {
   async decrypt(args: TAdapterMethodParam): Promise<string> {
     const { signer } = await this.getServices(args)
     const params = args.request.params.request.params
-    return await signer.decrypt(params)
+    return await signer.decrypt(params[0])
   }
 
   async encrypt(args: TAdapterMethodParam): Promise<EncryptedPayload[]> {
@@ -104,7 +104,7 @@ export abstract class AbstractWalletConnectNeonAdapter {
   async decryptFromArray(args: TAdapterMethodParam): Promise<DecryptFromArrayResult> {
     const {signer} = await this.getServices(args)
     const params = args.request.params.request.params
-    return await signer.decryptFromArray(params)
+    return await signer.decryptFromArray(params[0])
   }
 
   async getNetworkVersion(args: TAdapterMethodParam): Promise<NetworkVersion> {
