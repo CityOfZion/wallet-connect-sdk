@@ -2073,6 +2073,43 @@
             "scrypt-js": "3.0.1"
           }
         },
+        "@walletconnect/jsonrpc-types": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-types/-/jsonrpc-types-1.0.1.tgz",
+          "integrity": "sha512-+6coTtOuChCqM+AoYyi4Q83p9l/laI6NvuM2/AHaZFuf0gT0NjW7IX2+86qGyizn7Ptq4AYZmfxurAxTnhefuw==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0"
+          }
+        },
+        "@walletconnect/sign-client": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.0.0-rc.3.tgz",
+          "integrity": "sha512-M/+tmccQvNIM86CJ3RsQBZVaECSq8jH1CEj1iUDmhxuG0eEg3Zesf5yJMg41aFFNVi2vSdBCeP0zcqWCDChf/g==",
+          "requires": {
+            "@walletconnect/core": "2.0.0-rc.3",
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-provider": "1.0.5",
+            "@walletconnect/jsonrpc-utils": "1.0.3",
+            "@walletconnect/logger": "1.0.1",
+            "@walletconnect/time": "1.0.1",
+            "@walletconnect/types": "2.0.0-rc.3",
+            "@walletconnect/utils": "2.0.0-rc.3",
+            "pino": "6.7.0",
+            "pino-pretty": "4.3.0"
+          }
+        },
+        "@walletconnect/types": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz",
+          "integrity": "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA==",
+          "requires": {
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-types": "1.0.1",
+            "@walletconnect/keyvaluestorage": "1.0.0"
+          }
+        },
         "bn.js": {
           "version": "5.2.0",
           "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz",
@@ -2104,6 +2141,50 @@
         "react-scripts": "^4.0.3",
         "typedoc": "^0.22.10",
         "typescript": "^4.3.2"
+      },
+      "dependencies": {
+        "@types/node": {
+          "version": "12.20.55",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
+          "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ=="
+        },
+        "@walletconnect/jsonrpc-types": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-types/-/jsonrpc-types-1.0.1.tgz",
+          "integrity": "sha512-+6coTtOuChCqM+AoYyi4Q83p9l/laI6NvuM2/AHaZFuf0gT0NjW7IX2+86qGyizn7Ptq4AYZmfxurAxTnhefuw==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0"
+          }
+        },
+        "@walletconnect/sign-client": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.0.0-rc.3.tgz",
+          "integrity": "sha512-M/+tmccQvNIM86CJ3RsQBZVaECSq8jH1CEj1iUDmhxuG0eEg3Zesf5yJMg41aFFNVi2vSdBCeP0zcqWCDChf/g==",
+          "requires": {
+            "@walletconnect/core": "2.0.0-rc.3",
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-provider": "1.0.5",
+            "@walletconnect/jsonrpc-utils": "1.0.3",
+            "@walletconnect/logger": "1.0.1",
+            "@walletconnect/time": "1.0.1",
+            "@walletconnect/types": "2.0.0-rc.3",
+            "@walletconnect/utils": "2.0.0-rc.3",
+            "pino": "6.7.0",
+            "pino-pretty": "4.3.0"
+          }
+        },
+        "@walletconnect/types": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz",
+          "integrity": "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA==",
+          "requires": {
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-types": "1.0.1",
+            "@walletconnect/keyvaluestorage": "1.0.0"
+          }
+        }
       }
     },
     "@rush-temp/wallet-connect-sdk-wallet-core": {
@@ -2394,6 +2475,13 @@
         "react-scripts": "^4.0.3",
         "typedoc": "^0.22.10",
         "typescript": "^4.3.2"
+      },
+      "dependencies": {
+        "@types/node": {
+          "version": "12.20.55",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
+          "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ=="
+        }
       }
     },
     "@scure/base": {
@@ -2858,9 +2946,9 @@
       "integrity": "sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA=="
     },
     "@types/node": {
-      "version": "12.20.55",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
-      "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ=="
+      "version": "20.6.2",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.6.2.tgz",
+      "integrity": "sha512-Y+/1vGBHV/cYk6OI1Na/LHzwnlNCAfU3ZNGrc1LdRe/LAIbdDPTTv/HU3M7yXN448aTVDq3eKRm2cg7iKLb8gw=="
     },
     "@types/normalize-package-data": {
       "version": "2.4.1",
@@ -3156,6 +3244,27 @@
         "pino": "6.7.0",
         "pino-pretty": "4.3.0",
         "uint8arrays": "3.1.0"
+      },
+      "dependencies": {
+        "@walletconnect/jsonrpc-types": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-types/-/jsonrpc-types-1.0.1.tgz",
+          "integrity": "sha512-+6coTtOuChCqM+AoYyi4Q83p9l/laI6NvuM2/AHaZFuf0gT0NjW7IX2+86qGyizn7Ptq4AYZmfxurAxTnhefuw==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0"
+          }
+        },
+        "@walletconnect/types": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz",
+          "integrity": "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA==",
+          "requires": {
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-types": "1.0.1",
+            "@walletconnect/keyvaluestorage": "1.0.0"
+          }
+        }
       }
     },
     "@walletconnect/environment": {
@@ -3263,21 +3372,241 @@
       "integrity": "sha512-QJzp/S/86sUAgWY6eh5MKYmSfZaRpIlmCJdi5uG4DJlKkZrHEF7ye7gA+VtbVzvTtpM/gRwO2plQuiooIeXjfg=="
     },
     "@walletconnect/sign-client": {
-      "version": "2.0.0-rc.3",
-      "resolved": "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.0.0-rc.3.tgz",
-      "integrity": "sha512-M/+tmccQvNIM86CJ3RsQBZVaECSq8jH1CEj1iUDmhxuG0eEg3Zesf5yJMg41aFFNVi2vSdBCeP0zcqWCDChf/g==",
+      "version": "2.7.3",
+      "resolved": "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.7.3.tgz",
+      "integrity": "sha512-QDlgBv0EoMt1OQ7SjUJA8DSx3zcKvBcKDueETYUPwP29i1Mc5gSozrpzEoSLcH3TVTt4bTcTEkqVvGvWsglJig==",
       "requires": {
-        "@walletconnect/core": "2.0.0-rc.3",
-        "@walletconnect/events": "1.0.0",
-        "@walletconnect/heartbeat": "1.0.0",
-        "@walletconnect/jsonrpc-provider": "1.0.5",
-        "@walletconnect/jsonrpc-utils": "1.0.3",
-        "@walletconnect/logger": "1.0.1",
-        "@walletconnect/time": "1.0.1",
-        "@walletconnect/types": "2.0.0-rc.3",
-        "@walletconnect/utils": "2.0.0-rc.3",
-        "pino": "6.7.0",
-        "pino-pretty": "4.3.0"
+        "@walletconnect/core": "2.7.3",
+        "@walletconnect/events": "^1.0.1",
+        "@walletconnect/heartbeat": "1.2.1",
+        "@walletconnect/jsonrpc-utils": "^1.0.7",
+        "@walletconnect/logger": "^2.0.1",
+        "@walletconnect/time": "^1.0.2",
+        "@walletconnect/types": "2.7.3",
+        "@walletconnect/utils": "2.7.3",
+        "events": "^3.3.0"
+      },
+      "dependencies": {
+        "@stablelib/x25519": {
+          "version": "1.0.3",
+          "resolved": "https://registry.npmjs.org/@stablelib/x25519/-/x25519-1.0.3.tgz",
+          "integrity": "sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==",
+          "requires": {
+            "@stablelib/keyagreement": "^1.0.1",
+            "@stablelib/random": "^1.0.2",
+            "@stablelib/wipe": "^1.0.1"
+          }
+        },
+        "@walletconnect/core": {
+          "version": "2.7.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/core/-/core-2.7.3.tgz",
+          "integrity": "sha512-Ldb9ZE74jpivioW+Z65Lc5XVuddDQcqmXjmuZleliQwwg8USKi4qjiC3A3796jzGUCIdgKVHN1ZkudkXo2CSNw==",
+          "requires": {
+            "@walletconnect/heartbeat": "1.2.1",
+            "@walletconnect/jsonrpc-provider": "^1.0.12",
+            "@walletconnect/jsonrpc-utils": "^1.0.7",
+            "@walletconnect/jsonrpc-ws-connection": "^1.0.11",
+            "@walletconnect/keyvaluestorage": "^1.0.2",
+            "@walletconnect/logger": "^2.0.1",
+            "@walletconnect/relay-api": "^1.0.9",
+            "@walletconnect/relay-auth": "^1.0.4",
+            "@walletconnect/safe-json": "^1.0.2",
+            "@walletconnect/time": "^1.0.2",
+            "@walletconnect/types": "2.7.3",
+            "@walletconnect/utils": "2.7.3",
+            "events": "^3.3.0",
+            "lodash.isequal": "4.5.0",
+            "uint8arrays": "^3.1.0"
+          }
+        },
+        "@walletconnect/events": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/events/-/events-1.0.1.tgz",
+          "integrity": "sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/heartbeat": {
+          "version": "1.2.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/heartbeat/-/heartbeat-1.2.1.tgz",
+          "integrity": "sha512-yVzws616xsDLJxuG/28FqtZ5rzrTA4gUjdEMTbWB5Y8V1XHRmqq4efAxCw5ie7WjbXFSUyBHaWlMR+2/CpQC5Q==",
+          "requires": {
+            "@walletconnect/events": "^1.0.1",
+            "@walletconnect/time": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/jsonrpc-provider": {
+          "version": "1.0.13",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-provider/-/jsonrpc-provider-1.0.13.tgz",
+          "integrity": "sha512-K73EpThqHnSR26gOyNEL+acEex3P7VWZe6KE12ZwKzAt2H4e5gldZHbjsu2QR9cLeJ8AXuO7kEMOIcRv1QEc7g==",
+          "requires": {
+            "@walletconnect/jsonrpc-utils": "^1.0.8",
+            "@walletconnect/safe-json": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/jsonrpc-utils": {
+          "version": "1.0.8",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-utils/-/jsonrpc-utils-1.0.8.tgz",
+          "integrity": "sha512-vdeb03bD8VzJUL6ZtzRYsFMq1eZQcM3EAzT0a3st59dyLfJ0wq+tKMpmGH7HlB7waD858UWgfIcudbPFsbzVdw==",
+          "requires": {
+            "@walletconnect/environment": "^1.0.1",
+            "@walletconnect/jsonrpc-types": "^1.0.3",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/jsonrpc-ws-connection": {
+          "version": "1.0.13",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-ws-connection/-/jsonrpc-ws-connection-1.0.13.tgz",
+          "integrity": "sha512-mfOM7uFH4lGtQxG+XklYuFBj6dwVvseTt5/ahOkkmpcAEgz2umuzu7fTR+h5EmjQBdrmYyEBOWADbeaFNxdySg==",
+          "requires": {
+            "@walletconnect/jsonrpc-utils": "^1.0.6",
+            "@walletconnect/safe-json": "^1.0.2",
+            "events": "^3.3.0",
+            "tslib": "1.14.1",
+            "ws": "^7.5.1"
+          }
+        },
+        "@walletconnect/keyvaluestorage": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/keyvaluestorage/-/keyvaluestorage-1.0.2.tgz",
+          "integrity": "sha512-U/nNG+VLWoPFdwwKx0oliT4ziKQCEoQ27L5Hhw8YOFGA2Po9A9pULUYNWhDgHkrb0gYDNt//X7wABcEWWBd3FQ==",
+          "requires": {
+            "safe-json-utils": "^1.1.1",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/logger": {
+          "version": "2.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/logger/-/logger-2.0.1.tgz",
+          "integrity": "sha512-SsTKdsgWm+oDTBeNE/zHxxr5eJfZmE9/5yp/Ku+zJtcTAjELb3DXueWkDXmE9h8uHIbJzIb5wj5lPdzyrjT6hQ==",
+          "requires": {
+            "pino": "7.11.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/relay-api": {
+          "version": "1.0.9",
+          "resolved": "https://registry.npmjs.org/@walletconnect/relay-api/-/relay-api-1.0.9.tgz",
+          "integrity": "sha512-Q3+rylJOqRkO1D9Su0DPE3mmznbAalYapJ9qmzDgK28mYF9alcP3UwG/og5V7l7CFOqzCLi7B8BvcBUrpDj0Rg==",
+          "requires": {
+            "@walletconnect/jsonrpc-types": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/relay-auth": {
+          "version": "1.0.4",
+          "resolved": "https://registry.npmjs.org/@walletconnect/relay-auth/-/relay-auth-1.0.4.tgz",
+          "integrity": "sha512-kKJcS6+WxYq5kshpPaxGHdwf5y98ZwbfuS4EE/NkQzqrDFm5Cj+dP8LofzWvjrrLkZq7Afy7WrQMXdLy8Sx7HQ==",
+          "requires": {
+            "@stablelib/ed25519": "^1.0.2",
+            "@stablelib/random": "^1.0.1",
+            "@walletconnect/safe-json": "^1.0.1",
+            "@walletconnect/time": "^1.0.2",
+            "tslib": "1.14.1",
+            "uint8arrays": "^3.0.0"
+          }
+        },
+        "@walletconnect/safe-json": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/safe-json/-/safe-json-1.0.2.tgz",
+          "integrity": "sha512-Ogb7I27kZ3LPC3ibn8ldyUr5544t3/STow9+lzz7Sfo808YD7SBWk7SAsdBFlYgP2zDRy2hS3sKRcuSRM0OTmA==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/time": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/time/-/time-1.0.2.tgz",
+          "integrity": "sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/utils": {
+          "version": "2.7.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.7.3.tgz",
+          "integrity": "sha512-ecKnoks3N8CaP5KYIrgJct5YNmvlfp1Ec8BuiXw5Gmta1HFnKpzvjmAG1627XGEfB2UVc9O2Rmbx+UmhuyB5KQ==",
+          "requires": {
+            "@stablelib/chacha20poly1305": "1.0.1",
+            "@stablelib/hkdf": "1.0.1",
+            "@stablelib/random": "^1.0.2",
+            "@stablelib/sha256": "1.0.1",
+            "@stablelib/x25519": "^1.0.3",
+            "@walletconnect/jsonrpc-utils": "^1.0.7",
+            "@walletconnect/relay-api": "^1.0.9",
+            "@walletconnect/safe-json": "^1.0.2",
+            "@walletconnect/time": "^1.0.2",
+            "@walletconnect/types": "2.7.3",
+            "@walletconnect/window-getters": "^1.0.1",
+            "@walletconnect/window-metadata": "^1.0.1",
+            "detect-browser": "5.3.0",
+            "query-string": "7.1.3",
+            "uint8arrays": "^3.1.0"
+          }
+        },
+        "@walletconnect/window-getters": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/window-getters/-/window-getters-1.0.1.tgz",
+          "integrity": "sha512-vHp+HqzGxORPAN8gY03qnbTMnhqIwjeRJNOMOAzePRg4xVEEE2WvYsI9G2NMjOknA8hnuYbU3/hwLcKbjhc8+Q==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/window-metadata": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/window-metadata/-/window-metadata-1.0.1.tgz",
+          "integrity": "sha512-9koTqyGrM2cqFRW517BPY/iEtUDx2r1+Pwwu5m7sJ7ka79wi3EyqhqcICk/yDmv6jAS1rjKgTKXlEhanYjijcA==",
+          "requires": {
+            "@walletconnect/window-getters": "^1.0.1",
+            "tslib": "1.14.1"
+          }
+        },
+        "pino": {
+          "version": "7.11.0",
+          "resolved": "https://registry.npmjs.org/pino/-/pino-7.11.0.tgz",
+          "integrity": "sha512-dMACeu63HtRLmCG8VKdy4cShCPKaYDR4youZqoSWLxl5Gu99HUw8bw75thbPv9Nip+H+QYX8o3ZJbTdVZZ2TVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0",
+            "fast-redact": "^3.0.0",
+            "on-exit-leak-free": "^0.2.0",
+            "pino-abstract-transport": "v0.5.0",
+            "pino-std-serializers": "^4.0.0",
+            "process-warning": "^1.0.0",
+            "quick-format-unescaped": "^4.0.3",
+            "real-require": "^0.1.0",
+            "safe-stable-stringify": "^2.1.0",
+            "sonic-boom": "^2.2.1",
+            "thread-stream": "^0.15.1"
+          }
+        },
+        "pino-std-serializers": {
+          "version": "4.0.0",
+          "resolved": "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz",
+          "integrity": "sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q=="
+        },
+        "query-string": {
+          "version": "7.1.3",
+          "resolved": "https://registry.npmjs.org/query-string/-/query-string-7.1.3.tgz",
+          "integrity": "sha512-hh2WYhq4fi8+b+/2Kg9CEge4fDPvHS534aOOvOZeQ3+Vf2mCFsaFBYj0i+iXcAq6I9Vzp5fjMFBlONvayDC1qg==",
+          "requires": {
+            "decode-uri-component": "^0.2.2",
+            "filter-obj": "^1.1.0",
+            "split-on-first": "^1.0.0",
+            "strict-uri-encode": "^2.0.0"
+          }
+        },
+        "sonic-boom": {
+          "version": "2.8.0",
+          "resolved": "https://registry.npmjs.org/sonic-boom/-/sonic-boom-2.8.0.tgz",
+          "integrity": "sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0"
+          }
+        }
       }
     },
     "@walletconnect/time": {
@@ -3286,22 +3615,92 @@
       "integrity": "sha512-LtNtHupTNranehLMh8Z/JN6xVySysSoJNjNCQ0ML+hOUkim5QX/VdvfovSpaX9qA2b95u7bIuTcq0O3UBk7Iyw=="
     },
     "@walletconnect/types": {
-      "version": "2.0.0-rc.3",
-      "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz",
-      "integrity": "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA==",
+      "version": "2.7.3",
+      "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.7.3.tgz",
+      "integrity": "sha512-01U/GwrtokgBfBzLwZQQogkYh/+HBvClO4Oet3bClnyzHZ//Jv3Xf3X9LluNrHaulzPqdc9g7wnFkpjkVqKicQ==",
       "requires": {
-        "@walletconnect/events": "1.0.0",
-        "@walletconnect/heartbeat": "1.0.0",
-        "@walletconnect/jsonrpc-types": "1.0.1",
-        "@walletconnect/keyvaluestorage": "1.0.0"
+        "@walletconnect/events": "^1.0.1",
+        "@walletconnect/heartbeat": "1.2.1",
+        "@walletconnect/jsonrpc-types": "^1.0.2",
+        "@walletconnect/keyvaluestorage": "^1.0.2",
+        "@walletconnect/logger": "^2.0.1",
+        "events": "^3.3.0"
       },
       "dependencies": {
-        "@walletconnect/jsonrpc-types": {
+        "@walletconnect/events": {
           "version": "1.0.1",
-          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-types/-/jsonrpc-types-1.0.1.tgz",
-          "integrity": "sha512-+6coTtOuChCqM+AoYyi4Q83p9l/laI6NvuM2/AHaZFuf0gT0NjW7IX2+86qGyizn7Ptq4AYZmfxurAxTnhefuw==",
+          "resolved": "https://registry.npmjs.org/@walletconnect/events/-/events-1.0.1.tgz",
+          "integrity": "sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==",
           "requires": {
-            "keyvaluestorage-interface": "^1.0.0"
+            "keyvaluestorage-interface": "^1.0.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/heartbeat": {
+          "version": "1.2.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/heartbeat/-/heartbeat-1.2.1.tgz",
+          "integrity": "sha512-yVzws616xsDLJxuG/28FqtZ5rzrTA4gUjdEMTbWB5Y8V1XHRmqq4efAxCw5ie7WjbXFSUyBHaWlMR+2/CpQC5Q==",
+          "requires": {
+            "@walletconnect/events": "^1.0.1",
+            "@walletconnect/time": "^1.0.2",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/keyvaluestorage": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/keyvaluestorage/-/keyvaluestorage-1.0.2.tgz",
+          "integrity": "sha512-U/nNG+VLWoPFdwwKx0oliT4ziKQCEoQ27L5Hhw8YOFGA2Po9A9pULUYNWhDgHkrb0gYDNt//X7wABcEWWBd3FQ==",
+          "requires": {
+            "safe-json-utils": "^1.1.1",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/logger": {
+          "version": "2.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/logger/-/logger-2.0.1.tgz",
+          "integrity": "sha512-SsTKdsgWm+oDTBeNE/zHxxr5eJfZmE9/5yp/Ku+zJtcTAjELb3DXueWkDXmE9h8uHIbJzIb5wj5lPdzyrjT6hQ==",
+          "requires": {
+            "pino": "7.11.0",
+            "tslib": "1.14.1"
+          }
+        },
+        "@walletconnect/time": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/@walletconnect/time/-/time-1.0.2.tgz",
+          "integrity": "sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==",
+          "requires": {
+            "tslib": "1.14.1"
+          }
+        },
+        "pino": {
+          "version": "7.11.0",
+          "resolved": "https://registry.npmjs.org/pino/-/pino-7.11.0.tgz",
+          "integrity": "sha512-dMACeu63HtRLmCG8VKdy4cShCPKaYDR4youZqoSWLxl5Gu99HUw8bw75thbPv9Nip+H+QYX8o3ZJbTdVZZ2TVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0",
+            "fast-redact": "^3.0.0",
+            "on-exit-leak-free": "^0.2.0",
+            "pino-abstract-transport": "v0.5.0",
+            "pino-std-serializers": "^4.0.0",
+            "process-warning": "^1.0.0",
+            "quick-format-unescaped": "^4.0.3",
+            "real-require": "^0.1.0",
+            "safe-stable-stringify": "^2.1.0",
+            "sonic-boom": "^2.2.1",
+            "thread-stream": "^0.15.1"
+          }
+        },
+        "pino-std-serializers": {
+          "version": "4.0.0",
+          "resolved": "https://registry.npmjs.org/pino-std-serializers/-/pino-std-serializers-4.0.0.tgz",
+          "integrity": "sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q=="
+        },
+        "sonic-boom": {
+          "version": "2.8.0",
+          "resolved": "https://registry.npmjs.org/sonic-boom/-/sonic-boom-2.8.0.tgz",
+          "integrity": "sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==",
+          "requires": {
+            "atomic-sleep": "^1.0.0"
           }
         }
       }
@@ -3335,6 +3734,25 @@
           "requires": {
             "@stablelib/binary": "^1.0.1",
             "@stablelib/wipe": "^1.0.1"
+          }
+        },
+        "@walletconnect/jsonrpc-types": {
+          "version": "1.0.1",
+          "resolved": "https://registry.npmjs.org/@walletconnect/jsonrpc-types/-/jsonrpc-types-1.0.1.tgz",
+          "integrity": "sha512-+6coTtOuChCqM+AoYyi4Q83p9l/laI6NvuM2/AHaZFuf0gT0NjW7IX2+86qGyizn7Ptq4AYZmfxurAxTnhefuw==",
+          "requires": {
+            "keyvaluestorage-interface": "^1.0.0"
+          }
+        },
+        "@walletconnect/types": {
+          "version": "2.0.0-rc.3",
+          "resolved": "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz",
+          "integrity": "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA==",
+          "requires": {
+            "@walletconnect/events": "1.0.0",
+            "@walletconnect/heartbeat": "1.0.0",
+            "@walletconnect/jsonrpc-types": "1.0.1",
+            "@walletconnect/keyvaluestorage": "1.0.0"
           }
         }
       }
@@ -4927,7 +5345,6 @@
       "requires": {
         "anymatch": "~3.1.2",
         "braces": "~3.0.2",
-        "fsevents": "~2.3.2",
         "glob-parent": "~5.1.2",
         "is-binary-path": "~2.1.0",
         "is-glob": "~4.0.1",
@@ -8391,12 +8808,6 @@
       "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
       "integrity": "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw=="
     },
-    "fsevents": {
-      "version": "2.3.3",
-      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
-      "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
-      "optional": true
-    },
     "function-bind": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz",
@@ -10113,7 +10524,6 @@
         "@types/node": "*",
         "anymatch": "^3.0.3",
         "fb-watchman": "^2.0.0",
-        "fsevents": "^2.1.2",
         "graceful-fs": "^4.2.4",
         "jest-regex-util": "^26.0.0",
         "jest-serializer": "^26.6.2",
@@ -14203,7 +14613,6 @@
         "eslint-webpack-plugin": "^2.5.2",
         "file-loader": "6.1.1",
         "fs-extra": "^9.0.1",
-        "fsevents": "^2.1.3",
         "html-webpack-plugin": "4.5.0",
         "identity-obj-proxy": "3.0.0",
         "jest": "26.6.0",
@@ -17478,7 +17887,6 @@
             "anymatch": "^2.0.0",
             "async-each": "^1.0.1",
             "braces": "^2.3.2",
-            "fsevents": "^1.2.7",
             "glob-parent": "^3.1.0",
             "inherits": "^2.0.3",
             "is-binary-path": "^1.0.0",
@@ -17511,12 +17919,6 @@
               }
             }
           }
-        },
-        "fsevents": {
-          "version": "1.2.13",
-          "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz",
-          "integrity": "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==",
-          "optional": true
         },
         "glob-parent": {
           "version": "3.1.0",
@@ -18089,7 +18491,6 @@
             "anymatch": "^2.0.0",
             "async-each": "^1.0.1",
             "braces": "^2.3.2",
-            "fsevents": "^1.2.7",
             "glob-parent": "^3.1.0",
             "inherits": "^2.0.3",
             "is-binary-path": "^1.0.0",
@@ -18153,12 +18554,6 @@
           "requires": {
             "locate-path": "^3.0.0"
           }
-        },
-        "fsevents": {
-          "version": "1.2.13",
-          "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz",
-          "integrity": "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==",
-          "optional": true
         },
         "glob-parent": {
           "version": "3.1.0",
