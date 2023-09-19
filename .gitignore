@@ -72,3 +72,10 @@ common/autoinstallers/*/.npmrc
 
 # jetbrains
 .idea
+
+# Examples build
+examples/*/build/
+examples/*/dist/
+
+# Examples test result
+examples/*/test-results/

@@ -1,9 +1,8 @@
-
-
 const config = {
+  fullyParallel: true,
   testMatch: '**/*.js',
   webServer: {
-    command: 'yarn run build && yarn run preview',
+    command: 'yarn preview',
     port: 4173,
   },
   testDir: 'tests',
