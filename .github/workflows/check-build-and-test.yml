@@ -27,6 +27,8 @@ jobs:
         run: npm install --global yarn
       - name: Verify Change Logs
         run: rush change --verify
+      - name: Verify each project's package.json
+        run: rush check
       - name: Install Dependencies
         run: rush update
       - name: Build Projects

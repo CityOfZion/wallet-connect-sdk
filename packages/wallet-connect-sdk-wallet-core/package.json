@@ -32,7 +32,8 @@
   "dependencies": {
     "@cityofzion/neon-core": "5.5.1",
     "@cityofzion/neon-js": "5.5.1",
-    "@cityofzion/wallet-connect-sdk-core": "2.6.0",
+    "@cityofzion/wallet-connect-sdk-core": "workspace:*",
+    "@walletconnect/jsonrpc-utils": "^1.0.8",
     "@walletconnect/sign-client": "2.7.3",
     "@walletconnect/types": "2.7.3",
     "moment": "^2.29.4",
