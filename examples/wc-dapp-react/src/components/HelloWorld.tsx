@@ -1,5 +1,6 @@
 import React from "react";
-import {NetworkType, useWalletConnect, Version} from '@cityofzion/wallet-connect-sdk-react'
+import {NetworkType, useWalletConnect} from '@cityofzion/wallet-connect-sdk-react'
+import { typeChecker } from "@cityofzion/neon-dappkit"
 
 const networks: Record<NetworkType, {name: string}> = {
     'neo3:mainnet': {
@@ -49,7 +50,7 @@ function HelloWorld () {
                 args: [
                     { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                     { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                    { type: 'Integer', value: 100000000 },
+                    { type: 'Integer', value: '100000000' },
                     { type: 'Array', value: [] }
                 ]
             }],
@@ -68,7 +69,7 @@ function HelloWorld () {
                 args: [
                     { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                     { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                    { type: 'Integer', value: 100000000 },
+                    { type: 'Integer', value: '100000000' },
                     { type: 'Array', value: [] }
                 ]
             }],
@@ -96,7 +97,7 @@ function HelloWorld () {
                     args: [
                         { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                         { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                        { type: 'Integer', value: 100000000 },
+                        { type: 'Integer', value: '100000000' },
                         { type: 'Array', value: [] }
                     ],
                     abortOnFail: true
@@ -110,7 +111,7 @@ function HelloWorld () {
 
     const signAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: Version.DEFAULT })
+        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: 2 })
 
         console.log(resp)
         window.alert(JSON.stringify(resp, null, 2))
@@ -123,7 +124,7 @@ function HelloWorld () {
 
     const signWithoutSaltAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: Version.WITHOUT_SALT })
+        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: 3 })
 
         console.log(resp)
         window.alert(JSON.stringify(resp, null, 2))
@@ -170,8 +171,10 @@ function HelloWorld () {
             signers: [{ scopes: 1 }],
         });
 
+        if (!typeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response');
+
         const sessionId = resp.session as string;
-        const iteratorId = resp.stack[0].id as string;
+        const iteratorId = resp.stack[0].id;
 
         const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10);
 
