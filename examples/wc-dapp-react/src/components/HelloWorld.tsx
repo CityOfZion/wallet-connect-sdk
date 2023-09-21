@@ -1,6 +1,6 @@
 import React from "react";
-import {NetworkType, useWalletConnect} from '@cityofzion/wallet-connect-sdk-react'
 import { typeChecker } from "@cityofzion/neon-dappkit"
+import {NetworkType, useWalletConnect, SignMessageVersion} from '@cityofzion/wallet-connect-sdk-react'
 
 const networks: Record<NetworkType, {name: string}> = {
     'neo3:mainnet': {
@@ -19,7 +19,10 @@ function HelloWorld () {
     const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
 
     const connect = async (): Promise<void> => {
-        await wcSdk.connect(networkType, ['invokeFunction', 'testInvoke', 'signMessage','verifyMessage', 'traverseIterator', 'getWalletInfo', 'getNetworkVersion'])
+        await wcSdk.connect(networkType, [
+            'invokeFunction', 'testInvoke', 'signMessage','verifyMessage', 'traverseIterator', 'getWalletInfo',
+            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray'
+        ])
     }
 
     const disconnect = async (): Promise<void> => {
@@ -111,7 +114,7 @@ function HelloWorld () {
 
     const signAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: 2 })
+        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: SignMessageVersion.DEFAULT })
 
         console.log(resp)
         window.alert(JSON.stringify(resp, null, 2))
@@ -124,7 +127,7 @@ function HelloWorld () {
 
     const signWithoutSaltAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: 3 })
+        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: SignMessageVersion.WITHOUT_SALT })
 
         console.log(resp)
         window.alert(JSON.stringify(resp, null, 2))
@@ -174,7 +177,7 @@ function HelloWorld () {
         if (!typeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response');
 
         const sessionId = resp.session as string;
-        const iteratorId = resp.stack[0].id;
+        const iteratorId = resp.stack[0].id as string;
 
         const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10);
 
@@ -187,6 +190,52 @@ function HelloWorld () {
 
         console.log(resp)
         window.alert(JSON.stringify(resp, null, 2))
+    }
+
+    /**
+     * Account WIF used in encrypt, decrypt and decryptFromArray
+     * KxF6YMo7JojuEWsPFRhMR5zT8nkwyVMUs1d2ZX3QrRBr1SzLcdi7
+     */
+
+    const encrypt = async () => {
+        const message = "Caralho, muleq, o baguiu eh issumermo taix ligado na missão?"
+        const publicKeys = ["02dd8169fb780a9cc01d785efc96888f99c39ab671c039acad8f1f646b9f944a0e"]
+        const resp = await wcSdk.encrypt(message, publicKeys)
+        console.log(resp)
+        window.alert(JSON.stringify(resp, null, 2))
+    }
+
+    const decrypt = async () => {
+        try {
+            const payload = {
+                "cipherText": "fcb01b8b9be61a195f7d5cc09e96f341866b2d4cb2e548146f83a7f7f2d6972424d946def236dc9ca8297c994d58f84dfba9d89325049a55dca64e69e8907922",
+                "dataTag": "f43335d550f081d345084ea0f9d1207119f93996b4e0cfd6204e0ddccbebeac3",
+                "ephemPublicKey": "0278bcb970272910a0bbe69061a435586428e87363018bd0616b3ffebd66774ba9",
+                "randomVector": "1bd2a7e1305a02e3d89dbd277d6272e5",
+            }
+            const resp2 = await wcSdk.decrypt(payload)
+            console.log({ resp2 })
+            window.alert(JSON.stringify(resp2, null, 2))
+        } catch (error) {
+            //@ts-ignore
+            window.alert(error.message)
+        }
+    }
+
+    const decryptFromArray = async () => {
+        try {
+            const payload = {
+                "cipherText": "fcb01b8b9be61a195f7d5cc09e96f341866b2d4cb2e548146f83a7f7f2d6972424d946def236dc9ca8297c994d58f84dfba9d89325049a55dca64e69e8907922",
+                "dataTag": "f43335d550f081d345084ea0f9d1207119f93996b4e0cfd6204e0ddccbebeac3",
+                "ephemPublicKey": "0278bcb970272910a0bbe69061a435586428e87363018bd0616b3ffebd66774ba9",
+                "randomVector": "1bd2a7e1305a02e3d89dbd277d6272e5",
+            }
+            const resp2 = await wcSdk.decryptFromArray([payload])
+            console.log(resp2)
+            window.alert(JSON.stringify(resp2, null, 2))
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return <div>
@@ -211,6 +260,9 @@ function HelloWorld () {
                 <button onClick={verify}>Verify Success</button>
                 <button onClick={traverseIterator}>Traverse Iterator</button>
                 <button onClick={getWalletInfo}>Get Wallet Info</button>
+                <button onClick={encrypt}>encrypt</button>
+                <button onClick={decrypt}>decrypt</button>
+                <button onClick={decryptFromArray}>decrypt from array</button>
             </>}
 
         </div>)}

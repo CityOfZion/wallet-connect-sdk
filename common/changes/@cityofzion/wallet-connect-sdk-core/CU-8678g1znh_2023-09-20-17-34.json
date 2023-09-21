@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-core",
+      "comment": "Add encrypt, decrypt and decryptFromArray on method list",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-core"
+}

@@ -14,7 +14,7 @@ export type Chain = "private" | "testnet" | "mainnet"
 
 export type NetworkType = `${Blockchain}:${Chain}`
 
-export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion"
+export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion" | "encrypt" | "decrypt" | "decryptFromArray"
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp

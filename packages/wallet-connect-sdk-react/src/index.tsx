@@ -137,6 +137,7 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
     }, [getSdkOrError])
 
     const manageDisconnect = useCallback((): void => {
+        // @ts-ignore
         signClient?.events.removeAllListeners()
 
         signClient?.on('session_delete', async () => {
