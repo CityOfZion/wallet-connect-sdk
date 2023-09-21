@@ -19,7 +19,10 @@ function HelloWorld () {
     const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
 
     const connect = async (): Promise<void> => {
-        await wcSdk.connect(networkType, ['invokeFunction', 'testInvoke', 'signMessage','verifyMessage', 'traverseIterator', 'getWalletInfo', 'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray'])
+        await wcSdk.connect(networkType, [
+            'invokeFunction', 'testInvoke', 'signMessage','verifyMessage', 'traverseIterator', 'getWalletInfo',
+            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray'
+        ])
     }
 
     const disconnect = async (): Promise<void> => {
@@ -50,7 +53,7 @@ function HelloWorld () {
                 args: [
                     { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                     { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                    { type: 'Any', value: 100000000 },
+                    { type: 'Integer', value: '100000000' },
                     { type: 'Array', value: [] }
                 ]
             }],
@@ -69,7 +72,7 @@ function HelloWorld () {
                 args: [
                     { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                     { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                    { type: 'Any', value: 100000000 },
+                    { type: 'Integer', value: '100000000' },
                     { type: 'Array', value: [] }
                 ]
             }],
@@ -97,7 +100,7 @@ function HelloWorld () {
                     args: [
                         { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
                         { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
-                        { type: 'Any', value: 100000000 },
+                        { type: 'Integer', value: '100000000' },
                         { type: 'Array', value: [] }
                     ],
                     abortOnFail: true
@@ -174,7 +177,6 @@ function HelloWorld () {
         if (!typeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response');
 
         const sessionId = resp.session as string;
-        //@ts-ignore
         const iteratorId = resp.stack[0].id as string;
 
         const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10);

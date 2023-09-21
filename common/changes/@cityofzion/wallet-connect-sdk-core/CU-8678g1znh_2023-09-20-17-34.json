@@ -2,7 +2,7 @@
   "changes": [
     {
       "packageName": "@cityofzion/wallet-connect-sdk-core",
-      "comment": "nwm: encrypt, decrypt and decryptFromArray WC's methods",
+      "comment": "Add encrypt, decrypt and decryptFromArray on method list",
       "type": "patch"
     }
   ],
