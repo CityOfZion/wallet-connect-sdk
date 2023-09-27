@@ -1,5 +1,5 @@
 import React from "react";
-import { typeChecker } from "@cityofzion/neon-dappkit"
+import { TypeChecker } from "@cityofzion/neon-dappkit-types"
 import {NetworkType, useWalletConnect, SignMessageVersion} from '@cityofzion/wallet-connect-sdk-react'
 
 const networks: Record<NetworkType, {name: string}> = {
@@ -174,7 +174,7 @@ function HelloWorld () {
             signers: [{ scopes: 1 }],
         });
 
-        if (!typeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response');
+        if (!TypeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response');
 
         const sessionId = resp.session as string;
         const iteratorId = resp.stack[0].id as string;

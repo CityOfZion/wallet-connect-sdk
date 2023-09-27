@@ -62,19 +62,19 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
   }, [])
 
   useEffect(() => {
-    sdk.current.emitter.on('proposals', items => {
+    sdk.current.emitter.on('proposals', (items: TSessionProposal[]) => {
       setProposals(items)
     })
 
-    sdk.current.emitter.on('sessions', items => {
+    sdk.current.emitter.on('sessions', (items: TSession[]) => {
       setSessions(items)
     })
 
-    sdk.current.emitter.on('requests', items => {
+    sdk.current.emitter.on('requests', (items: TSessionRequest[]) => {
       setRequests(items)
     })
 
-    sdk.current.emitter.on('status', item => {
+    sdk.current.emitter.on('status', (item: EStatus) => {
       setStatus(item)
     })
 
