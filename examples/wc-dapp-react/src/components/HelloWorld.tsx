@@ -222,6 +222,18 @@ function HelloWorld () {
         }
     }
 
+    const signMessageEncryptAndDecrypt = async () => {
+        const signedMessage = await wcSdk.signMessage({ message: 'Message to Sign', version: SignMessageVersion.DEFAULT })
+
+        const message = 'message to encrypt'
+        const publicKeys = [signedMessage.publicKey]
+        const encrypted = await wcSdk.encrypt(message, publicKeys)
+
+        const resp = await wcSdk.decrypt(encrypted[0])
+        console.log(resp)
+        window.alert(JSON.stringify(resp, null, 2))
+    }
+
     const decryptFromArray = async () => {
         try {
             const payload = {
@@ -262,6 +274,7 @@ function HelloWorld () {
                 <button onClick={getWalletInfo}>Get Wallet Info</button>
                 <button onClick={encrypt}>encrypt</button>
                 <button onClick={decrypt}>decrypt</button>
+                <button onClick={signMessageEncryptAndDecrypt}>signMessage, Encrypt And Decrypt</button>
                 <button onClick={decryptFromArray}>decrypt from array</button>
             </>}
 
