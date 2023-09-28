@@ -30,12 +30,11 @@
     "docs": "typedoc",
     "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/react --acl public-read",
     "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/react --acl public-read",
-    "prepare": "run-s build",
     "predeploy": "cd example && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "2.6.1",
+    "@cityofzion/wallet-connect-sdk-core": "workspace:*",
     "@walletconnect/sign-client": "2.7.3",
     "@walletconnect/types": "2.7.3",
     "@cityofzion/neon-dappkit-types": "0.0.5"
