@@ -8,14 +8,14 @@ importers:
   ../../packages/wallet-connect-sdk-core:
     specifiers:
       '@cityofzion/neon-core': 5.5.1
-      '@cityofzion/neon-dappkit-types': 0.0.5
+      '@cityofzion/neon-dappkit-types': ^0.1.0
       '@walletconnect/sign-client': 2.7.3
       '@walletconnect/types': 2.7.3
       typedoc: ^0.22.10
       typescript: ^4.3.2
     dependencies:
       '@cityofzion/neon-core': 5.5.1
-      '@cityofzion/neon-dappkit-types': 0.0.5
+      '@cityofzion/neon-dappkit-types': 0.1.0
       '@walletconnect/sign-client': 2.7.3
       '@walletconnect/types': 2.7.3
     devDependencies:
@@ -24,7 +24,7 @@ importers:
 
   ../../packages/wallet-connect-sdk-react:
     specifiers:
-      '@cityofzion/neon-dappkit-types': 0.0.5
+      '@cityofzion/neon-dappkit-types': ^0.1.0
       '@cityofzion/wallet-connect-sdk-core': workspace:*
       '@types/node': ^20.1.3
       '@types/react': ^16.9.27
@@ -41,7 +41,7 @@ importers:
       typedoc: ^0.22.10
       typescript: ^4.3.2
     dependencies:
-      '@cityofzion/neon-dappkit-types': 0.0.5
+      '@cityofzion/neon-dappkit-types': 0.1.0
       '@cityofzion/wallet-connect-sdk-core': link:../wallet-connect-sdk-core
       '@walletconnect/sign-client': 2.7.3
       '@walletconnect/types': 2.7.3
@@ -62,7 +62,7 @@ importers:
   ../../packages/wallet-connect-sdk-wallet-core:
     specifiers:
       '@cityofzion/neon-core': 5.5.1
-      '@cityofzion/neon-dappkit': 0.0.6
+      '@cityofzion/neon-dappkit': ^0.2.0
       '@cityofzion/neon-js': 5.5.1
       '@cityofzion/wallet-connect-sdk-core': workspace:*
       '@types/node': ^20.1.3
@@ -75,7 +75,7 @@ importers:
       typescript: ^4.3.2
     dependencies:
       '@cityofzion/neon-core': 5.5.1
-      '@cityofzion/neon-dappkit': 0.0.6
+      '@cityofzion/neon-dappkit': 0.2.0
       '@cityofzion/neon-js': 5.5.1
       '@cityofzion/wallet-connect-sdk-core': link:../wallet-connect-sdk-core
       '@walletconnect/jsonrpc-utils': 1.0.8
@@ -2621,19 +2621,18 @@ packages:
       - encoding
     dev: false
 
-  /@cityofzion/neon-dappkit-types/0.0.5:
-    resolution: {integrity: sha512-SRjmfzgI1aNhXdKby4gRrJBveFeSAdttSaLwNfQ/Xq19VwM2NOf2NATg7wDrtTY4sQLKwCyPjPaAePZwKLP8Xw==}
+  /@cityofzion/neon-dappkit-types/0.1.0:
+    resolution: {integrity: sha512-VvgA5H6zmaosrimr6ighPSknUFlH/YavXxUB1FoJaqI3mf2QBeimTg709dOhxv0r7IVUaQQ3DHgCz0d3fADgsA==}
     dev: false
 
-  /@cityofzion/neon-dappkit-types/0.0.6:
-    resolution: {integrity: sha512-Q4tkH5SFQhdRBf+tky8H0oCu2BNPALlwadENWsFLgbd5U6LhsAKZtU7mEh/3dQ9v4jq2ll2ZW9Aab+ntXXgOVg==}
+  /@cityofzion/neon-dappkit-types/0.2.0:
+    resolution: {integrity: sha512-/+Zlgz8krMk+CjhF8laod58K8vQ4xLV/QsfJDaltj1Vj8NpQuG2NSBlFZeuSqV/8FrvyfDyIT8db05vcRZ9zQg==}
     dev: false
 
-  /@cityofzion/neon-dappkit/0.0.6:
-    resolution: {integrity: sha512-LiuT8oqDvQ7pHWBMncpXyvdBDQ+mxrEGTjU+xZTKEdw+tKGLcLM2wuPi4HrP4n+3EBRGQmKXihmsgYLxYFHmWQ==}
+  /@cityofzion/neon-dappkit/0.2.0:
+    resolution: {integrity: sha512-Gqd2S5xXffe0gb5+MG7RgM92fzWujq47gARcWk42te1KYvl1kdZg9ZebDecimQEZk/bM7jM76JEQfl4lW6Q7sg==}
     dependencies:
-      '@cityofzion/neon-core': 5.5.1
-      '@cityofzion/neon-dappkit-types': 0.0.6
+      '@cityofzion/neon-dappkit-types': 0.2.0
       '@cityofzion/neon-js': 5.5.1
       crypto-js: 4.1.1
       elliptic: 6.5.4
