@@ -1,0 +1,65 @@
+{
+  "name": "@cityofzion/wallet-connect-sdk-wallet-react",
+  "entries": [
+    {
+      "version": "3.0.0",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-react_v3.0.0",
+      "date": "Thu, 28 Sep 2023 13:38:24 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "Changes on WcWalletSDK constructor signature, the `methods` option is now mandatory"
+          }
+        ],
+        "patch": [
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "update WcSdk with new neo3-signer/neon-signer for: new signMessage version to allow signing without salt"
+          },
+          {
+            "comment": "Cnsume new version of core"
+          },
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "Consume new version of core"
+          },
+          {
+            "comment": "Consume new version of neon-dappkit"
+          },
+          {
+            "comment": "Fix decrypt methods"
+          }
+        ],
+        "major": [
+          {
+            "comment": "Consume version 2.3.5 of core"
+          },
+          {
+            "comment": "The very first release"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-wallet-core\" to `3.0.0`"
+          }
+        ]
+      }
+    }
+  ]
+}

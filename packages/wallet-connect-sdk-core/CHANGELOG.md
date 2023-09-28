@@ -1,6 +1,39 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Wed, 26 Jan 2022 19:25:44 GMT and should not be manually modified.
+This log was last generated on Thu, 28 Sep 2023 13:38:24 GMT and should not be manually modified.
+
+## 3.0.0
+Thu, 28 Sep 2023 13:38:24 GMT
+
+### Breaking changes
+
+- Using the new version of WalletConnect library, beta 26
+- Using the new version of WalletConnect library, beta 100
+
+### Minor changes
+
+- Increase compatibility version, increase neo3-invoker version and improve the docs
+- Compatible with Neo3Invoker
+- Changes on `connect` method signature, the `methods` argument is now mandatory
+
+### Patches
+
+- Adjust version number with the other packages
+- Add types to constants and add a new constant to auto accept methods 
+- update WcSdk with new neo3-signer/neon-signer for: new signMessage version to allow signing without salt
+- Downgrade neonjs to fix build problems in react-native
+- Adjusting version
+- Adjust version number with the other packages
+- Adjust version number with the other packages
+- Fix duplicated wccv in connection uri
+- Adjust version number with the other packages
+- New encryption methods: The encrypt, decrypt, and encrypt From Array methods have been implemented
+- Add encrypt, decrypt and decryptFromArray on method list
+- Consume new version of neon-dappkit
+- Add options to change the fees on invokeFunction
+- allow an optional scriptHash to be used to sign
+- compatible with neo3-signer
+- Bump walletconnect library version
 
 ## 1.6.1
 Wed, 26 Jan 2022 19:25:44 GMT

@@ -2,6 +2,82 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "3.0.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v3.0.0",
+      "date": "Thu, 28 Sep 2023 13:38:24 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Increase compatibility version, increase neo3-invoker version and improve the docs"
+          },
+          {
+            "comment": "Compatible with Neo3Invoker"
+          },
+          {
+            "comment": "Changes on `connect` method signature, the `methods` argument is now mandatory"
+          }
+        ],
+        "patch": [
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "Add types to constants and add a new constant to auto accept methods "
+          },
+          {
+            "comment": "update WcSdk with new neo3-signer/neon-signer for: new signMessage version to allow signing without salt"
+          },
+          {
+            "comment": "Downgrade neonjs to fix build problems in react-native"
+          },
+          {
+            "comment": "Adjusting version"
+          },
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "Fix duplicated wccv in connection uri"
+          },
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "New encryption methods: The encrypt, decrypt, and encrypt From Array methods have been implemented"
+          },
+          {
+            "comment": "Add encrypt, decrypt and decryptFromArray on method list"
+          },
+          {
+            "comment": "Consume new version of neon-dappkit"
+          },
+          {
+            "comment": "Add options to change the fees on invokeFunction"
+          },
+          {
+            "comment": "allow an optional scriptHash to be used to sign"
+          },
+          {
+            "comment": "compatible with neo3-signer"
+          },
+          {
+            "comment": "Bump walletconnect library version"
+          }
+        ],
+        "major": [
+          {
+            "comment": "Using the new version of WalletConnect library, beta 26"
+          },
+          {
+            "comment": "Using the new version of WalletConnect library, beta 100"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.6.1",
       "tag": "@cityofzion/wallet-connect-sdk-core_v1.6.1",
       "date": "Wed, 26 Jan 2022 19:25:44 GMT",

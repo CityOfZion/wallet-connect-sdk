@@ -1,0 +1,65 @@
+{
+  "name": "@cityofzion/wallet-connect-sdk-wallet-core",
+  "entries": [
+    {
+      "version": "3.0.0",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v3.0.0",
+      "date": "Thu, 28 Sep 2023 13:38:24 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Compatibility version feature in connection and request flow "
+          },
+          {
+            "comment": "Changes on WcWalletSDK constructor signature, the `methods` option is now mandatory"
+          }
+        ],
+        "patch": [
+          {
+            "comment": "New method in adapter to accept a signingCallback"
+          },
+          {
+            "comment": "update WcSdk with new neo3-signer/neon-signer for: new signMessage version to allow signing without salt"
+          },
+          {
+            "comment": "Downgrade neonjs to fix build problems in react native and consume new version of wallet-connect-sdk-core"
+          },
+          {
+            "comment": "Change abstract adapter name and fix bug in rejectProposal function"
+          },
+          {
+            "comment": "Consume new version of core, neo3-invoker and neo3-signer"
+          },
+          {
+            "comment": "Consume version 1.5.1 of neon-invoker and neo3-invoker"
+          },
+          {
+            "comment": "Adjust version number with the other packages"
+          },
+          {
+            "comment": "Fix problem in the execution speed of the adapter method"
+          },
+          {
+            "comment": "New encryption methods: The encrypt, decrypt, and encrypt From Array methods have been implemented"
+          },
+          {
+            "comment": "Consume new version of neon-dappkit"
+          }
+        ],
+        "major": [
+          {
+            "comment": "Fix problems with Neonjs import and export WalletConnect types"
+          },
+          {
+            "comment": "The very first release"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" to `3.0.0`"
+          }
+        ]
+      }
+    }
+  ]
+}

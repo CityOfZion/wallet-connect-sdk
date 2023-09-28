@@ -1,0 +1,30 @@
+# Change Log - @cityofzion/wallet-connect-sdk-wallet-react
+
+This log was last generated on Thu, 28 Sep 2023 13:38:24 GMT and should not be manually modified.
+
+## 3.0.0
+Thu, 28 Sep 2023 13:38:24 GMT
+
+### Breaking changes
+
+- Consume version 2.3.5 of core
+- The very first release
+
+### Minor changes
+
+- Consume new version of core
+- Changes on WcWalletSDK constructor signature, the `methods` option is now mandatory
+
+### Patches
+
+- Consume new version of core
+- update WcSdk with new neo3-signer/neon-signer for: new signMessage version to allow signing without salt
+- Cnsume new version of core
+- Consume new version of core
+- Consume new version of core
+- Consume new version of core
+- Adjust version number with the other packages
+- Consume new version of core
+- Consume new version of neon-dappkit
+- Fix decrypt methods
+
