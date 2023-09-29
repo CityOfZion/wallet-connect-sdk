@@ -6,6 +6,7 @@ yarn-error.log*
 
 # build files
 packages/*/dist/
+packages/*/docs/
 
 # Runtime data
 *.pid
