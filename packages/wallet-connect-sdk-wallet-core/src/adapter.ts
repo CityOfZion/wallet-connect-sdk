@@ -10,7 +10,8 @@ import {
   NetworkVersion,
   ContractInvocationMulti,
   EncryptedPayload,
-  DecryptFromArrayResult
+  DecryptFromArrayResult,
+  CalculateFee
 } from '@cityofzion/wallet-connect-sdk-core'
 export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
@@ -118,6 +119,12 @@ export abstract class AbstractWalletConnectNeonAdapter {
 
   async getSigningCallback(args: TAdapterMethodParam): Promise<NeonJs.api.SigningFunction | undefined> {
     return undefined
+  }
+
+  async calculateFee(args: TAdapterMethodParam): Promise<CalculateFee> {
+    const {invoker} = await this.getServices(args)
+    const params = this.convertParams(args)
+    return await invoker.calculateFee(params)
   }
 
   abstract getWalletInfo(args: TAdapterMethodParam): Promise<WalletInfo>

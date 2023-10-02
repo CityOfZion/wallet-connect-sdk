@@ -202,6 +202,14 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         return await getSdkOrError().decryptFromArray(payloads)
     }, [getSdkOrError])
 
+    const calculateFee = useCallback(async (params: ContractInvocationMulti) => {
+        return await getSdkOrError().calculateFee(params);
+    }, [getSdkOrError])
+
+    const signTransaction = useCallback(async (params: ContractInvocationMulti) => {
+        return await getSdkOrError().signTransaction(params)
+    }, [getSdkOrError])
+
     useEffect(() => {
         (async () => {
             if (!setSignClient || !options || initRef.current) return
@@ -246,7 +254,9 @@ export const WalletConnectProvider: React.FC<{ children: any, options?: SignClie
         verifyMessage,
         encrypt,
         decrypt,
-        decryptFromArray
+        decryptFromArray,
+        signTransaction,
+        calculateFee
     }
 
     return (

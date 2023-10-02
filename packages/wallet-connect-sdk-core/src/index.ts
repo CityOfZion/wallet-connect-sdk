@@ -1,7 +1,7 @@
 import SignClient from '@walletconnect/sign-client'
 import { SessionTypes } from '@walletconnect/types'
 import { GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
-import { Neo3Signer, SignMessagePayload, SignedMessage, ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, RpcResponseStackItem, EncryptedPayload, InvokeResult, DecryptFromArrayResult } from '@cityofzion/neon-dappkit-types'
+import { Neo3Signer, SignMessagePayload, SignedMessage, ContractInvocation, ContractInvocationMulti, Neo3Invoker, Signer, Arg, RpcResponseStackItem, EncryptedPayload, InvokeResult, DecryptFromArrayResult, BuiltTransaction, CalculateFee } from '@cityofzion/neon-dappkit-types'
 /**
  * If JavaScript users try to use the connect methods without the methods, they will receive a warning.
  * This constant should be removed on later versions.
@@ -14,7 +14,7 @@ export type Chain = "private" | "testnet" | "mainnet"
 
 export type NetworkType = `${Blockchain}:${Chain}`
 
-export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion" | "encrypt" | "decrypt" | "decryptFromArray"
+export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion" | "encrypt" | "decrypt" | "decryptFromArray" | "calculateFee"
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -37,7 +37,7 @@ export const SUPPORTED_NETWORKS: NetworkType[] = ['neo3:private', 'neo3:testnet'
 /**
  * A list of auto accept methods supported by wallets
  */
-export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke', "getWalletInfo", "traverseIterator", "getNetworkVersion"]
+export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = ['testInvoke', "getWalletInfo", "traverseIterator", "getNetworkVersion", "calculateFee"]
 
 
 export class WcSdkError extends Error {
@@ -80,6 +80,9 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         if (initSession) {
             this.session = initSession
         }
+    }
+    signTransaction(cim: ContractInvocationMulti | BuiltTransaction):Promise<BuiltTransaction> {
+        throw new Error("not implemented yet");
     }
 
     /**
@@ -272,6 +275,33 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
         }
 
         return resp as string
+    }
+    
+    /**
+    * This method is used to calculate a fee.
+    * @param params the contract invocation options
+    * @return the call result promise
+    */
+    async calculateFee(params: ContractInvocationMulti): Promise<CalculateFee> {
+        this.validateContractInvocationMulti(params)
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "calculateFee",
+            params
+        }
+
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.getChainId() ?? '',
+            request
+        })
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as CalculateFee
     }
 
     /**
