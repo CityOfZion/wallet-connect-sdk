@@ -11,6 +11,8 @@ jobs:
     environment: release
     permissions:
       contents: write
+      pages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,6 +38,12 @@ jobs:
         run: rush rebuild
       - name: Publish Projects
         run: rush publish --apply --target-branch main --publish --npm-auth-token ${{ secrets.NPM_TOKEN }} --add-commit-details --include-all
+      - name: Publish Docs
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './packages/wallet-connect-sdk-core/docs'
+      - name: Deploy GitHub Pages
+        uses: actions/deploy-pages@v2
       - name: Commit and Push package.json version update
         run: |
           git add .
