@@ -20,9 +20,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install PNPM
-        run: npm install -g pnpm
-      - name: PNPM Setup
-        run: pnpm setup
+        run: npm install -g pnpm && pnpm setup
       - name: Install RushJS
         run: npm install -g @microsoft/rush
       - name: Verify Change Logs
