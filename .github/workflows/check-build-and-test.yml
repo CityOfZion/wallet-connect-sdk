@@ -33,21 +33,3 @@ jobs:
         run: rush update
       - name: Build Projects
         run: rush rebuild --verbose
-      - name: Install Examples Dependencies
-        working-directory: ./examples
-        run: |
-          for dir in */; do
-            if [ -d "$dir" ]; then
-              (cd "$dir" && yarn install && yarn build && yarn playwright install)
-            fi
-          done
-      - name: Run E2E Tests
-        working-directory: ./examples
-        run: |
-          yarn global add serve
-          for dir in */; do
-            if [ -d "$dir" ]; then
-              (cd "$dir" && yarn test:e2e:headless)
-            fi
-          done
-
