@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-react": "2.6.2",
+    "@cityofzion/wallet-connect-sdk-react": "workspace:../../packages/wallet-connect-sdk-react",
     "@cityofzion/neon-dappkit-types": "0.3.0",
     "@playwright/test": "^1.38.0",
     "@testing-library/jest-dom": "^5.16.4",

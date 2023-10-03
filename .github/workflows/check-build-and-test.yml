@@ -21,10 +21,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install PNPM
         run: npm install -g pnpm
+      - name: PNPM Setup
+        run: pnpm setup
       - name: Install RushJS
         run: npm install -g @microsoft/rush
-      - name: Install Yarn
-        run: npm install --global yarn
       - name: Verify Change Logs
         run: rush change --verify
       - name: Verify each project's package.json

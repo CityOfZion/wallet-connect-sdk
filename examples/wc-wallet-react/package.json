@@ -17,7 +17,7 @@
     "@chakra-ui/react": "^1.6.1",
     "@cityofzion/neon-dappkit": "^0.0.5",
     "@cityofzion/neon-js": "^5.5.1",
-    "@cityofzion/wallet-connect-sdk-wallet-react": "^2.5.4",
+    "@cityofzion/wallet-connect-sdk-wallet-react": "workspace:../../packages/wallet-connect-sdk-wallet-react",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@json-rpc-tools/utils": "^1.7.2",
