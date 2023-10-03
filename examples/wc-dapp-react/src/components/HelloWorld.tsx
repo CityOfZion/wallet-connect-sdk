@@ -1,8 +1,8 @@
 import React from "react";
 import { TypeChecker } from "@cityofzion/neon-dappkit-types"
-import {NetworkType, useWalletConnect, SignMessageVersion} from '@cityofzion/wallet-connect-sdk-react'
+import { NetworkType, useWalletConnect, SignMessageVersion } from '@cityofzion/wallet-connect-sdk-react'
 
-const networks: Record<NetworkType, {name: string}> = {
+const networks: Record<NetworkType, { name: string }> = {
     'neo3:mainnet': {
         name: 'MainNet',
     },
@@ -20,8 +20,8 @@ function HelloWorld () {
 
     const connect = async (): Promise<void> => {
         await wcSdk.connect(networkType, [
-            'invokeFunction', 'testInvoke', 'signMessage','verifyMessage', 'traverseIterator', 'getWalletInfo',
-            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray'
+            'invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage', 'traverseIterator', 'getWalletInfo',
+            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee'
         ])
     }
 
@@ -61,6 +61,25 @@ function HelloWorld () {
         })
 
         console.log(resp)
+        window.alert(JSON.stringify(resp, null, 2))
+    }
+
+    const calculateFee = async (): Promise<void> => {
+        const resp = await wcSdk.calculateFee({
+            invocations: [{
+                scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+                operation: 'transfer',
+                args: [
+                    { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
+                    { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+                    { type: 'Integer', value: '100000000' },
+                    { type: 'Array', value: [] }
+                ]
+            }],
+            signers: [{ scopes: 1 }]
+        })
+        console.log(resp)
+        console.log((Number(resp.networkFee) + Number(resp.systemFee)) === resp.total)
         window.alert(JSON.stringify(resp, null, 2))
     }
 
@@ -255,7 +274,7 @@ function HelloWorld () {
         {wcSdk && (<div>
             {!wcSdk.isConnected() && <>
                 <select onChange={(e: any) => setNetworkType(e.target.value)}
-                        value={networkType}>
+                    value={networkType}>
                     {Object.keys(networks).map((key) => (<option value={key} key={key}>{networks[key as NetworkType].name}</option>))}
                 </select>
                 <button data-testid="hello-world__wallet-connect" onClick={connect}>Connect</button>
@@ -276,6 +295,7 @@ function HelloWorld () {
                 <button onClick={decrypt}>decrypt</button>
                 <button onClick={signMessageEncryptAndDecrypt}>signMessage, Encrypt And Decrypt</button>
                 <button onClick={decryptFromArray}>decrypt from array</button>
+                <button onClick={calculateFee}>Calculate Fee</button>
             </>}
 
         </div>)}

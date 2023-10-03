@@ -14,7 +14,7 @@
     "vite": "^4.4.0"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "^2.5.4",
+    "@cityofzion/wallet-connect-sdk-core": "workspace:../../packages/wallet-connect-sdk-core",
     "@walletconnect/sign-client": "^2.9.1",
     "@walletconnect/types": "^2.9.1",
     "@playwright/test": "^1.38.0",
