@@ -1,0 +1,12 @@
+.DS_Store
+node_modules
+playwright.config.ts
+
+# Package manager files
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+test-results/
+tests-results/
+playwright-report/

@@ -12,6 +12,10 @@ export const DEFAULT_METHODS: Method[] = [
   'getWalletInfo',
   'traverseIterator',
   'getNetworkVersion',
+  'decrypt',
+  'encrypt',
+  'decryptFromArray',
+  'calculateFee',
 ]
 
 export const DEFAULT_LOGGER = "error";

@@ -6,18 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "test:e2e": "playwright test --headed",
-    "test:e2e:headless": "playwright test"
+    "preview": "vite preview"
   },
   "devDependencies": {
     "vite": "^4.4.0"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "workspace:../../packages/wallet-connect-sdk-core",
+    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core",
     "@walletconnect/sign-client": "^2.9.1",
-    "@walletconnect/types": "^2.9.1",
-    "@playwright/test": "^1.38.0",
-    "playwright": "^1.38.0"
+    "@walletconnect/types": "^2.9.1"
+  },
+  "resolutions": {
+    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core"
   }
 }

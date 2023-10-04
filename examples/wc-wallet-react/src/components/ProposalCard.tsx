@@ -23,12 +23,20 @@ export default function ProposalCard(props: DividerProps): any {
             {JSON.stringify(firstProposal.params.requiredNamespaces, null, 2)}
           </Text>
           <Flex mt="0.75rem">
-            <Button flex={1} onClick={approveSession}
-                    bg="black" borderRadius={0} _hover={{bg: '#111'}}>
+            <Button flex={1}
+                    onClick={approveSession}
+                    data-testid="proposal-card__approve"
+                    bg="black"
+                    borderRadius={0}
+                    _hover={{bg: '#111'}}>
               Approve
             </Button>
-            <Button flex={1} onClick={() => walletConnectCtx.rejectProposal(firstProposal)}
-                    bg="black" borderRadius={0} _hover={{bg: '#111'}} ml="0.5rem">
+            <Button flex={1}
+                    onClick={() => walletConnectCtx.rejectProposal(firstProposal)}
+                    bg="black"
+                    borderRadius={0}
+                    _hover={{bg: '#111'}}
+                    ml="0.5rem">
               Reject
             </Button>
           </Flex>

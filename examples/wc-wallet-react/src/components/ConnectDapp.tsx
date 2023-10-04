@@ -18,7 +18,7 @@ export default function ConnectDapp(props: DividerProps): any {
   const handleInput = async (e: any) => {
     setLoading(true)
     try {
-      await walletConnectCtx.connect(e.target.value)
+      await walletConnectCtx.connect(e.target.value.trim())
     } catch (e) {
       setLoading(false)
       toast({
@@ -99,6 +99,7 @@ export default function ConnectDapp(props: DividerProps): any {
           <Box flex={1} h="1px" bg="#888888"/>
         </Flex>
         <Input onChange={handleInput} borderColor="#373d4a" borderRadius={0}
+               data-testid="connect-dapp__dapp-uri-input"
                maxW="20rem" bg="#1a202b"
                _placeholder={{color: '#373d4a'}} mt="2rem"
                placeholder="Paste the Code "/>

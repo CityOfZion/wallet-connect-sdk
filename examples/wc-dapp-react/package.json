@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-react": "workspace:../../packages/wallet-connect-sdk-react",
+    "@cityofzion/wallet-connect-sdk-react": "file:../../packages/wallet-connect-sdk-react",
     "@cityofzion/neon-dappkit-types": "0.3.0",
-    "@playwright/test": "^1.38.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -15,8 +14,8 @@
     "@types/react-dom": "^18.0.0",
     "@walletconnect/sign-client": "^2.8.6",
     "@walletconnect/types": "^2.8.6",
+    "buffer": "^6.0.3",
     "gh-pages": "^4.0.0",
-    "playwright": "^1.38.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
@@ -29,8 +28,6 @@
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "test:e2e": "playwright test --headed",
-    "test:e2e:headless": "playwright test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -50,5 +47,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "@cityofzion/wallet-connect-sdk-react": "file:../../packages/wallet-connect-sdk-react",
+    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core"
   }
 }

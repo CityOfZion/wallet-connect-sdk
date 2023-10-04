@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import { TypeChecker } from "@cityofzion/neon-dappkit-types"
 import { NetworkType, useWalletConnect, SignMessageVersion } from '@cityofzion/wallet-connect-sdk-react'
 
@@ -15,6 +15,8 @@ const networks: Record<NetworkType, { name: string }> = {
 }
 
 function HelloWorld () {
+  const [dappUri, setDappUri] = useState('');
+  const [response, setResponse] = useState('');
     const wcSdk = useWalletConnect()
     const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
 
@@ -24,6 +26,19 @@ function HelloWorld () {
             'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee'
         ])
     }
+
+  const getUri = async (): Promise<void> => {
+    const { uri, approval } = await wcSdk.createConnection('neo3:testnet', [
+      'invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage', 'traverseIterator', 'getWalletInfo',
+      'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee'
+    ])
+    if(uri) {
+      setDappUri(uri);
+      await navigator.clipboard.writeText(uri)
+      const session = await approval()
+      wcSdk.setSession(session);
+    }
+  }
 
     const disconnect = async (): Promise<void> => {
         await wcSdk.disconnect()
@@ -42,7 +57,7 @@ function HelloWorld () {
         })
 
         console.log(resp)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
     }
 
     const transferGas = async (): Promise<void> => {
@@ -80,7 +95,7 @@ function HelloWorld () {
         })
         console.log(resp)
         console.log((Number(resp.networkFee) + Number(resp.systemFee)) === resp.total)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
     }
 
     const transferGasWithExtraFee = async (): Promise<void> => {
@@ -133,28 +148,28 @@ function HelloWorld () {
 
     const signAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: SignMessageVersion.DEFAULT })
+        const resp = await wcSdk.signMessage({ message: 'Your sign message', version: SignMessageVersion.DEFAULT })
 
         console.log(resp)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
 
         const resp2 = await wcSdk.verifyMessage(resp)
 
         console.log(resp2)
-        window.alert(JSON.stringify(resp2, null, 2))
+        setResponse(JSON.stringify(resp2, null, 2))
     }
 
     const signWithoutSaltAndVerify = async (): Promise<void> => {
         if (!wcSdk) return
-        const resp = await wcSdk.signMessage({ message: 'Caralho, muleq, o baguiu eh issumermo taix ligado na missão?', version: SignMessageVersion.WITHOUT_SALT })
+        const resp = await wcSdk.signMessage({ message: 'Your sign message', version: SignMessageVersion.WITHOUT_SALT })
 
         console.log(resp)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
 
         const resp2 = await wcSdk.verifyMessage(resp)
 
         console.log(resp2)
-        window.alert(JSON.stringify(resp2, null, 2))
+        setResponse(JSON.stringify(resp2, null, 2))
     }
 
     const verifyFailling = async (): Promise<void> => {
@@ -166,7 +181,7 @@ function HelloWorld () {
         })
 
         console.log(resp2)
-        window.alert(JSON.stringify(resp2, null, 2))
+        setResponse(JSON.stringify(resp2, null, 2))
     }
 
     const verify = async (): Promise<void> => {
@@ -178,7 +193,7 @@ function HelloWorld () {
         })
 
         console.log(resp2)
-        window.alert(JSON.stringify(resp2, null, 2))
+        setResponse(JSON.stringify(resp2, null, 2))
     }
 
     const traverseIterator = async (): Promise<void> => {
@@ -201,14 +216,14 @@ function HelloWorld () {
         const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10);
 
         console.log(resp2);
-        window.alert(JSON.stringify(resp2, null, 2));
+        setResponse(JSON.stringify(resp2, null, 2))
     };
 
     const getWalletInfo = async (): Promise<void> => {
         const resp = await wcSdk.getWalletInfo()
 
         console.log(resp)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
     }
 
     /**
@@ -217,11 +232,11 @@ function HelloWorld () {
      */
 
     const encrypt = async () => {
-        const message = "Caralho, muleq, o baguiu eh issumermo taix ligado na missão?"
+        const message = 'Your sign message'
         const publicKeys = ["02dd8169fb780a9cc01d785efc96888f99c39ab671c039acad8f1f646b9f944a0e"]
         const resp = await wcSdk.encrypt(message, publicKeys)
         console.log(resp)
-        window.alert(JSON.stringify(resp, null, 2))
+        setResponse(JSON.stringify(resp, null, 2))
     }
 
     const decrypt = async () => {
@@ -278,24 +293,33 @@ function HelloWorld () {
                     {Object.keys(networks).map((key) => (<option value={key} key={key}>{networks[key as NetworkType].name}</option>))}
                 </select>
                 <button data-testid="hello-world__wallet-connect" onClick={connect}>Connect</button>
+                <button data-testid="hello-world__get-uri-button" onClick={getUri}>Get URI</button>
+                <br></br>
+                <span>URI:</span>
+                <br></br>
+                <span data-testid="hello-world__dapp-uri">{dappUri}</span>
             </>}
             {wcSdk.isConnected() && <>
-                <button onClick={disconnect}>Disconnect</button>
-                <button onClick={getMyBalance}>Get My Balance</button>
-                <button onClick={transferGas}>Transfer Gas</button>
-                <button onClick={transferGasWithExtraFee}>Transfer Gas with Extra fee</button>
-                <button onClick={multiInvokeFailing}>Multi Invoke Failing</button>
-                <button onClick={signAndVerify}>Sign and Verify Message</button>
-                <button onClick={signWithoutSaltAndVerify}>Sign Without Salt and Verify Message</button>
-                <button onClick={verifyFailling}>Verify Failling</button>
-                <button onClick={verify}>Verify Success</button>
-                <button onClick={traverseIterator}>Traverse Iterator</button>
-                <button onClick={getWalletInfo}>Get Wallet Info</button>
-                <button onClick={encrypt}>encrypt</button>
-                <button onClick={decrypt}>decrypt</button>
-                <button onClick={signMessageEncryptAndDecrypt}>signMessage, Encrypt And Decrypt</button>
-                <button onClick={decryptFromArray}>decrypt from array</button>
-                <button onClick={calculateFee}>Calculate Fee</button>
+                <button data-testid="hello-world__disconnect" onClick={disconnect}>Disconnect</button>
+                <button data-testid="hello-world__get-my-balance" onClick={getMyBalance}>Get My Balance</button>
+                <button data-testid="hello-world__transfer-gas" onClick={transferGas}>Transfer Gas</button>
+                <button data-testid="hello-world__transfer-gas-with-extra-fee" onClick={transferGasWithExtraFee}>Transfer Gas with Extra fee</button>
+                <button data-testid="hello-world__multi-invoke-failing" onClick={multiInvokeFailing}>Multi Invoke Failing</button>
+                <button data-testid="hello-world__sign-and-verify" onClick={signAndVerify}>Sign and Verify Message</button>
+                <button data-testid="hello-world__sign-without-salt-and-verify" onClick={signWithoutSaltAndVerify}>Sign Without Salt and Verify Message</button>
+                <button data-testid="hello-world__verify-failing" onClick={verifyFailling}>Verify Failling</button>
+                <button data-testid="hello-world__verify" onClick={verify}>Verify Success</button>
+                <button data-testid="hello-world__traverse-iterator" onClick={traverseIterator}>Traverse Iterator</button>
+                <button data-testid="hello-world__get-wallet-info" onClick={getWalletInfo}>Get Wallet Info</button>
+                <button data-testid="hello-world__encrypt" onClick={encrypt}>encrypt</button>
+                <button data-testid="hello-world__decrypt" onClick={decrypt}>decrypt</button>
+                <button data-testid="hello-world__sign-message-encrypt-and-decrypt" onClick={signMessageEncryptAndDecrypt}>signMessage, Encrypt And Decrypt</button>
+                <button data-testid="hello-world__decrypt-from-array" onClick={decryptFromArray}>decrypt from array</button>
+                <button data-testid="hello-world__calculate-fee" onClick={calculateFee}>Calculate Fee</button>
+                <br></br>
+                <span>Response:</span>
+                <br></br>
+                <span data-testid="hello-world__method-response">{response}</span>
             </>}
 
         </div>)}
