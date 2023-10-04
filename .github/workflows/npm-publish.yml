@@ -38,10 +38,12 @@ jobs:
         run: rush rebuild
       - name: Publish Projects
         run: rush publish --apply --target-branch main --publish --npm-auth-token ${{ secrets.NPM_TOKEN }} --add-commit-details --include-all
+      - name: Merge Docs
+        run: rush docs
       - name: Publish Docs
         uses: actions/upload-pages-artifact@v2
         with:
-          path: './packages/wallet-connect-sdk-core/docs'
+          path: './docs'
       - name: Deploy GitHub Pages
         uses: actions/deploy-pages@v2
       - name: Commit and Push package.json version update

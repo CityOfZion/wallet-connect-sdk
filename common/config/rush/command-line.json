@@ -1,0 +1,12 @@
+{
+  "commands": [
+    {
+      "name": "docs",
+      "commandKind": "global",
+      "summary": "Used to generate documentation of each package",
+      "safeForSimultaneousRushProcesses": true,
+      "autoinstallerName": "rush-docs",
+      "shellCommand": "for /d %i in (./packages/*) do (npm run docs --prefix packages/%i/) && typedoc --options typedoc.json"
+    }
+  ]
+}
