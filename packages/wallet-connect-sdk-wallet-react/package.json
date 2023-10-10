@@ -27,7 +27,7 @@
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
-    "docs": "typedoc",
+    "docs": "typedoc src/index.ts",
     "fmt": "eslint .",
     "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/react --acl public-read",
     "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/react --acl public-read"
