@@ -34,7 +34,7 @@ jobs:
         run: rush version --bump
       - name: Install dependencies
         run: rush update
-      - name: Build BaseUrl
+      - name: Build Projects
         run: rush rebuild
       - name: Publish Projects
         run: rush publish --apply --target-branch main --publish --npm-auth-token ${{ secrets.NPM_TOKEN }} --add-commit-details --include-all
