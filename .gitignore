@@ -81,3 +81,13 @@ examples/*/dist/
 
 # Examples test result
 examples/*/test-results/
+
+# Reporters
+e2e/playwright-report
+e2e/test-results
+e2e/tests-results
+
+# examples lock
+examples/**/pnpm-lock.yaml
+examples/**/yarn.lock
+examples/**/package-lock.json

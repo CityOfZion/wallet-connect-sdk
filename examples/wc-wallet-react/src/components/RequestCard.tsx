@@ -78,11 +78,19 @@ export default function RequestCard(props: DividerProps & {sessionAndRequest: TS
         {sendingResponse ? <Spinner alignSelf="center" /> : (
         <Flex mt="0.75rem" position="sticky" bottom={0}>
           <Button flex={1} onClick={approve}
-                  bg="black" borderRadius={0} _hover={{bg: '#111'}}>
+                  data-testid="request-card__approve"
+                  bg="black"
+                  borderRadius={0}
+                  _hover={{bg: '#111'}}>
             Approve
           </Button>
-          <Button flex={1} onClick={reject}
-                  bg="black" borderRadius={0} _hover={{bg: '#111'}} ml="0.5rem">
+          <Button flex={1}
+                  onClick={reject}
+                  data-testid="request-card__reject"
+                  bg="black"
+                  borderRadius={0}
+                  _hover={{bg: '#111'}}
+                  ml="0.5rem">
             Reject
           </Button>
         </Flex>

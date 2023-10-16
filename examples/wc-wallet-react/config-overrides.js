@@ -6,7 +6,8 @@ module.exports = function override(config) {
             fallback: {
                 "crypto": require.resolve("crypto-browserify"),
                 "querystring": require.resolve("querystring-es3"),
-                "stream": require.resolve("stream-browserify")
+                "stream": require.resolve("stream-browserify"),
+                "events": require.resolve("events")
             }
         }
     })
