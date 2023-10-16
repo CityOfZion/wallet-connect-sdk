@@ -14,31 +14,31 @@ const networks: Record<NetworkType, { name: string }> = {
     },
 }
 
-function HelloWorld () {
-  const [dappUri, setDappUri] = useState('');
-  const [response, setResponse] = useState('');
+function HelloWorld() {
+    const [dappUri, setDappUri] = useState('');
+    const [response, setResponse] = useState('');
     const wcSdk = useWalletConnect()
     const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
 
     const connect = async (): Promise<void> => {
         await wcSdk.connect(networkType, [
             'invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage', 'traverseIterator', 'getWalletInfo',
-            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee'
+            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee', 'signTransaction'
         ])
     }
 
-  const getUri = async (): Promise<void> => {
-    const { uri, approval } = await wcSdk.createConnection('neo3:testnet', [
-      'invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage', 'traverseIterator', 'getWalletInfo',
-      'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee'
-    ])
-    if(uri) {
-      setDappUri(uri);
-      await navigator.clipboard.writeText(uri)
-      const session = await approval()
-      wcSdk.setSession(session);
+    const getUri = async (): Promise<void> => {
+        const { uri, approval } = await wcSdk.createConnection('neo3:testnet', [
+            'invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage', 'traverseIterator', 'getWalletInfo',
+            'getNetworkVersion', 'decrypt', 'encrypt', 'decryptFromArray', 'calculateFee', 'signTransaction'
+        ])
+        if (uri) {
+            setDappUri(uri);
+            await navigator.clipboard.writeText(uri)
+            const session = await approval()
+            wcSdk.setSession(session);
+        }
     }
-  }
 
     const disconnect = async (): Promise<void> => {
         await wcSdk.disconnect()
@@ -284,6 +284,24 @@ function HelloWorld () {
         }
     }
 
+    const signTransaction = async () => {
+        const resp = await wcSdk.signTransaction({
+            invocations: [{
+                scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+                operation: 'transfer',
+                args: [
+                    { type: 'Hash160', value: wcSdk.getAccountAddress() ?? '' },
+                    { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+                    { type: 'Integer', value: '100000000' },
+                    { type: 'Array', value: [] }
+                ]
+            }],
+            signers: [{ scopes: 1 }]
+        })
+        console.log(resp)
+        setResponse(JSON.stringify(resp, null, 2))
+    }
+
     return <div>
         {!wcSdk && <span>Loading...</span>}
         {wcSdk && (<div>
@@ -316,6 +334,7 @@ function HelloWorld () {
                 <button data-testid="hello-world__sign-message-encrypt-and-decrypt" onClick={signMessageEncryptAndDecrypt}>signMessage, Encrypt And Decrypt</button>
                 <button data-testid="hello-world__decrypt-from-array" onClick={decryptFromArray}>decrypt from array</button>
                 <button data-testid="hello-world__calculate-fee" onClick={calculateFee}>Calculate Fee</button>
+                <button data-testid="hello-world__sign-transaction" onClick={signTransaction}>Sign Transaction</button>
                 <br></br>
                 <span>Response:</span>
                 <br></br>
