@@ -147,3 +147,16 @@ test('Test Calculate Fee on dapp (React)', async ({ context }) => {
   expect(response.systemFee).toBeDefined() // Verify if the response returned systemFee
   expect(response.total).toBeDefined() // Verify if the response returned total
 })
+
+test('Test Sign Transaction on dapp (React)', async ({ context }) => {
+  // Define the dapp and wallet pages
+  const dappPage = DAPP_REACT
+  const walletPage = WALLET_REACT
+  await connectReactDappToNewReactAccount(context, dappPage, walletPage)
+  await dappPage.page.waitForLoadState('networkidle') // Wait to load request
+  await dappPage.awaitSeconds(5) // Wait for 5 seconds
+  await dappPage.page.getByTestId('hello-world__sign-transaction').click() // Click on Sign Transaction button
+  await dappPage.awaitSeconds(2) // Wait for 2 seconds
+  const response = await getAnyFromInnerHTML(dappPage.page.getByTestId('hello-world__method-response'))
+  expect(response).toBeDefined() // Verify  if the response had a return
+})

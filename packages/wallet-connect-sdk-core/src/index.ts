@@ -14,7 +14,7 @@ export type Chain = "private" | "testnet" | "mainnet"
 
 export type NetworkType = `${Blockchain}:${Chain}`
 
-export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion" | "encrypt" | "decrypt" | "decryptFromArray" | "calculateFee"
+export type Method = 'invokeFunction' | 'testInvoke' | 'signMessage' | 'verifyMessage' | 'traverseIterator' | 'getWalletInfo' | "getNetworkVersion" | "encrypt" | "decrypt" | "decryptFromArray" | "calculateFee" | "signTransaction"
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -81,8 +81,32 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
             this.session = initSession
         }
     }
-    signTransaction(cim: ContractInvocationMulti | BuiltTransaction):Promise<BuiltTransaction> {
-        throw new Error("not implemented yet");
+
+    /**
+    * This method is used to sign a transaction.
+    * @param params the contract invocation options
+    * @return the call result promise
+    */
+    async signTransaction(params: ContractInvocationMulti | BuiltTransaction): Promise<BuiltTransaction> {
+        this.validateContractInvocationMulti(params)
+        const request = {
+            id: 1,
+            jsonrpc: "2.0",
+            method: "signTransaction",
+            params
+        }
+
+        const resp = await this.signClient.request({
+            topic: this.session?.topic ?? '',
+            chainId: this.getChainId() ?? '',
+            request
+        })
+
+        if (!resp) {
+            throw new WcSdkError(resp);
+        }
+
+        return resp as BuiltTransaction
     }
 
     /**
