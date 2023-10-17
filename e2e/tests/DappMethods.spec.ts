@@ -156,6 +156,7 @@ test('Test Sign Transaction on dapp (React)', async ({ context }) => {
   await dappPage.page.waitForLoadState('networkidle') // Wait to load request
   await dappPage.awaitSeconds(5) // Wait for 5 seconds
   await dappPage.page.getByTestId('hello-world__sign-transaction').click() // Click on Sign Transaction button
+  await acceptPendingRequestToReactWallet(walletPage)
   await dappPage.awaitSeconds(2) // Wait for 2 seconds
   const response = await getAnyFromInnerHTML(dappPage.page.getByTestId('hello-world__method-response'))
   expect(response).toBeDefined() // Verify  if the response had a return
