@@ -16,6 +16,7 @@ export const DEFAULT_METHODS: Method[] = [
   'encrypt',
   'decryptFromArray',
   'calculateFee',
+  'signTransaction',
 ]
 
 export const DEFAULT_LOGGER = "error";
