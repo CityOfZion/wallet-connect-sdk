@@ -28,7 +28,8 @@
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
     "docs": "typedoc src/index.ts",
-    "fmt": "eslint .",
+    "lint": "eslint .",
+    "format": "eslint --fix",
     "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/react --acl public-read",
     "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/react --acl public-read"
   },
@@ -49,6 +50,9 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.4",
     "react-scripts": "^4.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.51.0",
     "typescript": "^4.3.2",
     "typedoc": "^0.22.10"
   },

@@ -145,64 +145,59 @@ export class WcWalletSDK {
 
       abortController.abort()
     }, INIT_TIMEOUT)
-
-    return new Promise<void>(async (resolve, reject) => {
-      try {
-        abortController.signal.addEventListener('abort', () => {
-          this.status = EStatus.ERROR
-          reject(new Error('Initialization timeout has been reached'))
-        })
-
-        const client = await SignClient.init(this.options.clientOptions)
-        clearTimeout(timeout)
-
-        client.events.removeAllListeners('session_proposal')
-        client.events.removeAllListeners('session_request')
-        client.events.removeAllListeners('session_delete')
-
-        client.on('session_proposal', proposal => {
-          this.proposals = [...this.proposals, proposal]
-        })
-        client.on('session_request', async request => {
-          if (this.options.autoAcceptMethods.includes(request.params.request.method as Method)) {
-            await this.approveRequest(request)
-            return
-          }
-
-          const filtered = this.requests.filter(item => item.id !== request.id)
-          this.requests = [...filtered, request]
-        })
-        client.on('session_delete', ({ topic }) => {
-          const filtered = this.sessions.filter(session => session.topic !== topic)
-          this.sessions = filtered
-        })
-
-        const extendedSessions = await client.core.storage.getItem<TSessionExtendedStorage[]>(
-          SESSION_EXTENDED_STORAGE_KEY
-        )
-        this.sessions = extendedSessions
-          ? client.session.values
-              .map(session => {
-                const storage = extendedSessions.find(({ topic }) => topic === session.topic)
-                if (!storage) return undefined
-
-                return {
-                  ...session,
-                  approvalUnix: storage.approvalUnix,
-                  wccv: storage.wccv,
-                }
-              })
-              .filter((session): session is TSession => !!session)
-          : []
-
-        this.status = EStatus.STARTED
-        this.client = client
-        resolve()
-      } catch (error) {
+    try {
+      abortController.signal.addEventListener('abort', () => {
         this.status = EStatus.ERROR
-        reject(error)
-      }
-    })
+        throw new Error('Initialization timeout has been reached')
+      })
+
+      const client = await SignClient.init(this.options.clientOptions)
+      clearTimeout(timeout)
+
+      client.events.removeAllListeners('session_proposal')
+      client.events.removeAllListeners('session_request')
+      client.events.removeAllListeners('session_delete')
+
+      client.on('session_proposal', (proposal) => {
+        this.proposals = [...this.proposals, proposal]
+      })
+      client.on('session_request', async (request) => {
+        if (this.options.autoAcceptMethods.includes(request.params.request.method as Method)) {
+          await this.approveRequest(request)
+          return
+        }
+
+        const filtered = this.requests.filter((item) => item.id !== request.id)
+        this.requests = [...filtered, request]
+      })
+      client.on('session_delete', ({ topic }) => {
+        const filtered = this.sessions.filter((session) => session.topic !== topic)
+        this.sessions = filtered
+      })
+
+      const extendedSessions =
+        await client.core.storage.getItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY)
+      this.sessions = extendedSessions
+        ? client.session.values
+            .map((session) => {
+              const storage = extendedSessions.find(({ topic }) => topic === session.topic)
+              if (!storage) return undefined
+
+              return {
+                ...session,
+                approvalUnix: storage.approvalUnix,
+                wccv: storage.wccv,
+              }
+            })
+            .filter((session): session is TSession => !!session)
+        : []
+
+      this.status = EStatus.STARTED
+      this.client = client
+    } catch (error) {
+      this.status = EStatus.ERROR
+      throw error
+    }
   }
 
   /**
@@ -217,7 +212,9 @@ export class WcWalletSDK {
     if (!wccv) throw new Error('Invalid URI')
     if (wccv > COMPATIBILITY_VERSION) throw new Error('Incompatible WCCV. Update your wallet to use new features.')
 
-    const { topic } = await this.signClient.pair({ uri })
+    const { topic } = await this.signClient.pair({
+      uri,
+    })
     this.wccvs.set(topic, wccv)
   }
 
@@ -230,7 +227,10 @@ export class WcWalletSDK {
   public async disconnect(session: TSession, reason?: TRejectReason): Promise<void> {
     await this.signClient.disconnect({
       topic: session.topic,
-      reason: reason ?? { code: 5900, message: 'USER_DISCONNECTED' },
+      reason: reason ?? {
+        code: 5900,
+        message: 'USER_DISCONNECTED',
+      },
     })
 
     const filtered = this.sessions.filter(({ topic }) => session.topic !== topic)
@@ -268,12 +268,14 @@ export class WcWalletSDK {
       const wccv = this.wccvs.get(session.pairingTopic)
       if (!wccv) throw new Error('WCCV not set')
 
-      const extendedSession = { ...session, approvalUnix, wccv }
+      const extendedSession = {
+        ...session,
+        approvalUnix,
+        wccv,
+      }
       this.sessions = [...this.sessions, extendedSession]
 
       return extendedSession
-    } catch (error) {
-      throw error
     } finally {
       const filteredProposal = this.proposals.filter(({ id }) => id !== proposal.id)
       this.proposals = filteredProposal
@@ -314,7 +316,7 @@ export class WcWalletSDK {
     try {
       if (!this.adapter) throw new Error('Adapter not set')
 
-      const session = this.sessions.find(session => session.topic === request.topic)
+      const session = this.sessions.find((session) => session.topic === request.topic)
       if (!session) throw new Error('Session not found')
 
       const method = request.params.request.method as Method
@@ -367,11 +369,9 @@ export class WcWalletSDK {
           reason ?? {
             code: 1,
             message: 'rejected by the user',
-          }
+          },
         ),
       })
-    } catch (error) {
-      throw error
     } finally {
       const filteredRequests = this.requests.filter(({ id }) => id !== request.id)
       this.requests = filteredRequests

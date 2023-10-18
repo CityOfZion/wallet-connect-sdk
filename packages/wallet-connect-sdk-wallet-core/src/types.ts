@@ -33,7 +33,10 @@ export type TOptions = {
 }
 
 export type TApproveSessionOptions = {
-  account: { address: string; chain: Chain }
+  account: {
+    address: string
+    chain: Chain
+  }
 }
 
 export type TSessionExtendedStorage = {

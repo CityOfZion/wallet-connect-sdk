@@ -31,7 +31,9 @@
     "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/react --acl public-read",
     "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/react --acl public-read",
     "predeploy": "cd example && npm install && npm run build",
-    "deploy": "gh-pages -d example/build"
+    "deploy": "gh-pages -d example/build",
+    "lint": "eslint .",
+    "format": "eslint --fix"
   },
   "dependencies": {
     "@cityofzion/wallet-connect-sdk-core": "workspace:*",
@@ -54,7 +56,10 @@
     "react-redux": "^7.2.4",
     "react-scripts": "^4.0.3",
     "typescript": "^4.3.2",
-    "typedoc": "^0.22.10"
+    "typedoc": "^0.22.10",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.51.0"
   },
   "files": [
     "dist"

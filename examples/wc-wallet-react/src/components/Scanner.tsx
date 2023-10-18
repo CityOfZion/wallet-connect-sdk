@@ -1,6 +1,6 @@
-import * as React from "react";
-import styled from "styled-components";
-import QrReader from "react-qr-reader";
+import * as React from 'react'
+import styled from 'styled-components'
+import QrReader from 'react-qr-reader'
 
 const SScannerContainer = styled.div`
   position: fixed;
@@ -11,7 +11,7 @@ const SScannerContainer = styled.div`
   z-index: 5;
   margin: 0 auto !important;
   background: rgb(0, 0, 0);
-`;
+`
 
 const SScannerWrapper = styled.div`
   position: relative;
@@ -23,7 +23,7 @@ const SScannerWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const SCloseButton = styled.div`
   transition: all 0.2s ease-in-out;
@@ -40,72 +40,72 @@ const SCloseButton = styled.div`
   &:hover {
     opacity: 0.5;
   }
-`;
+`
 
 const SFirstLine = styled.div`
   position: absolute;
   width: 90%;
   border: 1px solid rgb(255, 255, 255);
-`;
+`
 
 const SSecondLine = styled(SFirstLine as any)`
   transform: rotate(90deg);
-`;
+`
 
 export interface ScannerValidation {
-  error: Error | null;
-  result: any | null;
+  error: Error | null
+  result: any | null
 }
 
 interface ScannerProps {
-  onValidate: (data: string) => ScannerValidation;
-  onScan: (data: any) => void;
-  onError: (error: Error) => void;
-  onClose: () => void;
+  onValidate: (data: string) => ScannerValidation
+  onScan: (data: any) => void
+  onError: (error: Error) => void
+  onClose: () => void
 }
 
 interface ScannerState {
-  delay: number | false;
+  delay: number | false
 }
 
 class Scanner extends React.Component<ScannerProps, ScannerState> {
   public state = {
     delay: 300,
-  };
+  }
 
   public stopRecording: () => Promise<void> = async () => {
-    await this.setState({ delay: false });
-  };
+    await this.setState({ delay: false })
+  }
 
-  public handleScan: (data: (string | null)) => void = (data: string | null) => {
+  public handleScan: (data: string | null) => void = (data: string | null) => {
     if (data) {
-      const { result, error } = this.props.onValidate(data);
+      const { result, error } = this.props.onValidate(data)
       if (result) {
-        this.stopRecording();
-        this.props.onScan(result);
+        this.stopRecording()
+        this.props.onScan(result)
       } else {
-        this.handleError(error);
+        this.handleError(error)
       }
     }
-  };
+  }
 
-  public handleError: (error: (Error | null)) => void = (error: Error | null) => {
+  public handleError: (error: Error | null) => void = (error: Error | null) => {
     if (error) {
-      this.props.onError(error);
+      this.props.onError(error)
     }
-  };
+  }
 
   public onClose: () => Promise<void> = async () => {
     try {
-      await this.stopRecording();
-      this.props.onClose();
+      await this.stopRecording()
+      this.props.onClose()
     } catch (error: any) {
-      this.handleError(error);
+      this.handleError(error)
     }
-  };
+  }
 
   public componentWillUnmount(): void {
-    this.stopRecording();
+    this.stopRecording()
   }
 
   public render(): any {
@@ -120,12 +120,12 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
             delay={this.state.delay}
             onError={this.handleError}
             onScan={this.handleScan}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           />
         </SScannerWrapper>
       </SScannerContainer>
-    );
+    )
   }
 }
 
-export default Scanner;
+export default Scanner
