@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const walletConnectSdkCore = require('..');
+const walletConnectSdkCore = require('..')
 
 describe('wallet-connect-sdk-core', () => {
-    it('needs tests');
-});
+  it('needs tests')
+})

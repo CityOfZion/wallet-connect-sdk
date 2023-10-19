@@ -42,7 +42,7 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
     async (proposal: TSessionProposal, options: TApproveSessionOptions): Promise<TSession> => {
       return await sdk.current.approveProposal(proposal, options)
     },
-    []
+    [],
   )
 
   const rejectProposal = useCallback(async (proposal: TSessionProposal, reason?: TRejectReason): Promise<void> => {

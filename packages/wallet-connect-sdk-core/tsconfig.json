@@ -3,12 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["src"],
+  "exclude": ["node_modules"],
   "typedocOptions": {
     "entryPoints": ["./src/index.ts"],
     "out": "docs"

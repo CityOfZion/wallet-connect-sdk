@@ -1,6 +1,6 @@
 export abstract class FileHelper {
   static fileOrBlobToArrBuffer(file: File | Blob): Promise<ArrayBuffer | null> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const reader = new FileReader()
       reader.onload = () => {
         resolve(reader.result as ArrayBuffer)
@@ -19,7 +19,7 @@ export abstract class FileHelper {
   }
 
   static fileToUrl(file: File | Blob): Promise<string> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const reader = new FileReader()
       reader.onload = () => {
         resolve(reader.result as string)
@@ -29,7 +29,7 @@ export abstract class FileHelper {
   }
 
   static urlToImg(url: string): Promise<HTMLImageElement> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const img = new Image()
 
       img.onload = () => {
@@ -41,7 +41,7 @@ export abstract class FileHelper {
   }
 
   static canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
-    return new Promise<Blob | null>(resolve => {
+    return new Promise<Blob | null>((resolve) => {
       canvas.toBlob((blob: Blob | null) => {
         resolve(blob)
       })
@@ -57,10 +57,7 @@ export abstract class FileHelper {
     }
 
     // separate out the mime component
-    const mimeString: string = dataURI
-      .split(',')[0]
-      .split(':')[1]
-      .split(';')[0]
+    const mimeString: string = dataURI.split(',')[0].split(':')[1].split(';')[0]
 
     // write the bytes of the string to a typed array
     const ia = new Uint8Array(byteString.length)
@@ -68,7 +65,7 @@ export abstract class FileHelper {
       ia[i] = byteString.charCodeAt(i)
     }
 
-    return new Blob([ia], {type: mimeString})
+    return new Blob([ia], { type: mimeString })
   }
 
   static urlToArrayBuffer(dataURI: string): Promise<ArrayBuffer | null> {
@@ -86,7 +83,7 @@ export abstract class FileHelper {
   }
 
   static arrayBufferToBlob(arrayBuffer: ArrayBuffer): Blob {
-    return new Blob([arrayBuffer], {type: 'image/jpeg'})
+    return new Blob([arrayBuffer], { type: 'image/jpeg' })
   }
 
   static blobToUrl(blob: Blob): string {
@@ -98,11 +95,8 @@ export abstract class FileHelper {
     return this.blobToUrl(blob)
   }
 
-  static promptForMultipleFiles(
-    accept: string | null = null,
-    multiple = true
-  ): Promise<File[] | null> {
-    return new Promise(resolve => {
+  static promptForMultipleFiles(accept: string | null = null, multiple = true): Promise<File[] | null> {
+    return new Promise((resolve) => {
       const input = document.createElement('input')
       input.type = 'file'
       if (accept) {
@@ -124,13 +118,8 @@ export abstract class FileHelper {
     })
   }
 
-  static async promptForSingleFile(
-    accept: string | null = null
-  ): Promise<File | null> {
-    const files: File[] | null = await this.promptForMultipleFiles(
-      accept,
-      false
-    )
+  static async promptForSingleFile(accept: string | null = null): Promise<File | null> {
+    const files: File[] | null = await this.promptForMultipleFiles(accept, false)
     if (!files || !files.length) {
       return null
     }
@@ -138,12 +127,12 @@ export abstract class FileHelper {
   }
 
   static downloadJsonFile(name: string, obj: unknown): void {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", name + ".json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj))
+    const downloadAnchorNode = document.createElement('a')
+    downloadAnchorNode.setAttribute('href', dataStr)
+    downloadAnchorNode.setAttribute('download', name + '.json')
+    document.body.appendChild(downloadAnchorNode)
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
   }
 }

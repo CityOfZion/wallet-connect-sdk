@@ -12,7 +12,7 @@ import {
   EncryptedPayload,
   DecryptFromArrayResult,
   CalculateFee,
-  BuiltTransaction
+  BuiltTransaction,
 } from '@cityofzion/wallet-connect-sdk-core'
 export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
@@ -43,8 +43,8 @@ export abstract class AbstractWalletConnectNeonAdapter {
 
     if (session.wccv >= 3) return params
 
-    const invocations = params.invocations.map(invocation => {
-      const args = invocation.args?.map(arg => {
+    const invocations = params.invocations.map((invocation) => {
+      const args = invocation.args?.map((arg) => {
         if (arg.type === 'ByteArray') {
           arg.value = NeonParser.base64ToHex(arg.value)
         }
@@ -100,11 +100,11 @@ export abstract class AbstractWalletConnectNeonAdapter {
   async encrypt(args: TAdapterMethodParam): Promise<EncryptedPayload[]> {
     const { signer } = await this.getServices(args)
     const params = args.request.params.request.params
-    return await signer.encrypt(params[0], params[1]);
+    return await signer.encrypt(params[0], params[1])
   }
 
   async decryptFromArray(args: TAdapterMethodParam): Promise<DecryptFromArrayResult> {
-    const {signer} = await this.getServices(args)
+    const { signer } = await this.getServices(args)
     const params = args.request.params.request.params
     return await signer.decryptFromArray(params[0])
   }
@@ -118,18 +118,19 @@ export abstract class AbstractWalletConnectNeonAdapter {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getSigningCallback(args: TAdapterMethodParam): Promise<NeonJs.api.SigningFunction | undefined> {
     return undefined
   }
 
   async calculateFee(args: TAdapterMethodParam): Promise<CalculateFee> {
-    const {invoker} = await this.getServices(args)
+    const { invoker } = await this.getServices(args)
     const params = this.convertParams(args)
     return await invoker.calculateFee(params)
   }
 
   async signTransaction(args: TAdapterMethodParam): Promise<BuiltTransaction> {
-    const {invoker} = await this.getServices(args)
+    const { invoker } = await this.getServices(args)
     const params = this.convertParams(args)
     return await invoker.signTransaction(params)
   }

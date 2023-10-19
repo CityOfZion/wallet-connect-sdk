@@ -6,7 +6,23 @@
       "summary": "Used to generate documentation of each package",
       "safeForSimultaneousRushProcesses": true,
       "autoinstallerName": "rush-docs",
-      "shellCommand": "for /d %i in (./packages/*) do (npm run docs --prefix packages/%i/) && typedoc --options typedoc.json"
+      "shellCommand": "npx npm run docs -p --prefix ./packages/wallet-connect-sdk-core && npm run docs -p --prefix ./packages/wallet-connect-sdk-react && npm run docs -p --prefix ./packages/wallet-connect-sdk-wallet-core && npm run docs -p --prefix ./packages/wallet-connect-sdk-wallet-react && typedoc --options typedoc.json"
+    },
+    {
+      "name": "lint",
+      "commandKind": "global",
+      "summary": "Used by the pre-commit Git hook. This command invokes Prettier to reformat staged changes.",
+      "safeForSimultaneousRushProcesses": true,
+      "autoinstallerName": "rush-format",
+      "shellCommand": "prettier . --check --config .prettierrc && npm run lint -p --prefix ./packages/wallet-connect-sdk-core && npm run lint -p --prefix ./packages/wallet-connect-sdk-react && npm run lint -p --prefix ./packages/wallet-connect-sdk-wallet-core && npm run lint -p --prefix ./packages/wallet-connect-sdk-wallet-react && npm run lint -p --prefix ./e2e"
+    },
+    {
+      "name": "format",
+      "commandKind": "global",
+      "summary": "Used by the pre-commit Git hook. This command invokes Prettier to reformat staged changes.",
+      "safeForSimultaneousRushProcesses": true,
+      "autoinstallerName": "rush-format",
+      "shellCommand": "prettier . --write --config .prettierrc && npm run format -p --prefix ./packages/wallet-connect-sdk-core && npm run format -p --prefix ./packages/wallet-connect-sdk-react && npm run format -p --prefix ./packages/wallet-connect-sdk-wallet-core && npm run format -p --prefix ./packages/wallet-connect-sdk-wallet-react && npm run format -p --prefix ./e2e"
     }
   ]
 }

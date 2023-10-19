@@ -1,0 +1,11 @@
+{
+  "name": "rush-format",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "update-script": "rush update-autoinstaller --name rush-format"
+  },
+  "dependencies": {
+    "prettier": "^3.0.3"
+  }
+}
