@@ -1,0 +1,248 @@
+import { writable, type Writable, type Readable, derived } from 'svelte/store'
+import SignClient from '@walletconnect/sign-client'
+import WcSdk from '@cityofzion/wallet-connect-sdk-core'
+import type {
+  NetworkType,
+  Method,
+  Neo3Invoker,
+  Neo3Signer,
+  BuiltTransaction,
+  CalculateFee,
+  ContractInvocationMulti,
+  InvokeResult,
+  RpcResponseStackItem,
+  DecryptFromArrayResult,
+  EncryptedPayload,
+  SignMessagePayload,
+  SignedMessage,
+  NetworkVersion,
+  WalletInfo,
+} from '@cityofzion/wallet-connect-sdk-core'
+import type { SessionTypes, SignClientTypes } from '@walletconnect/types'
+
+export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
+  /**
+   * The WalletConnect Library
+   */
+  signClient: Readable<SignClient | null>
+
+  /**
+   * The current WalletConnect connected session
+   */
+  session: Readable<SessionTypes.Struct | null>
+
+  /**
+   * returns if the session is connected
+   */
+  readonly isConnected: Readable<boolean>
+
+  /**
+   * returns the chain id of the connected wallet
+   */
+  getChainId: () => NetworkType | string | null
+
+  /**
+   * returns the address of the connected account of the wallet
+   */
+  getAccountAddress: () => string | null
+
+  /**
+   * subscribe to disconnect events and finishes the session
+   */
+  manageDisconnect: () => void
+  loadSession: () => void
+
+  /**
+   * Executes `managePairing` and `manageDisconnect`
+   * The perfect combination to be executed after the page load
+   */
+  manageSession: () => void
+
+  /**
+   * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
+   * The difference between this method and `createConnection` is that this method will automatically open Neon connection website and save the session state
+   * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+   * @param methods An array of methods used on your application, choose between the methods of the documentation
+   */
+  connect: (network: NetworkType, methods: Method[]) => Promise<void>
+
+  /**
+   * Start the process of establishing a new connection, with the default supported chains and methods, to be used when there is no session yet.
+   * The difference between this method and `connect` is that this method will not open Neon connection website and will not save the session state
+   * @param network Choose between 'neo3:mainnet', 'neo3:testnnet' or 'neo3:private'
+   * @param methods An array of methods used on your application, choose between the methods of the documentation
+   */
+  createConnection: (
+    network: NetworkType,
+    methods: Method[],
+  ) => Promise<{
+    uri?: string
+    approval: () => Promise<SessionTypes.Struct>
+  }>
+
+  /**
+   * disconnects from the wallet
+   */
+  disconnect: () => Promise<void>
+
+  /**
+   * Sends a `signMessage` request to the Wallet.
+   * Signs a message
+   * @param params the params to send the request
+   * @return the signed message object
+   */
+  signMessage: (params: SignMessagePayload) => Promise<SignedMessage>
+
+  /**
+   * Sends a `verifyMessage` request to the Wallet.
+   * Checks if the signedMessage is true
+   * @param params an object that represents a signed message
+   * @return true if the signedMessage is acknowledged by the account
+   */
+  verifyMessage: (params: SignedMessage) => Promise<boolean>
+
+  /**
+   * Retrieves information about the user's wallet
+   * @return wallet information
+   */
+  getWalletInfo: () => Promise<WalletInfo>
+
+  /**
+   * Retrieves information about the connection network
+   * @return network information
+   */
+  getNetworkVersion: () => Promise<NetworkVersion>
+}
+
+export class WCSDKStore implements IWalletConnectStore {
+  private sdk: WcSdk | null
+  private sessionWritable: Writable<SessionTypes.Struct | null> = writable(null)
+  private signClientWritable: Writable<SignClient | null> = writable(null)
+
+  constructor(options: SignClientTypes.Options) {
+    this.setupWcClient(options)
+    this.sdk = null
+  }
+  get isConnected(): Readable<boolean> {
+    return derived(this.sessionWritable, (session) => !!session)
+  }
+  getChainId(): string | null {
+    return this.sdk?.getChainId() ?? null
+  }
+  manageDisconnect(): void {
+    this.onSignClient((signClient) => {
+      if (signClient) {
+        //@ts-ignore
+        signClient.events.removeAllListeners()
+        signClient.on('session_delete', async () => {
+          this.sessionWritable.set(null)
+        })
+      }
+    })
+  }
+  loadSession(): void {
+    const session = this.sdk?.loadSession() ?? null
+    if (session) {
+      this.sessionWritable.set(session)
+    }
+  }
+  manageSession(): void {
+    this.manageDisconnect()
+    this.loadSession()
+  }
+  async createConnection(
+    network: 'neo3:private' | 'neo3:testnet' | 'neo3:mainnet',
+    methods: Method[],
+  ): Promise<{ uri?: string | undefined; approval: () => Promise<SessionTypes.Struct> }> {
+    return await this.SdkOrError.createConnection(network, methods)
+  }
+  async disconnect(): Promise<void> {
+    await this.SdkOrError.disconnect()
+    this.sessionWritable.set(null)
+  }
+  async getWalletInfo(): Promise<WalletInfo> {
+    return await this.SdkOrError.getWalletInfo()
+  }
+  async getNetworkVersion(): Promise<NetworkVersion> {
+    return await this.SdkOrError.getNetworkVersion()
+  }
+  async invokeFunction(cimOrBt: ContractInvocationMulti | BuiltTransaction): Promise<string> {
+    return await this.SdkOrError.invokeFunction(cimOrBt)
+  }
+  async testInvoke(cim: ContractInvocationMulti | BuiltTransaction): Promise<InvokeResult<RpcResponseStackItem>> {
+    return await this.SdkOrError.testInvoke(cim)
+  }
+  async traverseIterator(sessionId: string, iteratorId: string, count: number): Promise<RpcResponseStackItem[]> {
+    return await this.SdkOrError.traverseIterator(sessionId, iteratorId, count)
+  }
+  async signTransaction(cim: ContractInvocationMulti | BuiltTransaction): Promise<BuiltTransaction> {
+    return await this.SdkOrError.signTransaction(cim)
+  }
+  async calculateFee(cim: ContractInvocationMulti): Promise<CalculateFee> {
+    return await this.SdkOrError.calculateFee(cim)
+  }
+  async signMessage(params: SignMessagePayload): Promise<SignedMessage> {
+    return this.SdkOrError.signMessage(params)
+  }
+  async verifyMessage(params: SignedMessage): Promise<boolean> {
+    return await this.SdkOrError.verifyMessage(params)
+  }
+  getAccountAddress(): string | null {
+    return this.SdkOrError.getAccountAddress()
+  }
+  async encrypt(message: string, publicKeys: string[]): Promise<EncryptedPayload[]> {
+    return await this.SdkOrError.encrypt(message, publicKeys)
+  }
+  async decrypt(payload: EncryptedPayload): Promise<string> {
+    return await this.SdkOrError.decrypt(payload)
+  }
+  async decryptFromArray(payloads: EncryptedPayload[]): Promise<DecryptFromArrayResult> {
+    return await this.SdkOrError.decryptFromArray(payloads)
+  }
+
+  async connect(network: NetworkType, methods: Method[]) {
+    const result = await this.SdkOrError.connect(network, methods)
+    this.sessionWritable.set(result)
+  }
+
+  get session() {
+    return derived(this.sessionWritable, (session) => session)
+  }
+
+  get signClient() {
+    return derived(this.signClientWritable, (signClient) => signClient)
+  }
+
+  onSession<T = void>(callback: (session: SessionTypes.Struct | null) => T) {
+    return this.sessionWritable.subscribe((session) => callback(session))
+  }
+
+  onSignClient<T = void>(callback: (signClient: SignClient | null) => T) {
+    return this.signClientWritable.subscribe((signClient) => callback(signClient))
+  }
+
+  private async setupWcClient(options: SignClientTypes.Options) {
+    const setupResult = await SignClient.init(options)
+    this.instanceWCSdk(setupResult)
+    this.handleManageSession()
+    this.signClientWritable.set(setupResult)
+  }
+
+  private get SdkOrError() {
+    if (this.sdk === null) {
+      throw new Error('no client')
+    } else {
+      return this.sdk
+    }
+  }
+
+  private instanceWCSdk(signClient: SignClient) {
+    this.sdk = new WcSdk(signClient)
+  }
+
+  private handleManageSession() {
+    if (this.sdk) {
+      this.manageSession()
+    }
+  }
+}

@@ -29,6 +29,11 @@
       "packageName": "@cityofzion/wallet-connect-sdk-wallet-react",
       "projectFolder": "packages/wallet-connect-sdk-wallet-react",
       "shouldPublish": true
+    },
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-svelte",
+      "projectFolder": "packages/wallet-connect-sdk-svelte",
+      "shouldPublish": true
     }
   ]
 }
