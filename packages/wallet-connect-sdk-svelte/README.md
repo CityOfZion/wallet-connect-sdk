@@ -41,7 +41,11 @@ const wcOptions = {
 };
 
 <script>
-    const wcSdk = new WCSDKStore(wcOptions)
+    /**
+     * autoManageSession is an optional parameter and by default it is true
+     */
+    const autoManageSession = false
+    const wcSdk = new WCSDKStore(wcOptions, autoManageSession)
 </script>
 ```
 
