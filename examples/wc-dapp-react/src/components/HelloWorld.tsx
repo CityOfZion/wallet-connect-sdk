@@ -378,35 +378,35 @@ function HelloWorld() {
   }
 
   const signTransaction = async () => {
+    // invoke this using the payer account (eg.: NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv)
     const resp = await wcSdk.signTransaction({
       invocations: [
         {
           scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
           operation: 'transfer',
           args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-            {
-              type: 'Hash160',
-              value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
-            },
-            {
-              type: 'Integer',
-              value: '100000000',
-            },
-            {
-              type: 'Array',
-              value: [],
-            },
+            // the owner is sending to payer but the payer is paying for the tx
+            { type: 'Hash160', value: 'NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr' }, // owner address
+            { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }, // payer address
+            { type: 'Integer', value: '100000000' },
+            { type: 'Array', value: [] },
           ],
         },
       ],
-      signers: [{ scopes: 1 }],
+      signers: [
+        {
+          account: 'cc776527da4a34b80f411b0ccb9dffddb38523ae', // payer scripthash
+          scopes: 'CalledByEntry',
+        },
+        {
+          account: '857a247939db5c7cd3a7bb14791280c09e824bea', // owner scripthash
+          scopes: 'CalledByEntry',
+        },
+      ],
     })
     console.log(resp)
     setResponse(JSON.stringify(resp, null, 2))
+    // you can grab this response and do an invokeFunction using owner account (eg.: NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr)
   }
 
   return (
