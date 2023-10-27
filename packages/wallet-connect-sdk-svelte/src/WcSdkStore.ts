@@ -30,11 +30,12 @@ export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
    * The current WalletConnect connected session
    */
   session: Readable<SessionTypes.Struct | null>
+  setSession(session: SessionTypes.Struct): void
 
   /**
    * returns if the session is connected
    */
-  readonly isConnected: Readable<boolean>
+  readonly isConnected: () => boolean
 
   /**
    * returns the chain id of the connected wallet
@@ -118,13 +119,18 @@ export class WCSDKStore implements IWalletConnectStore {
   private sdk: WcSdk | null
   private sessionWritable: Writable<SessionTypes.Struct | null> = writable(null)
   private signClientWritable: Writable<SignClient | null> = writable(null)
+  private autoManageSession: boolean
 
-  constructor(options: SignClientTypes.Options) {
+  constructor(options: SignClientTypes.Options, autoManageSession?: boolean) {
     this.setupWcClient(options)
     this.sdk = null
+    this.autoManageSession = autoManageSession ?? true
   }
-  get isConnected(): Readable<boolean> {
-    return derived(this.sessionWritable, (session) => !!session)
+  setSession(session: SessionTypes.Struct): void {
+    this.sessionWritable.set(session)
+  }
+  isConnected(): boolean {
+    return this.sdk?.isConnected() ?? false
   }
   getChainId(): string | null {
     return this.sdk?.getChainId() ?? null
@@ -241,7 +247,7 @@ export class WCSDKStore implements IWalletConnectStore {
   }
 
   private handleManageSession() {
-    if (this.sdk) {
+    if (this.sdk && this.autoManageSession) {
       this.manageSession()
     }
   }

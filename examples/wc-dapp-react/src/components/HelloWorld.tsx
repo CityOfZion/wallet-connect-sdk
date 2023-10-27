@@ -26,13 +26,14 @@ function HelloWorld() {
       'testInvoke',
       'signMessage',
       'verifyMessage',
-      'getWalletInfo',
       'traverseIterator',
+      'getWalletInfo',
       'getNetworkVersion',
-      'encrypt',
       'decrypt',
+      'encrypt',
       'decryptFromArray',
       'calculateFee',
+      'signTransaction',
     ])
   }
 

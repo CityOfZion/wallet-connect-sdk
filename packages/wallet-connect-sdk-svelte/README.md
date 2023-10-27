@@ -1,58 +1,51 @@
-# create-svelte
+# WalletConnect SDK Svelte
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+- [Installation](#installation)
+- [Setup](#setup)
+- [Usage](#usage)
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+## Installation
 
-## Creating a project
+Install the dependencies on your application
 
-If you're seeing this, you've probably already done this step. Congrats!
+### NPM
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+```
+npm i @cityofzion/wallet-connect-sdk-svelte @walletconnect/sign-client @walletconnect/types
 ```
 
-## Developing
+### YARN
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```
+yarn add @cityofzion/wallet-connect-sdk-svelte @walletconnect/sign-client @walletconnect/types
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Setup
+To begin development, first establish an account on the [Wallet Connect website](https://walletconnect.com/). Next,
+generate a new Project. This process is straightforward, requiring only a few form fields.
 
-## Building
+### Instantiate an object of the WCSDKStore class
 
-To build your library:
+```ts
+import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
 
-```bash
-npm run package
+const wcOptions = {
+    projectId: '<your wc project id>', // the ID of your project on Wallet Connect website
+    relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
+    metadata: {
+        name: 'MyApplicationName', // your application name to be displayed on the wallet
+        description: 'My Application description', // description to be shown on the wallet
+        url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
+        icons: ['https://myapplicationdescription.app/myappicon.png'] // icon to be shown on the wallet
+    }
+};
+
+<script>
+    const wcSdk = new WCSDKStore(wcOptions)
+</script>
 ```
 
-To create a production version of your showcase app:
+`autoManageSession` will reload the user's connected session and subscribe to the `disconnect` event. If you don't want this at startup, set the second constructor parameter to false and call the `manageSession` method at the correct time.
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
-```
+## Usage
+Check this [Usage Guide](../../USAGE_GUIDE.md) to see how to use this SDK on your application.
