@@ -1,0 +1,59 @@
+{
+  "name": "@cityofzion/wallet-connect-sdk-svelte",
+  "version": "0.0.1",
+  "description": "Wallet-Connect-SDK to be used on Svelte Apps",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityOfZion/wallet-connect-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CityOfZion/wallet-connect-sdk/issues"
+  },
+  "keywords": [
+    "wallet",
+    "wallet-connect",
+    "javascript",
+    "typescript",
+    "libraries"
+  ],
+  "author": "Kenedy Ribeiro <https://github.com/endkeyCoder>",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "rollup -c --silent",
+    "docs": "typedoc",
+    "publishDocs:develop": "aws s3 sync ./docs s3://marketing-neon-wallet/dev/wksdk/react --acl public-read",
+    "publishDocs:prod": "aws s3 sync ./docs s3://marketing-neon-wallet/prod/wksdk/react --acl public-read",
+    "predeploy": "cd example && npm install && npm run build",
+    "deploy": "gh-pages -d example/build",
+    "lint": "eslint .",
+    "format": "eslint --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "svelte": "*"
+  },
+  "devDependencies": {
+    "svelte": "^4.0.5",
+    "tslib": "^2.4.1",
+    "@rollup/plugin-commonjs": "~25.0.7",
+    "rollup": "~4.1.4",
+    "rollup-plugin-auto-external": "~2.0.0",
+    "rollup-plugin-dts": "~6.1.0",
+    "rollup-plugin-esbuild": "~6.1.0",
+    "typescript": "^4.3.2",
+    "typedoc": "^0.22.10",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.51.0"
+  },
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "dependencies": {
+    "@walletconnect/sign-client": "2.7.3",
+    "@cityofzion/wallet-connect-sdk-core": "workspace:*",
+    "@walletconnect/types": "2.7.3"
+  }
+}

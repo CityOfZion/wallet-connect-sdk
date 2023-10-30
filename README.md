@@ -29,6 +29,7 @@ This example is showing the [wc-dapp-vite-vanilla](examples/wc-dapp-vite-vanilla
 
 ## Installation and Setup
 - [WcSdk React](packages/wallet-connect-sdk-react/README.md) - For React.js with streamlined state changes.
+- [WcSdk Svelte](packages/wallet-connect-sdk-svelte/README.md) - For svelte.js with streamlined state changes.
 - [WcSdk Core](packages/wallet-connect-sdk-core/README.md) - For other technologies with the same features.
 
 ## Usage
