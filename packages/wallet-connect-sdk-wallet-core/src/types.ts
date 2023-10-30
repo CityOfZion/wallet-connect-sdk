@@ -19,7 +19,7 @@ export enum EStatus {
   NOT_STARTED = 'NOT_STARTED',
 }
 
-export type TEvents = {
+export type TWalletCoreEvents = {
   proposals(proposals: TSessionProposal[]): void | Promise<void>
   requests(requests: TSessionRequest[]): void | Promise<void>
   sessions(sessions: TSession[]): void | Promise<void>
