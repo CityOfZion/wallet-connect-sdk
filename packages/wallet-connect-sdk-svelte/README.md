@@ -41,15 +41,12 @@ const wcOptions = {
 };
 
 <script>
-    /**
-     * autoManageSession is an optional parameter and by default it is true
-     */
-    const autoManageSession = false
+    const autoManageSession = true
     const wcSdk = new WCSDKStore(wcOptions, autoManageSession)
 </script>
 ```
 
-`autoManageSession` will reload the user's connected session and subscribe to the `disconnect` event. If you don't want this at startup, set the second constructor parameter to false and call the `manageSession` method at the correct time.
+`autoManageSession` will reload the user's connected session and subscribe to the `disconnect` event. It is `true` by default and if you don't want this at startup, set the second constructor parameter to false and call the `manageSession` method at the correct time.
 
 ## Usage
 Check this [Usage Guide](../../USAGE_GUIDE.md) to see how to use this SDK on your application.
