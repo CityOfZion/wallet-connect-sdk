@@ -27,20 +27,20 @@ generate a new Project. This process is straightforward, requiring only a few fo
 ### Instantiate an object of the WCSDKStore class
 
 ```ts
-import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
-
-const wcOptions = {
-    projectId: '<your wc project id>', // the ID of your project on Wallet Connect website
-    relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
-    metadata: {
-        name: 'MyApplicationName', // your application name to be displayed on the wallet
-        description: 'My Application description', // description to be shown on the wallet
-        url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
-        icons: ['https://myapplicationdescription.app/myappicon.png'] // icon to be shown on the wallet
-    }
-};
-
 <script>
+    import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
+    
+    const wcOptions = {
+        projectId: '<your wc project id>', // the ID of your project on Wallet Connect website
+        relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
+        metadata: {
+            name: 'MyApplicationName', // your application name to be displayed on the wallet
+            description: 'My Application description', // description to be shown on the wallet
+            url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
+            icons: ['https://myapplicationdescription.app/myappicon.png'] // icon to be shown on the wallet
+        }
+    };
+
     const autoManageSession = true
     const wcSdk = new WCSDKStore(wcOptions, autoManageSession)
 </script>
