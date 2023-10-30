@@ -26,7 +26,7 @@ generate a new Project. This process is straightforward, requiring only a few fo
 
 ### Instantiate an object of the WCSDKStore class
 
-```ts
+```html
 <script>
     import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
     
