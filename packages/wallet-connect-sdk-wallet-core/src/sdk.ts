@@ -6,7 +6,7 @@ import moment from 'moment'
 import queryString from 'querystring'
 import {
   TSessionExtendedStorage,
-  TEvents,
+  TWalletCoreEvents,
   TRejectReason,
   TRequestResult,
   TOptions,
@@ -46,7 +46,7 @@ export class WcWalletSDK {
   /**
    * The EventEmitter to listen for some property changes
    */
-  public readonly emitter = new EventEmitter() as TypedEmitter<TEvents>
+  public readonly emitter = new EventEmitter() as TypedEmitter<TWalletCoreEvents>
 
   private _sessions: TSession[] = []
   private _proposals: TSessionProposal[] = []

@@ -17,12 +17,18 @@ import {
   BuiltTransaction,
   CalculateFee,
 } from '@cityofzion/neon-dappkit-types'
+import EventEmitter from 'events'
+import TypedEventEmitter from 'typed-emitter'
 /**
  * If JavaScript users try to use the connect methods without the methods, they will receive a warning.
  * This constant should be removed on later versions.
  */
 const defaultMethodRemovedWarning =
   'The default value of methods has been deprecated, in future versions you will need to pass a list of method names'
+
+export type CoreEvents = {
+  session(sessions: SessionTypes.Struct | null): void | Promise<void>
+}
 
 export type Blockchain = 'neo3'
 
@@ -101,7 +107,12 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
   /**
    * The current WalletConnect connected session
    */
-  session: SessionTypes.Struct | null = null
+  private _session: SessionTypes.Struct | null = null
+
+  /**
+   * The EventEmitter to listen for some property changes
+   */
+  public readonly emitter = new EventEmitter() as TypedEventEmitter<CoreEvents>
 
   /**
    * To initialize the adapter you need to provide the SignClient
@@ -110,36 +121,18 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
    */
   constructor(client: SignClient, initSession?: SessionTypes.Struct) {
     this.signClient = client
+
     if (initSession) {
       this.session = initSession
     }
   }
 
-  /**
-   * This method is used to sign a transaction.
-   * @param params the contract invocation options
-   * @return the call result promise
-   */
-  async signTransaction(params: ContractInvocationMulti | BuiltTransaction): Promise<BuiltTransaction> {
-    this.validateContractInvocationMulti(params)
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'signTransaction',
-      params,
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
-
-    if (!resp) {
-      throw new WcSdkError(resp)
-    }
-
-    return resp as BuiltTransaction
+  get session() {
+    return this._session
+  }
+  set session(session: SessionTypes.Struct | null) {
+    this._session = session
+    this.emitter.emit('session', session)
   }
 
   /**
@@ -178,6 +171,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
    * subscribe to disconnect events and finishes the session
    */
   manageDisconnect(): void {
+    this.signClient.events.removeAllListeners('session_delete')
     this.signClient.on('session_delete', async () => {
       this.session = null
     })
@@ -254,10 +248,16 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
       },
     })
 
+    const approvalWrapper = async () => {
+      const session = await approval()
+      this.session = session
+      return session
+    }
+
     const uriAndWccv = `${uri}&wccv=${COMPATIBILITY_VERSION}`
 
     return {
-      approval,
+      approval: approvalWrapper,
       uri: uriAndWccv,
     }
   }
@@ -277,6 +277,33 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
     })
 
     this.session = null
+  }
+
+  /**
+   * This method is used to sign a transaction.
+   * @param params the contract invocation options
+   * @return the call result promise
+   */
+  async signTransaction(params: ContractInvocationMulti | BuiltTransaction): Promise<BuiltTransaction> {
+    this.validateContractInvocationMulti(params)
+    const request = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'signTransaction',
+      params,
+    }
+
+    const resp = await this.signClient.request({
+      topic: this.session?.topic ?? '',
+      chainId: this.getChainId() ?? '',
+      request,
+    })
+
+    if (!resp) {
+      throw new WcSdkError(resp)
+    }
+
+    return resp as BuiltTransaction
   }
 
   /**

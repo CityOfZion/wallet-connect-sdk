@@ -3,30 +3,33 @@ import WcSdk, { Version } from '@cityofzion/wallet-connect-sdk-core'
 import SignClient from '@walletconnect/sign-client'
 
 let wcSdk
+let signClient
 
 const init = async () => {
   registerInteraction()
 
   // start the sdk
-  wcSdk = new WcSdk(
-    await SignClient.init({
-      projectId: 'a9ff54e3d56a52230ed8767db4d4a810', // the ID of your project on Wallet Connect website
-      relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
-      metadata: {
-        name: 'MyApplicationName', // your application name to be displayed on the wallet
-        description: 'My Application description', // description to be shown on the wallet
-        url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
-        icons: ['https://myapplicationdescription.app/myappicon.png'], // icon to be shown on the wallet
-      },
-    }),
-  )
+  signClient = await SignClient.init({
+    projectId: 'a9ff54e3d56a52230ed8767db4d4a810', // the ID of your project on Wallet Connect website
+    relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
+    metadata: {
+      name: 'MyApplicationName', // your application name to be displayed on the wallet
+      description: 'My Application description', // description to be shown on the wallet
+      url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
+      icons: ['https://myapplicationdescription.app/myappicon.png'], // icon to be shown on the wallet
+    },
+  })
 
-  // reload the session if there is one and automatically disconnect upon wallet request
+  wcSdk = new WcSdk(signClient)
+  wcSdk.emitter.on('session', (session) => {
+    if (session) {
+      renderAfterConnect()
+    } else {
+      renderAfterDisconnect()
+    }
+  })
+
   await wcSdk.manageSession()
-
-  if (wcSdk.isConnected()) {
-    renderAfterConnect()
-  }
 }
 
 const connect = async () => {
