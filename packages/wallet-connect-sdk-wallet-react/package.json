@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-wallet-react",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Wallet-Connect-SDK wallet-side to be used on React Apps",
   "keywords": [
     "wallet",

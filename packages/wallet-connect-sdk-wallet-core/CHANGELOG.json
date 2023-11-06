@@ -2,6 +2,29 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "3.1.0",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v3.1.0",
+      "date": "Mon, 06 Nov 2023 13:13:50 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "New method to allow signing a transaction multiple times by different wallets before invoking it"
+          },
+          {
+            "comment": "A new method has been added so that the wallet can calculate the fee for an invocation"
+          },
+          {
+            "comment": "Changing the type of events  to avoid conflicts with the core"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" to `3.1.0`"
+          }
+        ]
+      }
+    },
+    {
       "version": "3.0.0",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v3.0.0",
       "date": "Thu, 28 Sep 2023 13:38:24 GMT",

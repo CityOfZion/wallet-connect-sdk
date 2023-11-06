@@ -2,6 +2,26 @@
   "name": "@cityofzion/wallet-connect-sdk-react",
   "entries": [
     {
+      "version": "3.1.0",
+      "tag": "@cityofzion/wallet-connect-sdk-react_v3.1.0",
+      "date": "Mon, 06 Nov 2023 13:13:50 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "A new method has been added to calculate the fee for a request"
+          },
+          {
+            "comment": "New way to update the session consuming the new event emitter from core"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" to `3.1.0`"
+          }
+        ]
+      }
+    },
+    {
       "version": "3.0.0",
       "tag": "@cityofzion/wallet-connect-sdk-react_v3.0.0",
       "date": "Thu, 28 Sep 2023 13:38:24 GMT",

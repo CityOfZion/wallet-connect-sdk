@@ -1,6 +1,15 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Thu, 28 Sep 2023 13:38:24 GMT and should not be manually modified.
+This log was last generated on Mon, 06 Nov 2023 13:13:50 GMT and should not be manually modified.
+
+## 3.1.0
+Mon, 06 Nov 2023 13:13:50 GMT
+
+### Minor changes
+
+- New method to allow signing a transaction multiple times by different wallets before invoking it
+- A new method has been added to calculate the fee for a request
+- New event emitter has been added to emit changes to the session
 
 ## 3.0.0
 Thu, 28 Sep 2023 13:38:24 GMT
