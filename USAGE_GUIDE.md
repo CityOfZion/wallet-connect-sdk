@@ -178,6 +178,35 @@ const iteratorId = resp.stack[0].id as string;
 const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 ```
 
+## Encrypt and Decrypt data
+
+```ts
+// 1) encrypt data using the public key of the recipient, so only the recipient can decrypt it with his private key
+// this method receives an array of public keys, so you can encrypt the data for multiple recipients
+// and it returns an array of encrypted messages, one for each recipient public key
+const encryptedMessages = wcSdk.encrypt("Data to be encrypted", [recipientPublicKey])
+
+// 2) select which encrypted message you want to use
+const encryptedMessage = encryptedMessages[0]
+
+// 3) on the other side, the recipient can decrypt the data using his private key
+const messageDecrypted = wcSdk.decrypt(encryptedMessage)
+```
+On the example above, we used the `decrypt` with a single encrypted message, which is faster, but you can use
+`decryptFromArray` to pass multiple encrypted messages, and the recipient will try to decrypt until it finds the correct
+one.
+```ts
+// 1) encrypt data using the public key of many recipients
+const encryptedMessages = wcSdk.encrypt("Data to be encrypted", [
+    jackPublicKey, rickPublicKey, bobPublicKey
+])
+
+// 2) on the other side, one of the recipients can decrypt the data using his private key
+const messageDecrypted = wcSdk.decryptFromArray(encryptedMessages)
+```
+This method is slower than the `decrypt` method, so you should use it only if you are not sure which encrypted message
+is the correct one.
+
 ## Get Wallet Info
 
 To get information about the wallet, such as if it is a Ledger wallet, you can use the `getWalletInfo` method.
