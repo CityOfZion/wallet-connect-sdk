@@ -198,7 +198,7 @@ one.
 ```ts
 // 1) encrypt data using the public key of many recipients
 const encryptedMessages = wcSdk.encrypt("Data to be encrypted", [
-    recipientPublicKey1, recipientPublicKey2, recipientPublicKey3
+    jackPublicKey, rickPublicKey, bobPublicKey
 ])
 
 // 2) on the other side, one of the recipients can decrypt the data using his private key
