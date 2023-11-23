@@ -207,6 +207,33 @@ const messageDecrypted = wcSdk.decryptFromArray(encryptedMessages)
 This method is slower than the `decrypt` method, so you should use it only if you are not sure which encrypted message
 is the correct one.
 
+### Calculate Fee
+
+It's important to know how much a transaction will cost before invoking.
+
+The `calculateFee` function facilitates this by allowing users to input the same arguments they would use in the
+`invokeFunction`. This process yields detailed information about the `networkFee`, `systemFee`, and the aggregate `total`.
+
+See the example below:
+
+```ts
+const resp = await wcSdk.calculateFee({
+    invocations: [{
+        scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+        operation: 'transfer',
+        args: [
+            { type: 'Hash160', value: account.address },
+            { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' },
+            { type: 'Integer', value: '100000000' },
+            { type: 'Array', value: [] },
+        ],
+    }],
+    signers: [{ scopes: 'CalledByEntry' }],
+})
+
+console.log(resp) // will print an object with `networkFee`, `systemFee` and `total`
+```
+
 ## Get Wallet Info
 
 To get information about the wallet, such as if it is a Ledger wallet, you can use the `getWalletInfo` method.
