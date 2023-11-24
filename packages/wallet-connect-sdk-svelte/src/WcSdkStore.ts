@@ -126,6 +126,7 @@ export class WCSDKStore implements IWalletConnectStore {
     this.sdk = null
     this.autoManageSession = autoManageSession ?? true
   }
+
   setSession(session: SessionTypes.Struct): void {
     this.sessionWritable.set(session)
   }
@@ -228,10 +229,12 @@ export class WCSDKStore implements IWalletConnectStore {
   }
 
   private async setupWcClient(options: SignClientTypes.Options) {
-    const setupResult = await SignClient.init(options)
-    this.instanceWCSdk(setupResult)
-    this.handleManageSession()
-    this.signClientWritable.set(setupResult)
+    this.sdk = await WcSdk.init(options)
+    const signClient = this.sdk.signClient
+    if (this.autoManageSession) {
+      this.manageSession()
+    }
+    this.signClientWritable.set(signClient)
   }
 
   private get SdkOrError() {
@@ -239,16 +242,6 @@ export class WCSDKStore implements IWalletConnectStore {
       throw new Error('no client')
     } else {
       return this.sdk
-    }
-  }
-
-  private instanceWCSdk(signClient: SignClient) {
-    this.sdk = new WcSdk(signClient)
-  }
-
-  private handleManageSession() {
-    if (this.sdk && this.autoManageSession) {
-      this.manageSession()
     }
   }
 }

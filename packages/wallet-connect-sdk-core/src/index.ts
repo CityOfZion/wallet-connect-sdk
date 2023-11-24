@@ -1,5 +1,5 @@
 import SignClient from '@walletconnect/sign-client'
-import { SessionTypes } from '@walletconnect/types'
+import { SessionTypes, SignClientTypes } from '@walletconnect/types'
 import { GetVersionResult } from '@cityofzion/neon-core/lib/rpc'
 import {
   Neo3Signer,
@@ -133,6 +133,11 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
   set session(session: SessionTypes.Struct | null) {
     this._session = session
     this.emitter.emit('session', session)
+  }
+
+  static async init(options: SignClientTypes.Options, initSession?: SessionTypes.Struct): Promise<WcSdk> {
+    const client = await SignClient.init(options)
+    return new WcSdk(client, initSession)
   }
 
   /**

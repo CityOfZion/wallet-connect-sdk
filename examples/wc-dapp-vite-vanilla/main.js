@@ -1,15 +1,14 @@
 import './style.css'
 import WcSdk, { Version } from '@cityofzion/wallet-connect-sdk-core'
-import SignClient from '@walletconnect/sign-client'
 
 let wcSdk
-let signClient
 
 const init = async () => {
   registerInteraction()
 
   // start the sdk
-  signClient = await SignClient.init({
+
+  wcSdk = await WcSdk.init({
     projectId: 'a9ff54e3d56a52230ed8767db4d4a810', // the ID of your project on Wallet Connect website
     relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
     metadata: {
@@ -20,7 +19,6 @@ const init = async () => {
     },
   })
 
-  wcSdk = new WcSdk(signClient)
   wcSdk.emitter.on('session', (session) => {
     if (session) {
       renderAfterConnect()

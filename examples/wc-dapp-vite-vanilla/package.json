@@ -12,9 +12,7 @@
     "vite": "^4.4.0"
   },
   "dependencies": {
-    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core",
-    "@walletconnect/sign-client": "^2.9.1",
-    "@walletconnect/types": "^2.9.1"
+    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core"
   },
   "resolutions": {
     "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core"

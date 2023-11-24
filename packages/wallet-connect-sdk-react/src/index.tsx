@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import SignClient from '@walletconnect/sign-client'
 import { SessionTypes, SignClientTypes } from '@walletconnect/types'
 import WcSdk, {
   SignedMessage,
@@ -260,10 +259,7 @@ export const WalletConnectProvider: React.FC<{
 
   const setupWcClient = useCallback(async () => {
     if (!options) return
-
-    const client = await SignClient.init(options)
-    const wcSdk = new WcSdk(client)
-
+    const wcSdk = await WcSdk.init(options)
     wcSdk.emitter.removeAllListeners()
     wcSdk.emitter.on('session', (session) => {
       setSession(session ?? undefined)

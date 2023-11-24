@@ -11,13 +11,13 @@ Install the dependencies on your application
 ### NPM
 
 ```
-npm i @cityofzion/wallet-connect-sdk-svelte @walletconnect/sign-client @walletconnect/types
+npm i @cityofzion/wallet-connect-sdk-svelte
 ```
 
 ### YARN
 
 ```
-yarn add @cityofzion/wallet-connect-sdk-svelte @walletconnect/sign-client @walletconnect/types
+yarn add @cityofzion/wallet-connect-sdk-svelte
 ```
 
 ## Setup
