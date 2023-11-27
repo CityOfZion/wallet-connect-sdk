@@ -38,7 +38,7 @@
     "@walletconnect/sign-client": "2.7.3",
     "@walletconnect/types": "2.7.3",
     "moment": "^2.29.4",
-    "@cityofzion/neon-dappkit": "0.3.0"
+    "@cityofzion/neon-dappkit": "0.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.1.3",
