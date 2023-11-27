@@ -2,6 +2,18 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "3.1.2",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v3.1.2",
+      "date": "Mon, 27 Nov 2023 20:31:39 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Changed neon-dappkit version to the latest"
+          }
+        ]
+      }
+    },
+    {
       "version": "3.1.1",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v3.1.1",
       "date": "Mon, 27 Nov 2023 17:52:40 GMT",
