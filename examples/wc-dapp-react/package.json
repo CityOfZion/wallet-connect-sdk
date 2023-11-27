@@ -12,8 +12,6 @@
     "@types/node": "^16.11.31",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.0",
-    "@walletconnect/sign-client": "^2.8.6",
-    "@walletconnect/types": "^2.8.6",
     "buffer": "^6.0.3",
     "gh-pages": "^4.0.0",
     "react": "^18.1.0",

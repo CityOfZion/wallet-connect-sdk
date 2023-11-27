@@ -11,13 +11,13 @@ Install the dependencies on your application
 ### NPM
 
 ```
-npm i @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client @walletconnect/types
+npm i @cityofzion/wallet-connect-sdk-core
 ```
 
 ### YARN
 
 ```
-yarn add @cityofzion/wallet-connect-sdk-core @walletconnect/sign-client @walletconnect/types
+yarn add @cityofzion/wallet-connect-sdk-core
 ```
 
 ## Setup
@@ -30,7 +30,7 @@ generate a new Project. This process is straightforward, requiring only a few fo
 import WcSdk from '@cityofzion/wallet-connect-sdk-core'
 import SignClient from '@walletconnect/sign-client'
 
-const wcSdk = new WcSdk(await SignClient.init({
+const wcSdk = await WcSdk.init({
     projectId: '<your wc project id>', // the ID of your project on Wallet Connect website
     relayUrl: 'wss://relay.walletconnect.com', // we are using walletconnect's official relay server
     metadata: {
@@ -39,8 +39,10 @@ const wcSdk = new WcSdk(await SignClient.init({
         url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
         icons: ['https://myapplicationdescription.app/myappicon.png'] // icon to be shown on the wallet
     }
-}))
+})
 ```
+
+There is another way to initialize the SDK by passing signClient from @walletconnect/sign-client lib as a parameter to the SDK constructor method.
 
 ### Manage Session
 

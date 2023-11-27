@@ -1,8 +1,10 @@
 import * as React from 'react'
-import { SignClientTypes } from '@walletconnect/types'
+import { TSessionProposal } from '@cityofzion/wallet-connect-sdk-wallet-react'
 import { Flex, Image, Text, Link, Spacer, DividerProps } from '@chakra-ui/react'
 
-export default function Peer(props: { metadata: SignClientTypes.Metadata } & DividerProps): any {
+type Metadata = TSessionProposal['params']['proposer']['metadata']
+
+export default function Peer(props: { metadata: Metadata } & DividerProps): any {
   return (
     <Flex h="5rem" {...props}>
       <Image w="5rem" src={props.metadata.icons[0]} alt={props.metadata.name} />
