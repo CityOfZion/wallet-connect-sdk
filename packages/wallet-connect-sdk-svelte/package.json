@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/wallet-connect-sdk-svelte",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Wallet-Connect-SDK to be used on Svelte Apps",
   "main": "dist/index.js",
   "repository": {

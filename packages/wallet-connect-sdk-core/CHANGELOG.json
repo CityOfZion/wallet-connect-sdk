@@ -2,6 +2,18 @@
   "name": "@cityofzion/wallet-connect-sdk-core",
   "entries": [
     {
+      "version": "3.2.0",
+      "tag": "@cityofzion/wallet-connect-sdk-core_v3.2.0",
+      "date": "Mon, 27 Nov 2023 17:52:40 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "New way to initialize the SDK"
+          }
+        ]
+      }
+    },
+    {
       "version": "3.1.0",
       "tag": "@cityofzion/wallet-connect-sdk-core_v3.1.0",
       "date": "Mon, 06 Nov 2023 13:13:50 GMT",
