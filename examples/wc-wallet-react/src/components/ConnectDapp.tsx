@@ -15,10 +15,10 @@ export default function ConnectDapp(props: DividerProps): any {
     setScanner(true)
   }
 
-  const handleInput = async (e: any) => {
+  const handleInput = async (event) => {
     setLoading(true)
     try {
-      await walletConnectCtx.connect(e.target.value.trim())
+      await walletConnectCtx.connect(event.target.value.trim())
     } catch (e) {
       setLoading(false)
       toast({

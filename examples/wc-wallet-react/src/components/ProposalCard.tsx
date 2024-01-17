@@ -10,8 +10,15 @@ export default function ProposalCard(props: DividerProps): any {
   const firstProposal = walletConnectCtx.proposals[0]
 
   const approveSession = async () => {
+    const chainId = Object.values(firstProposal.params.requiredNamespaces)[0]?.chains?.[0]
+    if (!chainId) return
+
+    const blockchain = chainId.split(':')[0]
+
     await walletConnectCtx.approveProposal(firstProposal, {
-      account: { address: accountCtx.account?.address ?? '', chain: accountCtx.networkType },
+      address: accountCtx.account?.address ?? '',
+      chain: accountCtx.networkType,
+      blockchain,
     })
   }
 

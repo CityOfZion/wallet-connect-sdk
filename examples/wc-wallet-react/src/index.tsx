@@ -9,17 +9,26 @@ import {
   DEFAULT_METHODS,
 } from './constants'
 import App from './App'
-import { WalletConnectWalletProvider } from '@cityofzion/wallet-connect-sdk-wallet-react'
+import {
+  DEFAULT_AUTO_ACCEPT_METHODS,
+  TInitOptions,
+  WalletConnectWalletProvider,
+} from '@cityofzion/wallet-connect-sdk-wallet-react'
 import { AccountContextProvider } from './context/AccountContext'
 
-const wcOptions = {
+const wcOptions: TInitOptions = {
   clientOptions: {
     projectId: DEFAULT_PROJECT_ID,
     metadata: DEFAULT_APP_METADATA,
     logger: DEFAULT_LOGGER,
     relayUrl: DEFAULT_RELAY_PROVIDER,
   },
-  methods: DEFAULT_METHODS,
+  blockchains: {
+    neo3: {
+      methods: DEFAULT_METHODS,
+      autoAcceptMethods: DEFAULT_AUTO_ACCEPT_METHODS,
+    },
+  },
 }
 
 ReactDOM.render(

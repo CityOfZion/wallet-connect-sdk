@@ -1,11 +1,10 @@
 import WalletConnectTypes from '@walletconnect/types'
 import { JsonRpcResult, ErrorResponse, JsonRpcError } from '@walletconnect/jsonrpc-utils'
-import { Chain, Method } from '@cityofzion/wallet-connect-sdk-core'
-import { AbstractWalletConnectNeonAdapter } from './adapter'
+import { AbstractWalletConnectEIP155Adapter, AbstractWalletConnectNeonAdapter } from './adapters'
 
 export type TSession = WalletConnectTypes.SessionTypes.Struct & {
   approvalUnix: number
-  wccv: number
+  wccv: number | undefined
 }
 
 export type TSessionProposal = WalletConnectTypes.SignClientTypes.EventArguments['session_proposal']
@@ -25,24 +24,30 @@ export type TWalletCoreEvents = {
   sessions(sessions: TSession[]): void | Promise<void>
   status(status: EStatus): void | Promise<void>
 }
-export type TOptions = {
-  autoAcceptMethods?: (Method | (string & Record<never, never>))[]
-  methods: Method[]
+export type TBaseBlockchainOptions<T> = {
+  methods: string[]
+  events?: string[]
+  autoAcceptMethods?: string[]
+  adapter?: T
+}
+export type TInitOptions = {
   clientOptions: WalletConnectTypes.SignClientTypes.Options
-  adapter?: AbstractWalletConnectNeonAdapter
+  blockchains: {
+    neo3?: TBaseBlockchainOptions<AbstractWalletConnectNeonAdapter>
+    eip155?: TBaseBlockchainOptions<AbstractWalletConnectEIP155Adapter>
+  }
 }
 
 export type TApproveSessionOptions = {
-  account: {
-    address: string
-    chain: Chain
-  }
+  address: string
+  chain: string
+  blockchain: string
 }
 
 export type TSessionExtendedStorage = {
   topic: string
   approvalUnix: number
-  wccv: number
+  wccv: number | undefined
 }
 
 export type TRejectReason = ErrorResponse

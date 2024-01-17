@@ -9,7 +9,7 @@ import {
   TWalletCoreEvents,
   TRejectReason,
   TRequestResult,
-  TOptions,
+  TInitOptions,
   TSession,
   TSessionProposal,
   TSessionRequest,
@@ -19,13 +19,7 @@ import {
   EStatus,
   TAdapterMethodParam,
 } from './types'
-import {
-  DEFAULT_AUTO_ACCEPT_METHODS,
-  DEFAULT_BLOCKCHAIN,
-  Method,
-  COMPATIBILITY_VERSION,
-} from '@cityofzion/wallet-connect-sdk-core'
-import { AbstractWalletConnectNeonAdapter } from './adapter'
+import { COMPATIBILITY_VERSION } from '@cityofzion/wallet-connect-sdk-core'
 import { sleep } from './utils'
 
 const SESSION_EXTENDED_STORAGE_KEY = 'wc-sdk:extended-session'
@@ -37,22 +31,19 @@ export class WcWalletSDK {
    * The WalletConnect Library
    */
   public client: SignClient | undefined
-
-  /**
-   * The Adapter to perform the WalletConnect requests
-   */
-  public adapter: AbstractWalletConnectNeonAdapter | undefined
-
   /**
    * The EventEmitter to listen for some property changes
    */
   public readonly emitter = new EventEmitter() as TypedEmitter<TWalletCoreEvents>
 
+  public clientOptions: TInitOptions['clientOptions']
+  public blockchainsOptions: TInitOptions['blockchains']
+
   private _sessions: TSession[] = []
   private _proposals: TSessionProposal[] = []
   private _requests: TSessionRequest[] = []
   private _status: EStatus = EStatus.NOT_STARTED
-  private options: Required<Omit<TOptions, 'adapter'>>
+
   private wccvs: Map<string, number> = new Map()
 
   /**
@@ -62,14 +53,9 @@ export class WcWalletSDK {
    * @param options.methods [methods] An array of valid methods used on your application
    * @param options.autoAcceptMethods [autoAcceptMethods=DEFAULT_AUTO_ACCEPT_METHODS] An array of valid auto accepted methods used on your application
    */
-  constructor(options: TOptions) {
-    this.options = {
-      clientOptions: options.clientOptions,
-      autoAcceptMethods: options.autoAcceptMethods ?? DEFAULT_AUTO_ACCEPT_METHODS,
-      methods: options.methods,
-    }
-
-    this.adapter = options.adapter
+  constructor(options: TInitOptions) {
+    this.clientOptions = options.clientOptions
+    this.blockchainsOptions = options.blockchains
   }
 
   /**
@@ -151,7 +137,7 @@ export class WcWalletSDK {
         throw new Error('Initialization timeout has been reached')
       })
 
-      const client = await SignClient.init(this.options.clientOptions)
+      const client = await SignClient.init(this.clientOptions)
       clearTimeout(timeout)
 
       client.events.removeAllListeners('session_proposal')
@@ -162,7 +148,9 @@ export class WcWalletSDK {
         this.proposals = [...this.proposals, proposal]
       })
       client.on('session_request', async (request) => {
-        if (this.options.autoAcceptMethods.includes(request.params.request.method as Method)) {
+        const [blockchain] = request.params.chainId.split(':')
+        const options = this.blockchainsOptions[blockchain]
+        if (options && options.autoAcceptMethods && options.autoAcceptMethods.includes(request.params.request.method)) {
           await this.approveRequest(request)
           return
         }
@@ -177,6 +165,7 @@ export class WcWalletSDK {
 
       const extendedSessions =
         await client.core.storage.getItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY)
+
       this.sessions = extendedSessions
         ? client.session.values
             .map((session) => {
@@ -208,14 +197,18 @@ export class WcWalletSDK {
   public async connect(uri: string): Promise<void> {
     const [, uriQueryString] = uri.split('?')
     const queryParams = queryString.parse(uriQueryString)
-    const wccv = Number(queryParams.wccv)
-    if (!wccv) throw new Error('Invalid URI')
-    if (wccv > COMPATIBILITY_VERSION) throw new Error('Incompatible WCCV. Update your wallet to use new features.')
+
+    let wccv: number | undefined
+    if (queryParams.wccv) {
+      wccv = Number(queryParams.wccv)
+      if (wccv > COMPATIBILITY_VERSION) throw new Error('Incompatible WCCV. Update your wallet to use new features.')
+    }
 
     const { topic } = await this.signClient.pair({
       uri,
     })
-    this.wccvs.set(topic, wccv)
+
+    wccv && this.wccvs.set(topic, wccv)
   }
 
   /**
@@ -249,11 +242,14 @@ export class WcWalletSDK {
    */
   public async approveProposal(proposal: TSessionProposal, options: TApproveSessionOptions): Promise<TSession> {
     try {
+      const blockchainOptions = this.blockchainsOptions[options.blockchain]
+      if (!blockchainOptions) throw new Error('Invalid blockchain')
+
       const namespaces: TNamespaces = {
-        [DEFAULT_BLOCKCHAIN]: {
-          methods: this.options.methods,
-          accounts: [`${DEFAULT_BLOCKCHAIN}:${options.account.chain}:${options.account.address}`],
-          events: [],
+        [options.blockchain]: {
+          methods: blockchainOptions.methods,
+          accounts: [`${options.blockchain}:${options.chain}:${options.address}`],
+          events: blockchainOptions.events ?? [],
         },
       }
 
@@ -266,7 +262,6 @@ export class WcWalletSDK {
       const approvalUnix = moment.utc().unix()
 
       const wccv = this.wccvs.get(session.pairingTopic)
-      if (!wccv) throw new Error('WCCV not set')
 
       const extendedSession = {
         ...session,
@@ -314,20 +309,25 @@ export class WcWalletSDK {
     let response!: TRequestResult | TRequestError
 
     try {
-      if (!this.adapter) throw new Error('Adapter not set')
+      const [blockchain] = request.params.chainId.split(':')
+      if (!blockchain) throw new Error('Invalid blockchain')
+
+      const blockchainOptions = this.blockchainsOptions[blockchain]
+      if (!blockchainOptions.methods) throw new Error('Invalid blockchain')
+      if (!blockchainOptions.adapter) throw new Error('Adapter not set or invalid blockchain')
 
       const session = this.sessions.find((session) => session.topic === request.topic)
       if (!session) throw new Error('Session not found')
 
-      const method = request.params.request.method as Method
-      if (!this.options.methods.includes(method)) throw new Error('Invalid request method')
+      const method = request.params.request.method
+      if (!blockchainOptions.methods.includes(method)) throw new Error('Invalid request method')
 
-      const adapterMethod = this.adapter[method] as (params: TAdapterMethodParam) => Promise<any>
+      const adapterMethod = blockchainOptions.adapter[method] as (params: TAdapterMethodParam) => Promise<any>
       if (!adapterMethod || typeof adapterMethod !== 'function') throw new Error('Invalid request method')
 
       const startExecutionTime = performance.now()
 
-      const result = await adapterMethod.apply(this.adapter, [{ request, session }])
+      const result = await adapterMethod.apply(blockchainOptions.adapter, [{ request, session }])
 
       const executionTime = performance.now() - startExecutionTime
       if (executionTime < MIN_TIME_OF_EXECUTION) await sleep(MIN_TIME_OF_EXECUTION - executionTime)
