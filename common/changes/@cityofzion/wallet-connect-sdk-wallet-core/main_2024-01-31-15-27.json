@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-core",
+      "comment": "Enhanced documentation",
+      "type": "none"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-core"
+}

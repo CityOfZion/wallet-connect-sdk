@@ -20,6 +20,21 @@ npm i @cityofzion/wallet-connect-sdk-core
 yarn add @cityofzion/wallet-connect-sdk-core
 ```
 
+<details>
+<summary>👉 For Vite Users</summary>
+
+In the vite.config.ts file you must change the global value like this:
+```ts
+export default defineConfig({
+    //your config here
+	define: {
+		global: 'globalThis',
+        //...
+	},
+});
+```
+</details>
+
 ## Setup
 To begin development, first establish an account on the [Wallet Connect website](https://walletconnect.com/). Next,
 generate a new Project. This process is straightforward, requiring only a few form fields.

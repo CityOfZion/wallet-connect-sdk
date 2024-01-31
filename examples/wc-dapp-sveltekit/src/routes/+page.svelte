@@ -1,19 +1,9 @@
 <script lang="ts">
-  import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
   import { SignMessageVersion, TypeChecker } from '@cityofzion/neon-dappkit-types'
   import type { NetworkType, Method } from '@cityofzion/wallet-connect-sdk-core'
-  const wcsdk = new WCSDKStore({
-    projectId: 'a9ff54e3d56a52230ed8767db4d4a810',
-    relayUrl: 'wss://relay.walletconnect.com',
-    metadata: {
-      name: 'MyApplicationName', // your application name to be displayed on the wallet
-      description: 'My Application description', // description to be shown on the wallet
-      url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
-      icons: ['https://myapplicationdescription.app/myappicon.png'], // icon to be shown on the wallet
-    },
-  })
-  $:session = wcsdk.session
-  $:isConnected = !!$session
+  import { get } from 'svelte/store'
+  import { wcsdk, isConnected } from './store'
+
   let networkTypes: { name: string; network: NetworkType }[] = [
     { name: 'testnet', network: 'neo3:testnet' },
     { name: 'mainnet', network: 'neo3:mainnet' },
@@ -26,7 +16,7 @@
 
   const connect = async () => {
     try {
-      await wcsdk.connect(networkTypeSelected, [
+      await get(wcsdk).connect(networkTypeSelected, [
         'invokeFunction',
         'testInvoke',
         'signMessage',
@@ -47,7 +37,7 @@
 
   const disconnect = async () => {
     try {
-      await wcsdk.disconnect()
+      await get(wcsdk).disconnect()
     } catch (error) {
       alert(error.message)
     }
@@ -55,7 +45,7 @@
 
   const getUri = async () => {
     try {
-      const { uri, approval } = await wcsdk.createConnection('neo3:testnet', [
+      const { uri, approval } = await get(wcsdk).createConnection('neo3:testnet', [
         'invokeFunction',
         'testInvoke',
         'signMessage',
@@ -82,7 +72,7 @@
 
   const getMyBalance = async () => {
     try {
-      const resp = await wcsdk.testInvoke({
+      const resp = await get(wcsdk).testInvoke({
         invocations: [
           {
             scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
@@ -90,7 +80,7 @@
             args: [
               {
                 type: 'Hash160',
-                value: wcsdk.getAccountAddress() ?? '',
+                value: get(wcsdk).getAccountAddress() ?? '',
               },
             ],
           },
@@ -107,7 +97,7 @@
 
   const transferGas = async () => {
     try {
-      const resp = await wcsdk.invokeFunction({
+      const resp = await get(wcsdk).invokeFunction({
         invocations: [
           {
             scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
@@ -115,7 +105,7 @@
             args: [
               {
                 type: 'Hash160',
-                value: wcsdk.getAccountAddress() ?? '',
+                value: get(wcsdk).getAccountAddress() ?? '',
               },
               {
                 type: 'Hash160',
@@ -144,7 +134,7 @@
 
   const calculateFee = async () => {
     try {
-      const result = await wcsdk.calculateFee({
+      const result = await get(wcsdk).calculateFee({
         invocations: [
           {
             scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
@@ -152,7 +142,7 @@
             args: [
               {
                 type: 'Hash160',
-                value: wcsdk.getAccountAddress() ?? '',
+                value: get(wcsdk).getAccountAddress() ?? '',
               },
               {
                 type: 'Hash160',
@@ -180,7 +170,7 @@
 
   const transferGasWithExtraFee = async () => {
     try {
-      const resp = await wcsdk.invokeFunction({
+      const resp = await get(wcsdk).invokeFunction({
         invocations: [
           {
             scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
@@ -188,7 +178,7 @@
             args: [
               {
                 type: 'Hash160',
-                value: wcsdk.getAccountAddress() ?? '',
+                value: get(wcsdk).getAccountAddress() ?? '',
               },
               {
                 type: 'Hash160',
@@ -219,7 +209,7 @@
 
   const multiInvokeFailing = async () => {
     try {
-      const resp = await wcsdk.invokeFunction({
+      const resp = await get(wcsdk).invokeFunction({
         invocations: [
           {
             scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
@@ -233,7 +223,7 @@
             args: [
               {
                 type: 'Hash160',
-                value: wcsdk.getAccountAddress() ?? '',
+                value: get(wcsdk).getAccountAddress() ?? '',
               },
               {
                 type: 'Hash160',
@@ -263,13 +253,13 @@
 
   const signAndVerify = async () => {
     try {
-      const resp = await wcsdk.signMessage({
+      const resp = await get(wcsdk).signMessage({
         message: 'Your sign message',
         version: SignMessageVersion.DEFAULT,
       })
       alert(JSON.stringify(resp, null, 2))
       console.log(resp)
-      const resp2 = await wcsdk.verifyMessage(resp)
+      const resp2 = await get(wcsdk).verifyMessage(resp)
       console.log(resp2)
       alert(JSON.stringify(resp2, null, 2))
     } catch (error) {
@@ -279,7 +269,7 @@
 
   const signWithoutSaltAndVerify = async () => {
     try {
-      const resp = await wcsdk.signMessage({
+      const resp = await get(wcsdk).signMessage({
         message: 'Your sign message',
         version: SignMessageVersion.WITHOUT_SALT,
       })
@@ -287,7 +277,7 @@
       console.log(resp)
       alert(JSON.stringify(resp, null, 2))
 
-      const resp2 = await wcsdk.verifyMessage(resp)
+      const resp2 = await get(wcsdk).verifyMessage(resp)
 
       console.log(resp2)
       JSON.stringify(resp2, null, 2)
@@ -297,7 +287,7 @@
   }
 
   const verifyFailling = async () => {
-    const resp2 = await wcsdk.verifyMessage({
+    const resp2 = await get(wcsdk).verifyMessage({
       data: '4fe1b478cf76564b2133bdff9ba97d8a360ce36d0511918931cda207c2ce589dfc07ec5d8b93ce7c3b70fc88b676cc9e08f9811bf0d5b5710a20f10c58191bfb',
       messageHex:
         '010001f05c3733336365623464346538666664633833656363366533356334343938393939436172616c686f2c206d756c65712c206f2062616775697520656820697373756d65726d6f2074616978206c696761646f206e61206d697373e36f3f0000',
@@ -310,7 +300,7 @@
   }
 
   const verify = async () => {
-    const resp = await wcsdk.verifyMessage({
+    const resp = await get(wcsdk).verifyMessage({
       publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
       data: 'aeb234ed1639e9fcc95a102633b1c70ca9f9b97e9592cc74bfc40cbc7fefdb19ae8c6b49ebd410dbcbeec6b5906e503d528e34cd5098cc7929dbcbbaf23c5d77',
       salt: '052a55a8d56b73b342a8e41da3050b09',
@@ -323,7 +313,7 @@
   }
 
   const traverseIterator = async (): Promise<void> => {
-    const resp = await wcsdk.testInvoke({
+    const resp = await get(wcsdk).testInvoke({
       invocations: [
         {
           operation: 'getAllCandidates',
@@ -341,14 +331,14 @@
     const sessionId = resp.session as string
     const iteratorId = resp.stack[0].id as string
 
-    const resp2 = await wcsdk.traverseIterator(sessionId, iteratorId, 10)
+    const resp2 = await get(wcsdk).traverseIterator(sessionId, iteratorId, 10)
 
     console.log(resp2)
     JSON.stringify(resp2, null, 2)
   }
 
   const getWalletInfo = async (): Promise<void> => {
-    const resp = await wcsdk.getWalletInfo()
+    const resp = await get(wcsdk).getWalletInfo()
 
     console.log(resp)
     alert(JSON.stringify(resp, null, 2))
@@ -362,7 +352,7 @@
   const encrypt = async () => {
     const message = 'Your sign message'
     const publicKeys = ['020ee58aa86f645a73042ef81ae09791e907c9c12ae4a5d2e7365aad8ceae08116']
-    const resp = await wcsdk.encrypt(message, publicKeys)
+    const resp = await get(wcsdk).encrypt(message, publicKeys)
     console.log(resp)
     alert(JSON.stringify(resp, null, 2))
   }
@@ -376,7 +366,7 @@
         ephemPublicKey: '0278bcb970272910a0bbe69061a435586428e87363018bd0616b3ffebd66774ba9',
         randomVector: '1bd2a7e1305a02e3d89dbd277d6272e5',
       }
-      const resp = await wcsdk.decrypt(payload)
+      const resp = await get(wcsdk).decrypt(payload)
       console.log(resp)
       window.alert(JSON.stringify(resp, null, 2))
     } catch (error) {
@@ -386,16 +376,16 @@
   }
 
   const signMessageEncryptAndDecrypt = async () => {
-    const signedMessage = await wcsdk.signMessage({
+    const signedMessage = await get(wcsdk).signMessage({
       message: 'Message to Sign',
       version: SignMessageVersion.DEFAULT,
     })
 
     const message = 'message to encrypt'
     const publicKeys = [signedMessage.publicKey]
-    const encrypted = await wcsdk.encrypt(message, publicKeys)
+    const encrypted = await get(wcsdk).encrypt(message, publicKeys)
 
-    const resp = await wcsdk.decrypt(encrypted[0])
+    const resp = await get(wcsdk).decrypt(encrypted[0])
     console.log(resp)
     window.alert(JSON.stringify(resp, null, 2))
   }
@@ -409,7 +399,7 @@
         ephemPublicKey: '0278bcb970272910a0bbe69061a435586428e87363018bd0616b3ffebd66774ba9',
         randomVector: '1bd2a7e1305a02e3d89dbd277d6272e5',
       }
-      const resp2 = await wcsdk.decryptFromArray([payload])
+      const resp2 = await get(wcsdk).decryptFromArray([payload])
       console.log(resp2)
       window.alert(JSON.stringify(resp2, null, 2))
     } catch (error) {
@@ -419,7 +409,7 @@
   }
 
   const signTransaction = async () => {
-    const resp = await wcsdk.signTransaction({
+    const resp = await get(wcsdk).signTransaction({
       invocations: [
         {
           scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
@@ -427,7 +417,7 @@
           args: [
             {
               type: 'Hash160',
-              value: wcsdk.getAccountAddress() ?? '',
+              value: get(wcsdk).getAccountAddress() ?? '',
             },
             {
               type: 'Hash160',
@@ -459,37 +449,37 @@
 <div>
   <h1>Sveltekit Dapp Example</h1>
   <div style="width: 100%;">
-    {#if !isConnected}
+    {#if !$isConnected}
       <div style="display: flex;">
         <select bind:value={networlSelectedName} style="margin-right: 5px;">
           {#each networkTypes as { name, network }}
             <option selected={networlSelectedName === name} value={network}>{name}</option>
           {/each}
         </select>
-        <button on:click={connect} disabled={isConnected}>Connect</button>
+        <button on:click={connect} disabled={$isConnected}>Connect</button>
       </div>
     {:else}
-      <button on:click={disconnect} disabled={!isConnected}>Disconnect</button>
+      <button on:click={disconnect} disabled={!$isConnected}>Disconnect</button>
     {/if}
 
     <div>
-      <button on:click={getUri} disabled={!isConnected}>getUri</button>
-      <button on:click={getMyBalance} disabled={!isConnected}>getMyBalance</button>
-      <button on:click={transferGas} disabled={!isConnected}>transferGas</button>
-      <button on:click={calculateFee} disabled={!isConnected}>CalculateFee</button>
-      <button on:click={transferGasWithExtraFee} disabled={!isConnected}>transferGasWithExtraFee</button>
-      <button on:click={multiInvokeFailing} disabled={!isConnected}>multiInvokeFailing</button>
-      <button on:click={signAndVerify} disabled={!isConnected}>signAndVerify</button>
-      <button on:click={signWithoutSaltAndVerify} disabled={!isConnected}>signWithoutSaltAndVerify</button>
-      <button on:click={verifyFailling} disabled={!isConnected}>verifyFailling</button>
-      <button on:click={verify} disabled={!isConnected}>verify</button>
-      <button on:click={traverseIterator} disabled={!isConnected}>traverseIterator</button>
-      <button on:click={getWalletInfo} disabled={!isConnected}>getWalletInfo</button>
-      <button on:click={encrypt} disabled={!isConnected}>encrypt</button>
-      <button on:click={decrypt} disabled={!isConnected}>decrypt</button>
-      <button on:click={signMessageEncryptAndDecrypt} disabled={!isConnected}>signMessageEncryptAndDecrypt</button>
-      <button on:click={decryptFromArray} disabled={!isConnected}>decryptFromArray</button>
-      <button on:click={signTransaction} disabled={!isConnected}>signTransaction</button>
+      <button on:click={getUri} disabled={!$isConnected}>getUri</button>
+      <button on:click={getMyBalance} disabled={!$isConnected}>getMyBalance</button>
+      <button on:click={transferGas} disabled={!$isConnected}>transferGas</button>
+      <button on:click={calculateFee} disabled={!$isConnected}>CalculateFee</button>
+      <button on:click={transferGasWithExtraFee} disabled={!$isConnected}>transferGasWithExtraFee</button>
+      <button on:click={multiInvokeFailing} disabled={!$isConnected}>multiInvokeFailing</button>
+      <button on:click={signAndVerify} disabled={!$isConnected}>signAndVerify</button>
+      <button on:click={signWithoutSaltAndVerify} disabled={!$isConnected}>signWithoutSaltAndVerify</button>
+      <button on:click={verifyFailling} disabled={!$isConnected}>verifyFailling</button>
+      <button on:click={verify} disabled={!$isConnected}>verify</button>
+      <button on:click={traverseIterator} disabled={!$isConnected}>traverseIterator</button>
+      <button on:click={getWalletInfo} disabled={!$isConnected}>getWalletInfo</button>
+      <button on:click={encrypt} disabled={!$isConnected}>encrypt</button>
+      <button on:click={decrypt} disabled={!$isConnected}>decrypt</button>
+      <button on:click={signMessageEncryptAndDecrypt} disabled={!$isConnected}>signMessageEncryptAndDecrypt</button>
+      <button on:click={decryptFromArray} disabled={!$isConnected}>decryptFromArray</button>
+      <button on:click={signTransaction} disabled={!$isConnected}>signTransaction</button>
     </div>
   </div>
 </div>
