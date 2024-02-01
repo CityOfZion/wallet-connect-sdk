@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-react",
+      "comment": "Ethereum support",
+      "type": "major"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-react"
+}

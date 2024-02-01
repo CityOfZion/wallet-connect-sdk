@@ -2,13 +2,12 @@ import {
   WcWalletSDK,
   EStatus,
   TApproveSessionOptions,
-  TOptions,
+  TInitOptions,
   TRejectReason,
   TRequestResult,
   TSession,
   TSessionProposal,
   TSessionRequest,
-  AbstractWalletConnectNeonAdapter,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
 import { ReactNode } from 'react'
 
@@ -93,10 +92,14 @@ export interface IWalletConnectWalletContext {
    * @param adapter The Adapter to perform the WalletConnect requests
    *  @return {void}
    */
-  setAdapter(adapter: AbstractWalletConnectNeonAdapter): void
+  setAdapters(adapters: TSetAdaptersParam): void
+}
+
+export type TSetAdaptersParam = {
+  [K in keyof TInitOptions['blockchains']]: Exclude<TInitOptions['blockchains'][K], undefined>['adapter']
 }
 
 export type TWalletConnectWalletProps = {
-  options: TOptions
+  options: TInitOptions
   children: ReactNode
 }

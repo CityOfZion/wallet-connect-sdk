@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { IWalletConnectWalletContext, TWalletConnectWalletProps } from './types'
+import { IWalletConnectWalletContext, TSetAdaptersParam, TWalletConnectWalletProps } from './types'
 import {
   WcWalletSDK,
   EStatus,
@@ -9,7 +9,6 @@ import {
   TSession,
   TSessionProposal,
   TSessionRequest,
-  AbstractWalletConnectNeonAdapter,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
 
 export const WalletConnectWalletContext = React.createContext({} as IWalletConnectWalletContext)
@@ -57,8 +56,13 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
     return await sdk.current.rejectRequest(request, reason)
   }, [])
 
-  const setAdapter = useCallback((adapter: AbstractWalletConnectNeonAdapter) => {
-    sdk.current.adapter = adapter
+  const setAdapters = useCallback((adapters: TSetAdaptersParam) => {
+    Object.keys(adapters).forEach((blockchain) => {
+      const adapter = adapters[blockchain]
+      if (!adapter) throw new Error("You can't set an empty adapter")
+
+      sdk.current.blockchainsOptions[blockchain].adapter = adapters[blockchain]
+    })
   }, [])
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
         rejectProposal,
         approveRequest,
         rejectRequest,
-        setAdapter,
+        setAdapters,
       }}
     >
       {children}

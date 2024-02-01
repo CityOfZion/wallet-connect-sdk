@@ -23,7 +23,9 @@ export default function App(): any {
   }, [walletConnectCtx.sessions])
 
   useEffect(() => {
-    walletConnectCtx.setAdapter(new WalletConnectNeonAdapter(accountCtx.rpcAddress, accountCtx.account))
+    walletConnectCtx.setAdapters({
+      neo3: new WalletConnectNeonAdapter(accountCtx.rpcAddress, accountCtx.account),
+    })
   }, [accountCtx.rpcAddress, accountCtx.account])
 
   return (

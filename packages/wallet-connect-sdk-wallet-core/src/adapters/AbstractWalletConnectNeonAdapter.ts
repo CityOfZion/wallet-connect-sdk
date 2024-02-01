@@ -1,7 +1,7 @@
 import { NeonInvoker, NeonSigner, NeonParser } from '@cityofzion/neon-dappkit'
 import * as NeonCore from '@cityofzion/neon-core'
 import * as NeonJs from '@cityofzion/neon-js'
-import { TAdapterMethodParam } from './types'
+import { TAdapterMethodParam } from '../types'
 import {
   InvokeResult,
   SignedMessage,
@@ -13,7 +13,9 @@ import {
   DecryptFromArrayResult,
   CalculateFee,
   BuiltTransaction,
+  ContractInvocation,
 } from '@cityofzion/wallet-connect-sdk-core'
+
 export abstract class AbstractWalletConnectNeonAdapter {
   protected async getServices(args: TAdapterMethodParam) {
     const rpcAddress = await this.getRPCUrl(args)
@@ -38,29 +40,28 @@ export abstract class AbstractWalletConnectNeonAdapter {
     }
   }
 
-  protected convertParams({ session, request }: TAdapterMethodParam) {
-    const params = request.params.request.params as ContractInvocationMulti
-
-    if (session.wccv >= 3) return params
-
-    const invocations = params.invocations.map((invocation) => {
-      const args = invocation.args?.map((arg) => {
-        if (arg.type === 'ByteArray') {
-          arg.value = NeonParser.base64ToHex(arg.value)
-        }
-        return arg
-      })
-
-      return {
-        ...invocation,
-        args,
+  private convertDeprecatedInvocations(invocation: ContractInvocation) {
+    const args = invocation.args?.map((arg) => {
+      if (arg.type === 'ByteArray') {
+        arg.value = NeonParser.base64ToHex(arg.value)
       }
+      return arg
     })
 
     return {
-      ...params,
-      invocations,
+      ...invocation,
+      args,
     }
+  }
+
+  protected convertParams({ session, request }: TAdapterMethodParam) {
+    const params = request.params.request.params as ContractInvocationMulti
+
+    if (session.wccv && session.wccv < 3) {
+      params.invocations = params.invocations.map(this.convertDeprecatedInvocations)
+    }
+
+    return params
   }
 
   async invokeFunction(args: TAdapterMethodParam): Promise<string> {
