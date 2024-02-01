@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Mon, 27 Nov 2023 20:31:39 GMT and should not be manually modified.
+This log was last generated on Thu, 01 Feb 2024 21:44:32 GMT and should not be manually modified.
+
+## 4.0.0
+Thu, 01 Feb 2024 21:44:32 GMT
+
+### Breaking changes
+
+- Ethereum support
 
 ## 3.1.2
 Mon, 27 Nov 2023 20:31:39 GMT
