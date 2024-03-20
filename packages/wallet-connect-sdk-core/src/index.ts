@@ -98,7 +98,7 @@ export type NetworkVersion = GetVersionResult & {
 /**
  * An adapter of SignClient to work easily with Neon Wallet
  */
-export default class WcSdk implements Neo3Invoker, Neo3Signer {
+class WcSdk implements Neo3Invoker, Neo3Signer {
   /**
    * The WalletConnect Library
    */
@@ -705,4 +705,7 @@ export default class WcSdk implements Neo3Invoker, Neo3Signer {
   }
 }
 
+// The WcSdk export is duplicated in two different ways to accommodate both CommonJS and Vite builds.
+export { WcSdk }
+export default WcSdk
 export * from '@cityofzion/neon-dappkit-types'
