@@ -113,16 +113,22 @@ export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
    * @return network information
    */
   getNetworkVersion: () => Promise<NetworkVersion>
+
+  /**
+   * Wait load internal Wallet Connect SDK
+   */
+  waitSdkLoad: () => Promise<void>
 }
 
 export class WCSDKStore implements IWalletConnectStore {
   private sdk: WcSdk | null
+  private sdkOptions: SignClientTypes.Options
   private sessionWritable: Writable<SessionTypes.Struct | null> = writable(null)
   private signClientWritable: Writable<SignClient | null> = writable(null)
   private autoManageSession: boolean
 
   constructor(options: SignClientTypes.Options, autoManageSession?: boolean) {
-    this.setupWcClient(options)
+    this.sdkOptions = options
     this.sdk = null
     this.autoManageSession = autoManageSession ?? true
   }
@@ -228,13 +234,17 @@ export class WCSDKStore implements IWalletConnectStore {
     return this.signClientWritable.subscribe((signClient) => callback(signClient))
   }
 
-  private async setupWcClient(options: SignClientTypes.Options) {
-    this.sdk = await WcSdk.init(options)
-    const signClient = this.sdk.signClient
-    if (this.autoManageSession) {
-      this.manageSession()
+  async waitSdkLoad(): Promise<void> {
+    try {
+      this.sdk = await WcSdk.init(this.sdkOptions)
+      const signClient = this.sdk.signClient
+      if (this.autoManageSession) {
+        this.manageSession()
+      }
+      this.signClientWritable.set(signClient)
+    } catch (error) {
+      console.error(error)
     }
-    this.signClientWritable.set(signClient)
   }
 
   private get SdkOrError() {
