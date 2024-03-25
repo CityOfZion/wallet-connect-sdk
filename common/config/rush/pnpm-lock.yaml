@@ -155,8 +155,8 @@ importers:
         specifier: 5.5.1
         version: 5.5.1
       '@cityofzion/neon-dappkit':
-        specifier: 0.3.2
-        version: 0.3.2
+        specifier: 0.4.1
+        version: 0.4.1
       '@cityofzion/neon-js':
         specifier: 5.5.1
         version: 5.5.1
@@ -2785,8 +2785,8 @@ packages:
     resolution: {integrity: sha512-bQA/EBQUU6ZPmDARXB0w6I2iJqdo4S2s3xERPN91wCHd9WMkCIrtec269X1Yjd9qGoVibLMyA3xjqrOTyUBpxw==}
     dev: false
 
-  /@cityofzion/neon-dappkit@0.3.2:
-    resolution: {integrity: sha512-FJ19NM2CUap4TzH0b8hXJvx44PZwvwcy67iwYYhvOq+NPJcN8TlhHFUeK02dVZwDQNta55gB7O2Y1eX1hYeC1g==}
+  /@cityofzion/neon-dappkit@0.4.1:
+    resolution: {integrity: sha512-cQy1y2zoTukK9fK4r7MfIXDRWy402ITVWuY9YhaQFz/XfFB9t6XqVwe3XcpTiePqBrgBRoeyGw79P3KCg3ZgZw==}
     dependencies:
       '@cityofzion/neon-dappkit-types': 0.3.1
       '@cityofzion/neon-js': 5.5.1
