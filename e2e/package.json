@@ -4,12 +4,10 @@
   "description": "wallet-connect-sdk e2e(end to end) tester",
   "private": true,
   "scripts": {
-    "ex:build:unix": "cd ../examples && for d in */; do (cd \"$d\" && pnpm build && cd ..); done",
-    "ex:build:windows": "cd ../examples && for /d %i in (*) do (cd %i && pnpm build && cd ..)",
-    "ex:clean:unix": "rush purge && cd ../examples && for d in */; do (cd \"$d\" && rm -rf node_modules pnpm-lock.yaml && cd ..); done",
-    "ex:clean:windows": "rush purge && cd ../examples && for /d %i in (*) do (cd %i && rm -rf node_modules pnpm-lock.yaml && cd ..)",
-    "ex:install:unix": "cd ../examples && for d in */; do (cd \"$d\" && pnpm install && cd ..); done",
-    "ex:install:windows": "cd ../examples && for /d %i in (*) do (cd %i && pnpm install && cd ..)",
+    "ex:build": "ts-node src/scripts/examplesBuild.ts",
+    "ex:clean": "ts-node src/scripts/examplesClean.ts && rush purge",
+    "ex:install": "ts-node src/scripts/examplesInstall.ts",
+    "ex:run": "ts-node src/scripts/examplesRun.ts",
     "format": "prettier . --write && eslint --fix",
     "lint": "prettier . --check && eslint",
     "prepare": "npm install serve -g && pnpm exec playwright install",
@@ -26,6 +24,7 @@
     "eslint": "^8.50.0",
     "playwright": "^1.38.1",
     "prettier": "^3.0.3",
+    "ts-node": "10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
