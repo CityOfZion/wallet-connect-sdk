@@ -44,7 +44,8 @@
     "react-scripts": "^5.0.1",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.2.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "vm-browserify": "^1.1.2"
   },
   "eslintConfig": {
     "extends": [
@@ -73,10 +74,11 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.1",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "2.2.1"
   },
   "resolutions": {
     "@cityofzion/wallet-connect-sdk-wallet-core": "file:../../packages/wallet-connect-sdk-wallet-core",
-    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core"
+    "@cityofzion/wallet-connect-sdk-core": "file:../../packages/wallet-connect-sdk-core",
+    "readable-stream": "4.4.2"
   }
 }
