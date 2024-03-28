@@ -1,6 +1,6 @@
 import { writable, type Writable, type Readable, derived } from 'svelte/store'
 import SignClient from '@walletconnect/sign-client'
-import WcSdk from '@cityofzion/wallet-connect-sdk-core'
+import { WcSdk } from '@cityofzion/wallet-connect-sdk-core'
 import type {
   NetworkType,
   Method,

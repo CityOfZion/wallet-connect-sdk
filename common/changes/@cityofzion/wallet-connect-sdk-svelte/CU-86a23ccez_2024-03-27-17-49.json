@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-svelte",
+      "comment": "Hotfix an error during the build process using SvelteKit and TurboRepo.",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-svelte"
+}
