@@ -49,4 +49,4 @@ generate a new Project. This process is straightforward, requiring only a few fo
 `autoManageSession` will reload the user's connected session and subscribe to the `disconnect` event. It is `true` by default and if you don't want this at startup, set the second constructor parameter to false and call the `manageSession` method at the correct time.
 
 ## Usage
-Check this [Usage Guide](../../USAGE_GUIDE.md) to see how to use this SDK on your application.
+Check this [Usage Guide](https://github.com/CityOfZion/wallet-connect-sdk/blob/main/USAGE_GUIDE.md) to see how to use this SDK on your application.

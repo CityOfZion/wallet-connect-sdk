@@ -66,4 +66,4 @@ export default function MyComponent() {
 ```
 
 ## Usage
-Check this [Usage Guide](../../USAGE_GUIDE.md) to see how to use this SDK on your application.
+Check this [Usage Guide](https://github.com/CityOfZion/wallet-connect-sdk/blob/main/USAGE_GUIDE.md) to see how to use this SDK on your application.
