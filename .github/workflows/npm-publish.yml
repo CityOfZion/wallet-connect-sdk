@@ -46,6 +46,12 @@ jobs:
           path: './docs'
       - name: Deploy GitHub Pages
         uses: actions/deploy-pages@v2
+      # Adding all modified files to ensure 'rush change --verify' correctly identifies changes.
+      # This is because the command only recognizes changes in files that were added in the commit.
+      - name: Rush Change
+        run: |
+          git add .
+          rush change --message "Update package.json version(s)" --bump-type none --bulk
       - name: Commit and Push package.json version update
         run: |
           git add .
