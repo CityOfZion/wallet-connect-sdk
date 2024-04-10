@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Update package.json version(s)",
+      "type": "none",
+      "packageName": "@cityofzion/wallet-connect-sdk-svelte"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-svelte",
+  "email": "80922146+LeonardoDizConde@users.noreply.github.com"
+}
