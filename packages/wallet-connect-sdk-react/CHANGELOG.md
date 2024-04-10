@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-react
 
-This log was last generated on Mon, 27 Nov 2023 17:52:40 GMT and should not be manually modified.
+This log was last generated on Wed, 10 Apr 2024 17:22:27 GMT and should not be manually modified.
+
+## 3.2.2
+Wed, 10 Apr 2024 17:22:27 GMT
+
+### Patches
+
+- Fix documentation links on NPM website
 
 ## 3.2.0
 Mon, 27 Nov 2023 17:52:40 GMT

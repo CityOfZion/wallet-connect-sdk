@@ -2,6 +2,31 @@
   "name": "@cityofzion/wallet-connect-sdk-svelte",
   "entries": [
     {
+      "version": "0.2.2",
+      "tag": "@cityofzion/wallet-connect-sdk-svelte_v0.2.2",
+      "date": "Wed, 10 Apr 2024 17:22:27 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Hotfix an error during the build process using SvelteKit and TurboRepo."
+          },
+          {
+            "comment": "Fix documentation links on NPM website"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" to `3.2.2`"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.2.0",
       "tag": "@cityofzion/wallet-connect-sdk-svelte_v0.2.0",
       "date": "Mon, 27 Nov 2023 17:52:40 GMT",

@@ -2,6 +2,28 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "4.0.2",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.0.2",
+      "date": "Wed, 10 Apr 2024 17:22:27 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Dump NeonDappkit version"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@cityofzion/wallet-connect-sdk-core\" to `3.2.2`"
+          }
+        ]
+      }
+    },
+    {
       "version": "4.0.0",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.0.0",
       "date": "Thu, 01 Feb 2024 21:44:32 GMT",
