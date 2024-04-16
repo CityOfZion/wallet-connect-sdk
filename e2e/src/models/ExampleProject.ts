@@ -45,4 +45,24 @@ export default class ExampleProject {
     if (seconds < 0) throw Error('Cannot await negative seconds')
     await this.page.waitForTimeout(seconds * 1000)
   }
+
+  // Don't use this command with tags that are expected not to exist.
+  async awaitTestId(testId: string) {
+    await this.page.waitForSelector(`[data-testid="${testId}"]`)
+  }
+
+  async awaitAndGetTestId(testId: string) {
+    await this.awaitTestId(testId)
+    return this.page.getByTestId(testId)
+  }
+
+  async awaitAndGetAllTestId(testId: string) {
+    await this.awaitTestId(testId)
+    return this.page.getByTestId(testId).all()
+  }
+
+  async awaitAndClickTestId(testId: string) {
+    await this.awaitTestId(testId)
+    await (await this.awaitAndGetTestId(testId)).click()
+  }
 }
