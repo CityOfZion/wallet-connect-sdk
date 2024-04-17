@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { TypeChecker } from '@cityofzion/neon-dappkit-types'
 import { NetworkType, useWalletConnect, SignMessageVersion } from '@cityofzion/wallet-connect-sdk-react'
 import { dappMethods, networks } from '../Constants'
+import 'toastify-js/src/toastify.css'
+// @ts-ignore
+import Toastify from 'toastify-js'
 
 function HelloWorld() {
   const [dappUri, setDappUri] = useState('')
@@ -28,253 +31,297 @@ function HelloWorld() {
   }
 
   const getMyBalance = async (): Promise<void> => {
-    const resp = await wcSdk.testInvoke({
-      invocations: [
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'balanceOf',
-          args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-          ],
-        },
-      ],
-      signers: [{ scopes: 1 }],
-    })
+    try {
+      const resp = await wcSdk.testInvoke({
+        invocations: [
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'balanceOf',
+            args: [
+              {
+                type: 'Hash160',
+                value: wcSdk.getAccountAddress() ?? '',
+              },
+            ],
+          },
+        ],
+        signers: [{ scopes: 1 }],
+      })
 
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const transferGas = async (): Promise<void> => {
-    const resp = await wcSdk.invokeFunction({
-      invocations: [
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'transfer',
-          args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-            {
-              type: 'Hash160',
-              value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
-            },
-            {
-              type: 'Integer',
-              value: '100000000',
-            },
-            {
-              type: 'Array',
-              value: [],
-            },
-          ],
-        },
-      ],
-      signers: [{ scopes: 1 }],
-    })
+    try {
+      const resp = await wcSdk.invokeFunction({
+        invocations: [
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'transfer',
+            args: [
+              {
+                type: 'Hash160',
+                value: wcSdk.getAccountAddress() ?? '',
+              },
+              {
+                type: 'Hash160',
+                value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
+              },
+              {
+                type: 'Integer',
+                value: '100000000',
+              },
+              {
+                type: 'Array',
+                value: [],
+              },
+            ],
+          },
+        ],
+        signers: [{ scopes: 1 }],
+      })
 
-    console.log(resp)
-    window.alert(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      window.alert(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const calculateFee = async (): Promise<void> => {
-    const resp = await wcSdk.calculateFee({
-      invocations: [
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'transfer',
-          args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-            {
-              type: 'Hash160',
-              value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
-            },
-            {
-              type: 'Integer',
-              value: '100000000',
-            },
-            {
-              type: 'Array',
-              value: [],
-            },
-          ],
-        },
-      ],
-      signers: [{ scopes: 1 }],
-    })
-    console.log(resp)
-    console.log(Number(resp.networkFee) + Number(resp.systemFee) === resp.total)
-    setResponse(JSON.stringify(resp, null, 2))
+    try {
+      const resp = await wcSdk.calculateFee({
+        invocations: [
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'transfer',
+            args: [
+              {
+                type: 'Hash160',
+                value: wcSdk.getAccountAddress() ?? '',
+              },
+              {
+                type: 'Hash160',
+                value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
+              },
+              {
+                type: 'Integer',
+                value: '100000000',
+              },
+              {
+                type: 'Array',
+                value: [],
+              },
+            ],
+          },
+        ],
+        signers: [{ scopes: 1 }],
+      })
+      console.log(resp)
+      console.log(Number(resp.networkFee) + Number(resp.systemFee) === resp.total)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const transferGasWithExtraFee = async (): Promise<void> => {
-    const resp = await wcSdk.invokeFunction({
-      invocations: [
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'transfer',
-          args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-            {
-              type: 'Hash160',
-              value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
-            },
-            {
-              type: 'Integer',
-              value: '100000000',
-            },
-            {
-              type: 'Array',
-              value: [],
-            },
-          ],
-        },
-      ],
-      signers: [{ scopes: 1 }],
-      extraSystemFee: 1000000,
-      extraNetworkFee: 100000,
-    })
+    try {
+      const resp = await wcSdk.invokeFunction({
+        invocations: [
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'transfer',
+            args: [
+              {
+                type: 'Hash160',
+                value: wcSdk.getAccountAddress() ?? '',
+              },
+              {
+                type: 'Hash160',
+                value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
+              },
+              {
+                type: 'Integer',
+                value: '100000000',
+              },
+              {
+                type: 'Array',
+                value: [],
+              },
+            ],
+          },
+        ],
+        signers: [{ scopes: 1 }],
+        extraSystemFee: 1000000,
+        extraNetworkFee: 100000,
+      })
 
-    console.log(resp)
-    window.alert(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      window.alert(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const multiInvokeFailing = async (): Promise<void> => {
-    const resp = await wcSdk.invokeFunction({
-      invocations: [
-        {
-          scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
-          operation: 'verify',
-          args: [],
-          abortOnFail: true,
-        },
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'transfer',
-          args: [
-            {
-              type: 'Hash160',
-              value: wcSdk.getAccountAddress() ?? '',
-            },
-            {
-              type: 'Hash160',
-              value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
-            },
-            {
-              type: 'Integer',
-              value: '100000000',
-            },
-            {
-              type: 'Array',
-              value: [],
-            },
-          ],
-          abortOnFail: true,
-        },
-      ],
-      signers: [{ scopes: 1 }],
-    })
+    try {
+      const resp = await wcSdk.invokeFunction({
+        invocations: [
+          {
+            scriptHash: '0x010101c0775af568185025b0ce43cfaa9b990a2a',
+            operation: 'verify',
+            args: [],
+            abortOnFail: true,
+          },
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'transfer',
+            args: [
+              {
+                type: 'Hash160',
+                value: wcSdk.getAccountAddress() ?? '',
+              },
+              {
+                type: 'Hash160',
+                value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv',
+              },
+              {
+                type: 'Integer',
+                value: '100000000',
+              },
+              {
+                type: 'Array',
+                value: [],
+              },
+            ],
+            abortOnFail: true,
+          },
+        ],
+        signers: [{ scopes: 1 }],
+      })
 
-    console.log(resp)
-    window.alert(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      window.alert(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const signAndVerify = async (): Promise<void> => {
     if (!wcSdk) return
-    const resp = await wcSdk.signMessage({
-      message: 'Your sign message',
-      version: SignMessageVersion.DEFAULT,
-    })
+    try {
+      const resp = await wcSdk.signMessage({
+        message: 'Your sign message',
+        version: SignMessageVersion.DEFAULT,
+      })
 
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
 
-    const resp2 = await wcSdk.verifyMessage(resp)
+      const resp2 = await wcSdk.verifyMessage(resp)
 
-    console.log(resp2)
-    setResponse(JSON.stringify(resp2, null, 2))
+      console.log(resp2)
+      setResponse(JSON.stringify(resp2, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const signWithoutSaltAndVerify = async (): Promise<void> => {
     if (!wcSdk) return
-    const resp = await wcSdk.signMessage({
-      message: 'Your sign message',
-      version: SignMessageVersion.WITHOUT_SALT,
-    })
+    try {
+      const resp = await wcSdk.signMessage({
+        message: 'Your sign message',
+        version: SignMessageVersion.WITHOUT_SALT,
+      })
 
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
 
-    const resp2 = await wcSdk.verifyMessage(resp)
+      const resp2 = await wcSdk.verifyMessage(resp)
 
-    console.log(resp2)
-    setResponse(JSON.stringify(resp2, null, 2))
+      console.log(resp2)
+      setResponse(JSON.stringify(resp2, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const verifyFailling = async (): Promise<void> => {
-    const resp2 = await wcSdk.verifyMessage({
-      data: '4fe1b478cf76564b2133bdff9ba97d8a360ce36d0511918931cda207c2ce589dfc07ec5d8b93ce7c3b70fc88b676cc9e08f9811bf0d5b5710a20f10c58191bfb',
-      messageHex:
-        '010001f05c3733336365623464346538666664633833656363366533356334343938393939436172616c686f2c206d756c65712c206f2062616775697520656820697373756d65726d6f2074616978206c696761646f206e61206d697373e36f3f0000',
-      publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
-      salt: '733ceb4d4e8ffdc83ecc6e35c4498999',
-    })
+    try {
+      const resp = await wcSdk.verifyMessage({
+        data: '4fe1b478cf76564b2133bdff9ba97d8a360ce36d0511918931cda207c2ce589dfc07ec5d8b93ce7c3b70fc88b676cc9e08f9811bf0d5b5710a20f10c58191bfb',
+        messageHex:
+          '010001f05c3733336365623464346538666664633833656363366533356334343938393939436172616c686f2c206d756c65712c206f2062616775697520656820697373756d65726d6f2074616978206c696761646f206e61206d697373e36f3f0000',
+        publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
+        salt: '733ceb4d4e8ffdc83ecc6e35c4498999',
+      })
 
-    console.log(resp2)
-    setResponse(JSON.stringify(resp2, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const verify = async (): Promise<void> => {
-    const resp2 = await wcSdk.verifyMessage({
-      publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
-      data: 'aeb234ed1639e9fcc95a102633b1c70ca9f9b97e9592cc74bfc40cbc7fefdb19ae8c6b49ebd410dbcbeec6b5906e503d528e34cd5098cc7929dbcbbaf23c5d77',
-      salt: '052a55a8d56b73b342a8e41da3050b09',
-      messageHex:
-        '010001f0a0303532613535613864353662373362333432613865343164613330353062303965794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a6c654841694f6a45324e444d304e7a63324e6a4d73496d6c68644349364d5459304d7a4d354d5449324d33302e7253315f73735230364c426778744831504862774c306d7a6557563950686d5448477a324849524f4a4f340000',
-    })
+    try {
+      const resp = await wcSdk.verifyMessage({
+        publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
+        data: 'aeb234ed1639e9fcc95a102633b1c70ca9f9b97e9592cc74bfc40cbc7fefdb19ae8c6b49ebd410dbcbeec6b5906e503d528e34cd5098cc7929dbcbbaf23c5d77',
+        salt: '052a55a8d56b73b342a8e41da3050b09',
+        messageHex:
+          '010001f0a0303532613535613864353662373362333432613865343164613330353062303965794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a6c654841694f6a45324e444d304e7a63324e6a4d73496d6c68644349364d5459304d7a4d354d5449324d33302e7253315f73735230364c426778744831504862774c306d7a6557563950686d5448477a324849524f4a4f340000',
+      })
 
-    console.log(resp2)
-    setResponse(JSON.stringify(resp2, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const traverseIterator = async (): Promise<void> => {
-    const resp = await wcSdk.testInvoke({
-      invocations: [
-        {
-          operation: 'getAllCandidates',
-          scriptHash: 'ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5',
-          args: [],
-        },
-      ],
-      signers: [{ scopes: 1 }],
-    })
+    try {
+      const resp = await wcSdk.testInvoke({
+        invocations: [
+          {
+            operation: 'getAllCandidates',
+            scriptHash: 'ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5',
+            args: [],
+          },
+        ],
+        signers: [{ scopes: 1 }],
+      })
 
-    if (!TypeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response')
+      if (!TypeChecker.isStackTypeInteropInterface(resp.stack[0])) throw new Error('Invalid response')
 
-    const sessionId = resp.session as string
-    const iteratorId = resp.stack[0].id as string
+      const sessionId = resp.session as string
+      const iteratorId = resp.stack[0].id as string
 
-    const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
+      const resp2 = await wcSdk.traverseIterator(sessionId, iteratorId, 10)
 
-    console.log(resp2)
-    setResponse(JSON.stringify(resp2, null, 2))
+      console.log(resp2)
+      setResponse(JSON.stringify(resp2, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const getWalletInfo = async (): Promise<void> => {
-    const resp = await wcSdk.getWalletInfo()
+    try {
+      const resp = await wcSdk.getWalletInfo()
 
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   /**
@@ -285,9 +332,13 @@ function HelloWorld() {
   const encrypt = async () => {
     const message = 'Your sign message'
     const publicKeys = ['02dd8169fb780a9cc01d785efc96888f99c39ab671c039acad8f1f646b9f944a0e']
-    const resp = await wcSdk.encrypt(message, publicKeys)
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+    try {
+      const resp = await wcSdk.encrypt(message, publicKeys)
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const decrypt = async () => {
@@ -303,8 +354,7 @@ function HelloWorld() {
       console.log({ resp2 })
       window.alert(JSON.stringify(resp2, null, 2))
     } catch (error) {
-      //@ts-ignore
-      window.alert(error.message)
+      onError(error)
     }
   }
 
@@ -318,9 +368,13 @@ function HelloWorld() {
     const publicKeys = [signedMessage.publicKey]
     const encrypted = await wcSdk.encrypt(message, publicKeys)
 
-    const resp = await wcSdk.decrypt(encrypted[0])
-    console.log(resp)
-    window.alert(JSON.stringify(resp, null, 2))
+    try {
+      const resp = await wcSdk.decrypt(encrypted[0])
+      console.log(resp)
+      window.alert(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const decryptFromArray = async () => {
@@ -336,46 +390,60 @@ function HelloWorld() {
       console.log(resp2)
       window.alert(JSON.stringify(resp2, null, 2))
     } catch (error) {
-      console.log(error)
+      onError(error)
     }
   }
 
   const signTransaction = async () => {
     // invoke this using the payer account (eg.: NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv)
-    const resp = await wcSdk.signTransaction({
-      invocations: [
-        {
-          scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
-          operation: 'transfer',
-          args: [
-            // the owner is sending to payer but the payer is paying for the tx
-            { type: 'Hash160', value: 'NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr' }, // owner address
-            { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }, // payer address
-            { type: 'Integer', value: '100000000' },
-            { type: 'Array', value: [] },
-          ],
-        },
-      ],
-      signers: [
-        {
-          account: 'cc776527da4a34b80f411b0ccb9dffddb38523ae', // payer scripthash
-          scopes: 'CalledByEntry',
-        },
-        {
-          account: '857a247939db5c7cd3a7bb14791280c09e824bea', // owner scripthash
-          scopes: 'CalledByEntry',
-        },
-      ],
-    })
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
-    // you can grab this response and do an invokeFunction using owner account (eg.: NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr)
+    try {
+      const resp = await wcSdk.signTransaction({
+        invocations: [
+          {
+            scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+            operation: 'transfer',
+            args: [
+              // the owner is sending to payer but the payer is paying for the tx
+              { type: 'Hash160', value: 'NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr' }, // owner address
+              { type: 'Hash160', value: 'NbnjKGMBJzJ6j5PHeYhjJDaQ5Vy5UYu4Fv' }, // payer address
+              { type: 'Integer', value: '100000000' },
+              { type: 'Array', value: [] },
+            ],
+          },
+        ],
+        signers: [
+          {
+            account: 'cc776527da4a34b80f411b0ccb9dffddb38523ae', // payer scripthash
+            scopes: 'CalledByEntry',
+          },
+          {
+            account: '857a247939db5c7cd3a7bb14791280c09e824bea', // owner scripthash
+            scopes: 'CalledByEntry',
+          },
+        ],
+      })
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+      // you can grab this response and do an invokeFunction using owner account (eg.: NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr)
+    } catch (e) {
+      onError(e)
+    }
   }
 
   const wipeMethods = async () => {
-    const resp = await wcSdk.wipeRequests()
-    console.log(resp)
-    setResponse(JSON.stringify(resp, null, 2))
+    try {
+      const resp = await wcSdk.wipeRequests()
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
+  }
+
+  const onError = (error: any) => {
+    Toastify({
+      text: error.message,
+    }).showToast()
   }
 
   return (
