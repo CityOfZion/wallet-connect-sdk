@@ -49,6 +49,7 @@ export type Method =
   | 'decryptFromArray'
   | 'calculateFee'
   | 'signTransaction'
+  | 'wipeRequests'
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -77,6 +78,7 @@ export const DEFAULT_AUTO_ACCEPT_METHODS: Method[] = [
   'traverseIterator',
   'getNetworkVersion',
   'calculateFee',
+  'wipeRequests',
 ]
 
 export class WcSdkError extends Error {
@@ -656,6 +658,26 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
     }
 
     return resp as DecryptFromArrayResult
+  }
+
+  async wipeRequests(): Promise<string[]> {
+    const request = {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'wipeRequests',
+      params: [],
+    }
+    const resp = await this.signClient.request({
+      topic: this.session?.topic ?? '',
+      chainId: this.getChainId() ?? '',
+      request,
+    })
+
+    if (!resp) {
+      throw new WcSdkError(resp)
+    }
+
+    return resp as string[]
   }
 
   private validateContractInvocationMulti(request: ContractInvocationMulti): boolean {

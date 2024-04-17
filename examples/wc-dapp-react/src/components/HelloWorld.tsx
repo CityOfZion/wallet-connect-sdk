@@ -1,18 +1,7 @@
 import React, { useState } from 'react'
 import { TypeChecker } from '@cityofzion/neon-dappkit-types'
 import { NetworkType, useWalletConnect, SignMessageVersion } from '@cityofzion/wallet-connect-sdk-react'
-
-const networks: Record<NetworkType, { name: string }> = {
-  'neo3:mainnet': {
-    name: 'MainNet',
-  },
-  'neo3:testnet': {
-    name: 'TestNet',
-  },
-  'neo3:private': {
-    name: 'Private Network',
-  },
-}
+import { dappMethods, networks } from '../Constants'
 
 function HelloWorld() {
   const [dappUri, setDappUri] = useState('')
@@ -21,37 +10,11 @@ function HelloWorld() {
   const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
 
   const connect = async (): Promise<void> => {
-    await wcSdk.connect(networkType, [
-      'invokeFunction',
-      'testInvoke',
-      'signMessage',
-      'verifyMessage',
-      'traverseIterator',
-      'getWalletInfo',
-      'getNetworkVersion',
-      'decrypt',
-      'encrypt',
-      'decryptFromArray',
-      'calculateFee',
-      'signTransaction',
-    ])
+    await wcSdk.connect(networkType, dappMethods)
   }
 
   const getUri = async (): Promise<void> => {
-    const { uri, approval } = await wcSdk.createConnection('neo3:testnet', [
-      'invokeFunction',
-      'testInvoke',
-      'signMessage',
-      'verifyMessage',
-      'traverseIterator',
-      'getWalletInfo',
-      'getNetworkVersion',
-      'decrypt',
-      'encrypt',
-      'decryptFromArray',
-      'calculateFee',
-      'signTransaction',
-    ])
+    const { uri, approval } = await wcSdk.createConnection(networkType, dappMethods)
     if (uri) {
       setDappUri(uri)
       await navigator.clipboard.writeText(uri)
@@ -409,6 +372,12 @@ function HelloWorld() {
     // you can grab this response and do an invokeFunction using owner account (eg.: NhGomBpYnKXArr55nHRQ5rzy79TwKVXZbr)
   }
 
+  const wipeMethods = async () => {
+    const resp = await wcSdk.wipeRequests()
+    console.log(resp)
+    setResponse(JSON.stringify(resp, null, 2))
+  }
+
   return (
     <div>
       {!wcSdk && <span>Loading...</span>}
@@ -490,6 +459,9 @@ function HelloWorld() {
               </button>
               <button data-testid="hello-world__sign-transaction" onClick={signTransaction}>
                 Sign Transaction
+              </button>
+              <button data-testid="hello-world__wipe-methods" onClick={wipeMethods}>
+                Wipe Methods
               </button>
               <br></br>
               <span>Response:</span>

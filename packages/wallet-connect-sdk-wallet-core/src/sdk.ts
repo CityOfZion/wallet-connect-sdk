@@ -18,6 +18,7 @@ import {
   TNamespaces,
   EStatus,
   TAdapterMethodParam,
+  ResponseErrorCode,
 } from './types'
 import { COMPATIBILITY_VERSION } from '@cityofzion/wallet-connect-sdk-core'
 import { sleep } from './utils'
@@ -43,6 +44,7 @@ export class WcWalletSDK {
   private _proposals: TSessionProposal[] = []
   private _requests: TSessionRequest[] = []
   private _status: EStatus = EStatus.NOT_STARTED
+  private _nonAdapterMethods: Record<string, (args: TAdapterMethodParam) => Promise<any>>
 
   private wccvs: Map<string, number> = new Map()
 
@@ -56,6 +58,9 @@ export class WcWalletSDK {
   constructor(options: TInitOptions) {
     this.clientOptions = options.clientOptions
     this.blockchainsOptions = options.blockchains
+    this._nonAdapterMethods = {
+      wipeRequests: this.wipeRequests.bind(this),
+    }
   }
 
   /**
@@ -221,7 +226,7 @@ export class WcWalletSDK {
     await this.signClient.disconnect({
       topic: session.topic,
       reason: reason ?? {
-        code: 5900,
+        code: ResponseErrorCode.DISCONNECT,
         message: 'USER_DISCONNECTED',
       },
     })
@@ -290,7 +295,7 @@ export class WcWalletSDK {
       await this.signClient.reject({
         id: proposal.id,
         reason: reason ?? {
-          code: 1,
+          code: ResponseErrorCode.REJECT,
           message: 'Rejected by the user',
         },
       })
@@ -319,17 +324,23 @@ export class WcWalletSDK {
       const session = this.sessions.find((session) => session.topic === request.topic)
       if (!session) throw new Error('Session not found')
 
-      const method = request.params.request.method
-      if (!blockchainOptions.methods.includes(method)) throw new Error('Invalid request method')
+      let result: any = null
 
-      const adapterMethod = blockchainOptions.adapter[method] as (params: TAdapterMethodParam) => Promise<any>
-      if (!adapterMethod || typeof adapterMethod !== 'function') throw new Error('Invalid request method')
+      const method = request.params.request.method
+      const nonAdapterMethod = this._nonAdapterMethods[method]
 
       const startExecutionTime = performance.now()
 
-      const result = await adapterMethod.apply(blockchainOptions.adapter, [{ request, session }])
+      if (nonAdapterMethod && typeof nonAdapterMethod === 'function') {
+        result = await nonAdapterMethod.apply(this, [{ request, session }])
+      } else if (blockchainOptions.methods.includes(method)) {
+        const adapterMethod = blockchainOptions.adapter[method] as (params: TAdapterMethodParam) => Promise<any>
+        if (!adapterMethod || typeof adapterMethod !== 'function') throw new Error('Invalid request method')
 
-      const executionTime = performance.now() - startExecutionTime
+        result = await adapterMethod.apply(blockchainOptions.adapter, [{ request, session }])
+      } else throw new Error('Invalid request method')
+
+      const executionTime = Math.abs(performance.now() - startExecutionTime)
       if (executionTime < MIN_TIME_OF_EXECUTION) await sleep(MIN_TIME_OF_EXECUTION - executionTime)
 
       response = {
@@ -367,7 +378,7 @@ export class WcWalletSDK {
         response: formatJsonRpcError(
           request.id,
           reason ?? {
-            code: 1,
+            code: ResponseErrorCode.REJECT,
             message: 'rejected by the user',
           },
         ),
@@ -376,5 +387,32 @@ export class WcWalletSDK {
       const filteredRequests = this.requests.filter(({ id }) => id !== request.id)
       this.requests = filteredRequests
     }
+  }
+
+  private async wipeRequests({ session, request }: TAdapterMethodParam): Promise<string[]> {
+    const wipedRequests: string[] = []
+    const dappRequests: TSessionRequest[] = (this._requests.filter(
+      (dappRequest: TSessionRequest) => dappRequest.topic === session.topic && dappRequest.id !== request.id,
+    ) ?? []) as TSessionRequest[]
+
+    await Promise.all(
+      dappRequests.map(async (dappRequest) => {
+        try {
+          await this.signClient.respond({
+            topic: dappRequest.topic,
+            response: formatJsonRpcError(dappRequest.id, {
+              code: ResponseErrorCode.REJECT,
+              message: 'rejected by the dapp',
+            }),
+          })
+        } finally {
+          wipedRequests.push(dappRequest.params.request.method)
+        }
+      }),
+    )
+
+    this.requests = this.requests.filter((dappRequest: TSessionRequest) => dappRequest.topic !== session.topic)
+
+    return wipedRequests
   }
 }

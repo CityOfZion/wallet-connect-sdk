@@ -63,4 +63,9 @@ export type TAdapterMethodParam = {
   session: TSession
 }
 
+export enum ResponseErrorCode {
+  REJECT = 1,
+  DISCONNECT = 5900,
+}
+
 export { WalletConnectTypes }

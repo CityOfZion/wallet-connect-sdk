@@ -212,6 +212,10 @@ export class WCSDKStore implements IWalletConnectStore {
     this.sessionWritable.set(result)
   }
 
+  async wipeRequests(): Promise<string[]> {
+    return await this.SdkOrError.wipeRequests()
+  }
+
   get session() {
     return derived(this.sessionWritable, (session) => session)
   }
