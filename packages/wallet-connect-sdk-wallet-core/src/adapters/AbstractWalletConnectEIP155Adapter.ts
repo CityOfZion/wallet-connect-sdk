@@ -15,6 +15,19 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     }
   }
 
+  protected resolveParams(param: any) {
+    if (typeof param !== 'object') {
+      throw new Error('Invalid Params')
+    }
+
+    if (param.gas) {
+      param.gasLimit = param.gas
+      delete param.gas
+    }
+
+    return param
+  }
+
   protected convertHexToUtf8(value: string) {
     if (ethers.utils.isHexString(value)) {
       return ethers.utils.toUtf8String(value)
@@ -38,8 +51,9 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async eth_signTransaction(args: TAdapterMethodParam): Promise<string> {
+    const param = this.resolveParams(args.request.params.request.params[0])
     const { wallet } = await this.getServices(args)
-    const signature = await wallet.signTransaction(args.request.params.request.params[0])
+    const signature = await wallet.signTransaction(param)
     return signature
   }
 
@@ -65,10 +79,12 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async eth_sendTransaction(args: TAdapterMethodParam): Promise<string> {
+    const param = this.resolveParams(args.request.params.request.params[0])
+
     const { wallet, provider } = await this.getServices(args)
     const connectedWallet = wallet.connect(provider)
 
-    const { hash } = await connectedWallet.sendTransaction(args.request.params.request.params[0])
+    const { hash } = await connectedWallet.sendTransaction(param)
     return hash
   }
 
