@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test'
 import { DAPP_REACT, WALLET_REACT } from '../src/constants/ProjectsDefinitions'
 import { connectReactDappToNewReactAccount } from '../src/helpers/CommonStepsHelper'
-import { getAnyFromInnerHTML } from '../src/helpers/CleanerHelper'
+import { getAnyFromInnerHTML, getCleanInnerHTML } from '../src/helpers/CleanerHelper'
 import { acceptPendingRequestToReactWallet } from '../src/pageCommonSteps/WalletReactSteps'
+import { DAPP_METHOD_CONTEXT_MESSAGE } from '../src/constants/GenericData'
 
 test('Create a new account and connect with a dapp (React)', async ({ context }) => {
   // Define the dapp and wallet pages
@@ -151,4 +152,20 @@ test('Test Wipe Methods on dapp (React)', async ({ context }) => {
   expect((response as string[]).length).toBe(amountOfMethodsToBeWiped)
   const pendingRequests = await walletPage.page.getByTestId('default-card__pending-request').all()
   expect(pendingRequests.length).toBe(0) // Verify if has no pending Requests
+})
+
+test('Test send a contextual with a Verify Success on dapp (React)', async ({ context }) => {
+  // Define the dapp and wallet pages
+  const dappPage = DAPP_REACT
+  const walletPage = WALLET_REACT
+  await connectReactDappToNewReactAccount(context, dappPage, walletPage)
+  await dappPage.awaitAndClickTestId('hello-world__verify-with-context')
+  await acceptPendingRequestToReactWallet(walletPage, async (walletPageBeforeAcceptMethod) => {
+    const contextMessage = await walletPageBeforeAcceptMethod.awaitAndGetTestId('request-card__contextual-message')
+    expect(contextMessage).toBeDefined()
+    expect(await getCleanInnerHTML(contextMessage)).toBe(DAPP_METHOD_CONTEXT_MESSAGE)
+  })
+  const response = await getAnyFromInnerHTML(await dappPage.awaitAndGetTestId('hello-world__method-response'))
+  expect(response).toBeDefined() // Verify  if the response had a return
+  expect(response as boolean).toBeTruthy() // Verify if the response returned true
 })

@@ -440,6 +440,22 @@ function HelloWorld() {
     }
   }
 
+  const verifySuccessWithContext = async () => {
+    try {
+      const resp = await wcSdk.withContext("Accept this and your balance goes 'to the moon'!").verifyMessage({
+        publicKey: '031757edb62014dea820a0b33a156f6a59fc12bd966202f0e49357c81f26f5de34',
+        data: 'aeb234ed1639e9fcc95a102633b1c70ca9f9b97e9592cc74bfc40cbc7fefdb19ae8c6b49ebd410dbcbeec6b5906e503d528e34cd5098cc7929dbcbbaf23c5d77',
+        salt: '052a55a8d56b73b342a8e41da3050b09',
+        messageHex:
+          '010001f0a0303532613535613864353662373362333432613865343164613330353062303965794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a6c654841694f6a45324e444d304e7a63324e6a4d73496d6c68644349364d5459304d7a4d354d5449324d33302e7253315f73735230364c426778744831504862774c306d7a6557563950686d5448477a324849524f4a4f340000',
+      })
+      console.log(resp)
+      setResponse(JSON.stringify(resp, null, 2))
+    } catch (e) {
+      onError(e)
+    }
+  }
+
   const onError = (error: any) => {
     Toastify({
       text: error.message,
@@ -527,6 +543,9 @@ function HelloWorld() {
               </button>
               <button data-testid="hello-world__sign-transaction" onClick={signTransaction}>
                 Sign Transaction
+              </button>
+              <button data-testid="hello-world__verify-with-context" onClick={verifySuccessWithContext}>
+                Verify Success With Context
               </button>
               <button data-testid="hello-world__wipe-methods" onClick={wipeMethods}>
                 Wipe Methods

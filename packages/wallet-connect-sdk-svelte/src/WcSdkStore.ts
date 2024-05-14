@@ -113,6 +113,8 @@ export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
    * @return network information
    */
   getNetworkVersion: () => Promise<NetworkVersion>
+
+  withContext: (contextualMessage: string) => WcSdk
 }
 
 export class WCSDKStore implements IWalletConnectStore {
@@ -214,6 +216,10 @@ export class WCSDKStore implements IWalletConnectStore {
 
   async wipeRequests(): Promise<string[]> {
     return await this.SdkOrError.wipeRequests()
+  }
+
+  withContext(contextualMessage: string): WcSdk {
+    return this.SdkOrError.withContext(contextualMessage)
   }
 
   get session() {

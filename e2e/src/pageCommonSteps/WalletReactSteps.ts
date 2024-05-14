@@ -14,7 +14,10 @@ export async function connectDappToReactWallet(walletPage: ExampleProject, dappU
   await walletPage.page.getByTestId('connect-dapp__dapp-uri-input').fill(dappUri.trim()) // Fill in the dapp URI
   await walletPage.awaitAndClickTestId('proposal-card__approve') // Click the approve button
 }
-export async function acceptPendingRequestToReactWallet(walletPage: ExampleProject) {
+export async function acceptPendingRequestToReactWallet(
+  walletPage: ExampleProject,
+  actionBeforeAcceptMethod?: (walletPage: ExampleProject) => Promise<void> | void,
+) {
   let retries = 0
   let requests = []
   do {
@@ -24,5 +27,6 @@ export async function acceptPendingRequestToReactWallet(walletPage: ExampleProje
   } while (retries < MAX_RETRIES && requests.length == 0)
   if (requests.length === 0) throw Error('No pending requests are found')
   await walletPage.awaitAndClickTestId('default-card__pending-request')
+  if (actionBeforeAcceptMethod) await actionBeforeAcceptMethod(walletPage)
   await walletPage.awaitAndClickTestId('request-card__approve')
 }

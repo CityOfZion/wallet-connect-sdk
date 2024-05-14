@@ -31,6 +31,8 @@ export default function RequestCard(
     props.closeRequest()
   }
 
+  const contextualMessage = String(request.params.contextualMessage).trim()
+
   const items = Array.isArray(request.params)
     ? request.params
     : request.params.invocations
@@ -59,6 +61,12 @@ export default function RequestCard(
               Neo3
             </Text>
           </Flex>
+          <Text fontSize="0.875rem" color="#888888" fontWeight="bold" mt="0.875rem">
+            Method Contextual Message
+          </Text>
+          <Text fontSize="0.875rem" mt="0.5rem" data-testid="request-card__contextual-message">
+            {contextualMessage}
+          </Text>
           <Text fontSize="0.875rem" color="#888888" fontWeight="bold" mt="0.875rem">
             Method
           </Text>

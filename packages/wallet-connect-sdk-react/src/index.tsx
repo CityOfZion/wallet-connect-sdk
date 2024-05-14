@@ -112,6 +112,8 @@ interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
   getNetworkVersion: () => Promise<NetworkVersion>
 
   wipeRequests: () => Promise<string[]>
+
+  withContext: (contextualMessage: string) => WcSdk
 }
 
 export const WalletConnectContext = React.createContext({} as IWalletConnectContext)
@@ -263,6 +265,13 @@ export const WalletConnectProvider: React.FC<{
     return getSdkOrError().wipeRequests()
   }, [getSdkOrError])
 
+  const withContext = useCallback(
+    (contextualMessage: string) => {
+      return getSdkOrError().withContext(contextualMessage)
+    },
+    [getSdkOrError],
+  )
+
   const setupWcClient = useCallback(async () => {
     if (!options) return
     const wcSdk = await WcSdk.init(options)
@@ -308,6 +317,7 @@ export const WalletConnectProvider: React.FC<{
     signTransaction,
     calculateFee,
     wipeRequests,
+    withContext,
   }
 
   return <WalletConnectContext.Provider value={contextValue}>{children}</WalletConnectContext.Provider>

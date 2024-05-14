@@ -50,6 +50,7 @@ export type Method =
   | 'calculateFee'
   | 'signTransaction'
   | 'wipeRequests'
+  | 'withContext'
 
 /**
  * A number that will be compared by the wallet to check if it is compatible with the dApp
@@ -110,6 +111,31 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * The current WalletConnect connected session
    */
   private _session: SessionTypes.Struct | null = null
+
+  /**
+   * A contextual message to inform the user about method invoked
+   */
+  private contextualMessage: string | undefined = undefined
+
+  /**
+   * Sends a request to the blockchain
+   */
+  private async sendRequest(method: Method, params: any): Promise<unknown> {
+    const request = {
+      id: 1,
+      jsonrpc: '2.0',
+      method,
+      params: { ...params, contextualMessage: this.contextualMessage },
+    }
+
+    delete this.contextualMessage
+
+    return await this.signClient.request({
+      topic: this.session?.topic ?? '',
+      chainId: this.getChainId() ?? '',
+      request,
+    })
+  }
 
   /**
    * The EventEmitter to listen for some property changes
@@ -293,18 +319,8 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    */
   async signTransaction(params: ContractInvocationMulti | BuiltTransaction): Promise<BuiltTransaction> {
     this.validateContractInvocationMulti(params)
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'signTransaction',
-      params,
-    }
 
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('signTransaction', params)
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -357,18 +373,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   async invokeFunction(params: ContractInvocationMulti): Promise<string> {
     this.validateContractInvocationMulti(params)
 
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'invokeFunction',
-      params,
-    }
-
-    const resp: unknown = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('invokeFunction', params)
 
     if (typeof resp !== 'string') {
       throw new WcSdkError(resp)
@@ -384,18 +389,8 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    */
   async calculateFee(params: ContractInvocationMulti): Promise<CalculateFee> {
     this.validateContractInvocationMulti(params)
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'calculateFee',
-      params,
-    }
 
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('calculateFee', params)
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -447,18 +442,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   async testInvoke(params: ContractInvocationMulti): Promise<InvokeResult> {
     this.validateContractInvocationMulti(params)
 
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'testInvoke',
-      params,
-    }
-
-    const resp: InvokeResult | null = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp: InvokeResult = (await this.sendRequest('testInvoke', params)) as InvokeResult
 
     if (!resp || (resp && resp.state !== 'HALT')) {
       throw new WcSdkError(resp)
@@ -474,18 +458,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * @return the signed message object
    */
   async signMessage(params: SignMessagePayload): Promise<SignedMessage> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'signMessage',
-      params,
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('signMessage', params)
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -501,18 +474,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * @return true if the signedMessage is acknowledged by the account
    */
   async verifyMessage(params: SignedMessage): Promise<boolean> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'verifyMessage',
-      params,
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('verifyMessage', params)
 
     if (resp === null || resp === undefined) {
       throw new WcSdkError(resp)
@@ -530,18 +492,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * @return the call result promise
    */
   async traverseIterator(sessionId: string, iteratorId: string, count: number): Promise<RpcResponseStackItem[]> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'traverseIterator',
-      params: [sessionId, iteratorId, count],
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('traverseIterator', [sessionId, iteratorId, count])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -555,18 +506,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * @return wallet information
    */
   async getWalletInfo(): Promise<WalletInfo> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'getWalletInfo',
-      params: [],
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('getWalletInfo', [])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -580,18 +520,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
    * @return network information
    */
   async getNetworkVersion(): Promise<NetworkVersion> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'getNetworkVersion',
-      params: [],
-    }
-
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('getNetworkVersion', [])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -601,17 +530,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   }
 
   async encrypt(message: string, publicKeys: string[]): Promise<EncryptedPayload[]> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'encrypt',
-      params: [message, publicKeys],
-    }
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('encrypt', [message, publicKeys])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -621,17 +540,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   }
 
   async decrypt(payload: EncryptedPayload): Promise<string> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'decrypt',
-      params: [payload],
-    }
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('encrypt', [payload])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -641,17 +550,7 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   }
 
   async decryptFromArray(payloads: EncryptedPayload[]): Promise<DecryptFromArrayResult> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'decryptFromArray',
-      params: [payloads],
-    }
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('decryptFromArray', [payloads])
 
     if (!resp) {
       throw new WcSdkError(resp)
@@ -661,23 +560,23 @@ class WcSdk implements Neo3Invoker, Neo3Signer {
   }
 
   async wipeRequests(): Promise<string[]> {
-    const request = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'wipeRequests',
-      params: [],
-    }
-    const resp = await this.signClient.request({
-      topic: this.session?.topic ?? '',
-      chainId: this.getChainId() ?? '',
-      request,
-    })
+    const resp = await this.sendRequest('wipeRequests', [])
 
     if (!resp) {
       throw new WcSdkError(resp)
     }
 
     return resp as string[]
+  }
+
+  /**
+   * Sets the context message for the next method invocation in the Wallet Connect SDK.
+   * @param {string} contextualMessage - A message to inform the user about the method being invoked.
+   * @returns {WcSdk} - An instance of Wallet Connect with the updated context message.
+   */
+  withContext(contextualMessage: string): WcSdk {
+    this.contextualMessage = contextualMessage
+    return this
   }
 
   private validateContractInvocationMulti(request: ContractInvocationMulti): boolean {
