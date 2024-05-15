@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Wed, 17 Apr 2024 20:02:56 GMT and should not be manually modified.
+This log was last generated on Wed, 15 May 2024 17:13:35 GMT and should not be manually modified.
+
+## 3.3.1
+Wed, 15 May 2024 17:13:35 GMT
+
+### Patches
+
+- Implemented a Contextual Messages on WcSdk
 
 ## 3.3.0
 Wed, 17 Apr 2024 20:02:56 GMT
