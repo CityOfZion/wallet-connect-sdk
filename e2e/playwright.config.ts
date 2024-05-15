@@ -3,7 +3,7 @@ import { JSON_REPORT_PATH, TESTS_DIR } from './src/constants/PathsDefinitions'
 import { MAX_RETRIES, RUN_CONCURRENTLY_COMMAND } from './src/constants/DevConstants'
 
 const config: PlaywrightTestConfig = {
-  fullyParallel: true,
+  fullyParallel: false,
   testMatch: '**/*.spec.ts',
   webServer: {
     command: RUN_CONCURRENTLY_COMMAND,

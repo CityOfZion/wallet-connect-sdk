@@ -13,8 +13,8 @@
     "prepare": "npm install serve -g && pnpm exec playwright install",
     "report:clean": "rm -rf playwright-report test-results tests-results",
     "report:open": "npx pnpm playwright show-report",
-    "test": "playwright test --headed",
-    "test:headless": "playwright test"
+    "test": "playwright test --headed --trace on",
+    "test:headless": "playwright test --trace on"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",

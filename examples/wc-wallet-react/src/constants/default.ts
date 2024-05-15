@@ -33,7 +33,7 @@ export const DEFAULT_APP_METADATA = {
 
 export const DEFAULT_CHAIN: Chain = 'testnet'
 export const DEFAULT_NETWORKS: Record<Chain, { url: string | null; name: string }> = {
-  testnet: { url: 'https://testnet1.neo.coz.io:443', name: 'Testnet' },
+  testnet: { url: 'https://testnet2.neo.coz.io:443', name: 'Testnet' },
   mainnet: { url: 'http://seed1.neo.org:10332', name: 'Mainnet' },
   private: { url: null, name: 'Private Network' },
 }
