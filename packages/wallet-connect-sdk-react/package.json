@@ -38,7 +38,7 @@
   "dependencies": {
     "@cityofzion/wallet-connect-sdk-core": "workspace:*",
     "@walletconnect/types": "2.7.3",
-    "@cityofzion/neon-dappkit-types": "0.3.0"
+    "@cityofzion/neon-dappkit-types": "0.3.1"
   },
   "peerDependencies": {
     "react": "*"
