@@ -14,8 +14,8 @@ importers:
         specifier: 5.5.1
         version: 5.5.1
       '@cityofzion/neon-dappkit-types':
-        specifier: 0.3.0
-        version: 0.3.0
+        specifier: 0.3.1
+        version: 0.3.1
       '@walletconnect/sign-client':
         specifier: 2.7.3
         version: 2.7.3
@@ -45,8 +45,8 @@ importers:
   ../../packages/wallet-connect-sdk-react:
     dependencies:
       '@cityofzion/neon-dappkit-types':
-        specifier: 0.3.0
-        version: 0.3.0
+        specifier: 0.3.1
+        version: 0.3.1
       '@cityofzion/wallet-connect-sdk-core':
         specifier: workspace:*
         version: link:../wallet-connect-sdk-core
@@ -155,8 +155,8 @@ importers:
         specifier: 5.5.1
         version: 5.5.1
       '@cityofzion/neon-dappkit':
-        specifier: 0.4.1
-        version: 0.4.1
+        specifier: 0.4.2
+        version: 0.4.2
       '@cityofzion/neon-js':
         specifier: 5.5.1
         version: 5.5.1
@@ -2777,16 +2777,12 @@ packages:
       - encoding
     dev: false
 
-  /@cityofzion/neon-dappkit-types@0.3.0:
-    resolution: {integrity: sha512-kWBtU2UYkESj1QxmFxjMwzB0RwBVdwKYrnwHqN+wv43ceZ3d2CCdprFsHvqQoo2DNpSKPgmq6RIlnhedBH7Shg==}
-    dev: false
-
   /@cityofzion/neon-dappkit-types@0.3.1:
     resolution: {integrity: sha512-bQA/EBQUU6ZPmDARXB0w6I2iJqdo4S2s3xERPN91wCHd9WMkCIrtec269X1Yjd9qGoVibLMyA3xjqrOTyUBpxw==}
     dev: false
 
-  /@cityofzion/neon-dappkit@0.4.1:
-    resolution: {integrity: sha512-cQy1y2zoTukK9fK4r7MfIXDRWy402ITVWuY9YhaQFz/XfFB9t6XqVwe3XcpTiePqBrgBRoeyGw79P3KCg3ZgZw==}
+  /@cityofzion/neon-dappkit@0.4.2:
+    resolution: {integrity: sha512-W9I+1kxEyOasPE5eVHgR+jNk8PDi+TMeghboLBWGfmMxWJVWPu/LTQf9PGkz2oY2q9/fswPgneDxzXCY8Rg0Sw==}
     dependencies:
       '@cityofzion/neon-dappkit-types': 0.3.1
       '@cityofzion/neon-js': 5.5.1
