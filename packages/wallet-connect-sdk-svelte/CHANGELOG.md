@@ -1,6 +1,11 @@
 # Change Log - @cityofzion/wallet-connect-sdk-svelte
 
-This log was last generated on Wed, 15 May 2024 17:13:35 GMT and should not be manually modified.
+This log was last generated on Mon, 27 May 2024 18:11:27 GMT and should not be manually modified.
+
+## 0.3.2
+Mon, 27 May 2024 18:11:27 GMT
+
+_Version update only_
 
 ## 0.3.1
 Wed, 15 May 2024 17:13:35 GMT
