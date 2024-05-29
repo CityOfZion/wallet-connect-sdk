@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-core
 
-This log was last generated on Mon, 27 May 2024 18:11:27 GMT and should not be manually modified.
+This log was last generated on Wed, 29 May 2024 17:20:40 GMT and should not be manually modified.
+
+## 3.3.3
+Wed, 29 May 2024 17:20:40 GMT
+
+### Patches
+
+- Upgrade @walletconnect/sign-client 
 
 ## 3.3.2
 Mon, 27 May 2024 18:11:27 GMT
