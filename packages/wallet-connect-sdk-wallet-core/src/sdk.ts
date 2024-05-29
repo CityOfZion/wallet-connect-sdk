@@ -142,7 +142,12 @@ export class WcWalletSDK {
         throw new Error('Initialization timeout has been reached')
       })
 
-      const client = await SignClient.init(this.clientOptions)
+      const client = await SignClient.init({
+        signConfig: {
+          disableRequestQueue: true,
+        },
+        ...this.clientOptions,
+      })
       clearTimeout(timeout)
 
       client.events.removeAllListeners('session_proposal')

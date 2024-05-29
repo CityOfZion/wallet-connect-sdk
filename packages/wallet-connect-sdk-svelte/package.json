@@ -52,8 +52,8 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "dependencies": {
-    "@walletconnect/sign-client": "2.7.3",
+    "@walletconnect/sign-client": "2.13.0",
     "@cityofzion/wallet-connect-sdk-core": "workspace:*",
-    "@walletconnect/types": "2.7.3"
+    "@walletconnect/types": "2.13.0"
   }
 }

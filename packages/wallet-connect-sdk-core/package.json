@@ -39,8 +39,8 @@
   "gitHead": "675a22457e2c967c68f0e2450359e6e687536655",
   "dependencies": {
     "@cityofzion/neon-core": "5.5.1",
-    "@walletconnect/sign-client": "2.7.3",
-    "@walletconnect/types": "2.7.3",
+    "@walletconnect/sign-client": "2.13.0",
+    "@walletconnect/types": "2.13.0",
     "@cityofzion/neon-dappkit-types": "0.3.1",
     "typed-emitter": "^2.1.0"
   },
