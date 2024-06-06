@@ -15,13 +15,16 @@ import {
   WalletConnectWalletProvider,
 } from '@cityofzion/wallet-connect-sdk-wallet-react'
 import { AccountContextProvider } from './context/AccountContext'
+import Core from '@walletconnect/core'
 
 const wcOptions: TInitOptions = {
   clientOptions: {
-    projectId: DEFAULT_PROJECT_ID,
+    core: new Core({
+      projectId: DEFAULT_PROJECT_ID,
+      logger: DEFAULT_LOGGER,
+      relayUrl: DEFAULT_RELAY_PROVIDER,
+    }),
     metadata: DEFAULT_APP_METADATA,
-    logger: DEFAULT_LOGGER,
-    relayUrl: DEFAULT_RELAY_PROVIDER,
   },
   blockchains: {
     neo3: {
