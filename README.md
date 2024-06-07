@@ -33,7 +33,7 @@ This example is showing the [wc-dapp-vite-vanilla](examples/wc-dapp-vite-vanilla
 - [WcSdk Core](packages/wallet-connect-sdk-core/README.md) - For other technologies with the same features.
 
 ## Usage
-Check this [Usage Guide](USAGE_GUIDE.md) to see how to use this SDK on your application.
+Check this [Usage Guide](USAGE_GUIDE.md) to see how to use this SDK on your application. And browse the [examples folder](https://github.com/CityOfZion/wallet-connect-sdk/tree/main/examples) to see whole picture.
 
 ## How to test?
 This SDK uses 
