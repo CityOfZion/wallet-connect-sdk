@@ -40,7 +40,8 @@
     "@walletconnect/web3wallet": "^1.12.1",
     "moment": "^2.29.4",
     "@cityofzion/neon-dappkit": "0.4.2",
-    "ethers": "5.7.2"
+    "ethers": "5.7.2",
+    "@ethersproject/abstract-signer": "~5.7.0"
   },
   "devDependencies": {
     "@types/node": "^20.1.3",

@@ -163,6 +163,9 @@ importers:
       '@cityofzion/wallet-connect-sdk-core':
         specifier: workspace:*
         version: link:../wallet-connect-sdk-core
+      '@ethersproject/abstract-signer':
+        specifier: ~5.7.0
+        version: 5.7.0
       '@walletconnect/core':
         specifier: ^2.13.1
         version: 2.13.1
