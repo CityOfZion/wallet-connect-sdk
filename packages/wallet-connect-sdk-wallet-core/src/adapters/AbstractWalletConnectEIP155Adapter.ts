@@ -1,14 +1,24 @@
+import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TAdapterMethodParam } from '../types'
 import { ethers } from 'ethers'
+
+export type TCustomSigner = ethers.Signer & TypedDataSigner
 
 /* Some methods are named in snakecase, as Ethereum methods are in snakecase and the SDK does not make any transformer for the method called by the dapp. */
 export abstract class AbstractWalletConnectEIP155Adapter {
   protected async getServices(args: TAdapterMethodParam) {
     const rpcAddress = await this.getRPCUrl(args)
-    const accountString = await this.getAccountString(args)
-
     const provider = new ethers.providers.JsonRpcProvider(rpcAddress)
-    const wallet = new ethers.Wallet(accountString)
+    let wallet: TCustomSigner
+
+    const customSigner = await this.getCustomSigner()
+    if (customSigner) {
+      wallet = customSigner
+    } else {
+      const accountString = await this.getAccountString(args)
+      wallet = new ethers.Wallet(accountString)
+    }
+
     return {
       wallet,
       provider,
@@ -86,6 +96,10 @@ export abstract class AbstractWalletConnectEIP155Adapter {
 
     const { hash } = await connectedWallet.sendTransaction(param)
     return hash
+  }
+
+  async getCustomSigner(): Promise<TCustomSigner | undefined> {
+    return undefined
   }
 
   abstract getAccountString(args: TAdapterMethodParam): Promise<string>
