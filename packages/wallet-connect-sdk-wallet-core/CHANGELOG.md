@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Thu, 13 Jun 2024 13:03:31 GMT and should not be manually modified.
+This log was last generated on Fri, 14 Jun 2024 17:37:16 GMT and should not be manually modified.
+
+## 4.2.0
+Fri, 14 Jun 2024 17:37:16 GMT
+
+### Minor changes
+
+- Add getCustomSigner function to AbstractWalletConnectEIP155Adapter 
 
 ## 4.1.5
 Thu, 13 Jun 2024 13:03:31 GMT
