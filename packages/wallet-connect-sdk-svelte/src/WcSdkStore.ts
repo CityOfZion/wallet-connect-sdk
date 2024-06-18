@@ -1,6 +1,6 @@
 import { writable, type Writable, type Readable, derived } from 'svelte/store'
 import SignClient from '@walletconnect/sign-client'
-import { WcSdk } from '@cityofzion/wallet-connect-sdk-core'
+import { CoreEvents, WcSdk } from '@cityofzion/wallet-connect-sdk-core'
 import type {
   NetworkType,
   Method,
@@ -19,6 +19,8 @@ import type {
   WalletInfo,
 } from '@cityofzion/wallet-connect-sdk-core'
 import type { SessionTypes, SignClientTypes } from '@walletconnect/types'
+import TypedEventEmitter from 'typed-emitter'
+import { EventEmitter } from 'events'
 
 export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
   /**
@@ -31,6 +33,11 @@ export interface IWalletConnectStore extends Neo3Invoker, Neo3Signer {
    */
   session: Readable<SessionTypes.Struct | null>
   setSession(session: SessionTypes.Struct): void
+
+  /**
+   * The current WalletConnect event emitter
+   */
+  emitter: TypedEventEmitter<CoreEvents>
 
   /**
    * returns if the session is connected
@@ -122,10 +129,11 @@ export class WCSDKStore implements IWalletConnectStore {
   private sessionWritable: Writable<SessionTypes.Struct | null> = writable(null)
   private signClientWritable: Writable<SignClient | null> = writable(null)
   private autoManageSession: boolean
+  emitter = new EventEmitter() as TypedEventEmitter<CoreEvents>
 
   constructor(options: SignClientTypes.Options, autoManageSession?: boolean) {
-    this.setupWcClient(options)
     this.sdk = null
+    this.setupWcClient(options)
     this.autoManageSession = autoManageSession ?? true
   }
 
@@ -139,7 +147,7 @@ export class WCSDKStore implements IWalletConnectStore {
     return this.sdk?.getChainId() ?? null
   }
   manageDisconnect(): void {
-    this.onSignClient((signClient) => {
+    this.signClientWritable.subscribe((signClient) => {
       if (signClient) {
         //@ts-ignore
         signClient.events.removeAllListeners()
@@ -230,17 +238,16 @@ export class WCSDKStore implements IWalletConnectStore {
     return derived(this.signClientWritable, (signClient) => signClient)
   }
 
-  onSession<T = void>(callback: (session: SessionTypes.Struct | null) => T) {
-    return this.sessionWritable.subscribe((session) => callback(session))
-  }
-
-  onSignClient<T = void>(callback: (signClient: SignClient | null) => T) {
-    return this.signClientWritable.subscribe((signClient) => callback(signClient))
-  }
-
   private async setupWcClient(options: SignClientTypes.Options) {
     this.sdk = await WcSdk.init(options)
+    this.sdk.emitter.removeAllListeners()
+    this.sdk.emitter.on('session', (session) => {
+      this.emitter.emit('session', session)
+      this.sessionWritable.set(session ?? null)
+    })
+
     const signClient = this.sdk.signClient
+
     if (this.autoManageSession) {
       this.manageSession()
     }

@@ -42,7 +42,7 @@ export default function DefaultCard(
       {walletConnectCtx.sessions.map((session) => (
         <Flex
           key={`s${session.topic}`}
-          data-testid="default-card_sesseion-card"
+          data-testid="default-card_session-card"
           direction="column"
           bg="#252b36"
           w="23rem"

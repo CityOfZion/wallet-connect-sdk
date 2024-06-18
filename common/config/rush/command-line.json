@@ -23,6 +23,17 @@
       "safeForSimultaneousRushProcesses": true,
       "autoinstallerName": "rush-format",
       "shellCommand": "prettier . --write --config .prettierrc && npm run format -p --prefix ./packages/wallet-connect-sdk-core && npm run format -p --prefix ./packages/wallet-connect-sdk-react && npm run format -p --prefix ./packages/wallet-connect-sdk-wallet-core && npm run format -p --prefix ./packages/wallet-connect-sdk-wallet-react && npm run format -p --prefix ./e2e"
+    },
+    {
+      "commandKind": "bulk",
+      "name": "build",
+      "summary": "Build all projects that haven't been built, or have changed since they were last built",
+      "description": "It's the rush build, but overriding the `allowWarningsInSuccessfulBuild`option",
+      "safeForSimultaneousRushProcesses": false,
+      "enableParallelism": true,
+      "ignoreDependencyOrder": false,
+      "ignoreMissingScript": false,
+      "allowWarningsInSuccessfulBuild": true
     }
   ]
 }

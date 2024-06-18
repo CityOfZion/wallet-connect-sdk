@@ -1,9 +1,10 @@
-import { DAPP_REACT, DAPP_VITE_VANILLA, WALLET_REACT } from './ProjectsDefinitions'
+import { DAPP_REACT, DAPP_VITE_SVELTEKIT, DAPP_VITE_VANILLA, WALLET_REACT } from './ProjectsDefinitions'
 
 export const RUN_CONCURRENTLY_COMMAND: string = `concurrently ${[
   DAPP_REACT.runCommand,
   WALLET_REACT.runCommand,
   DAPP_VITE_VANILLA.runCommand,
+  DAPP_VITE_SVELTEKIT.runCommand,
 ].join(' ')}`
 
 export const HTML_ENTITIES = {
