@@ -2,6 +2,23 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "4.2.2",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.2.2",
+      "date": "Wed, 19 Jun 2024 20:50:28 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Receive adapter parameters in AbstractWalletConnectEIP155Adapter's getCustomSigner"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ]
+      }
+    },
+    {
       "version": "4.2.1",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.2.1",
       "date": "Wed, 19 Jun 2024 20:10:20 GMT",
