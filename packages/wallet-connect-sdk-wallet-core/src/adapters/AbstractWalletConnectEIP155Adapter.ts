@@ -11,7 +11,7 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     const provider = new ethers.providers.JsonRpcProvider(rpcAddress)
     let wallet: TCustomSigner
 
-    const customSigner = await this.getCustomSigner()
+    const customSigner = await this.getCustomSigner(args)
     if (customSigner) {
       wallet = customSigner
     } else {
@@ -98,7 +98,8 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     return hash
   }
 
-  async getCustomSigner(): Promise<TCustomSigner | undefined> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getCustomSigner(args: TAdapterMethodParam): Promise<TCustomSigner | undefined> {
     return undefined
   }
 
