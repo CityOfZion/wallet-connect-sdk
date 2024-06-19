@@ -41,7 +41,7 @@
     "@cityofzion/neon-core": "5.5.1",
     "@walletconnect/sign-client": "2.13.0",
     "@walletconnect/types": "2.13.0",
-    "@cityofzion/neon-dappkit-types": "0.3.1",
+    "@cityofzion/neon-dappkit-types": "0.4.0",
     "typed-emitter": "^2.1.0"
   },
   "devDependencies": {
