@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Fri, 14 Jun 2024 17:37:16 GMT and should not be manually modified.
+This log was last generated on Wed, 19 Jun 2024 20:10:20 GMT and should not be manually modified.
+
+## 4.2.1
+Wed, 19 Jun 2024 20:10:20 GMT
+
+### Patches
+
+- Revert Web3Wallet implementation due to instabilitity in tests. Posponed for a later update
 
 ## 4.2.0
 Fri, 14 Jun 2024 17:37:16 GMT

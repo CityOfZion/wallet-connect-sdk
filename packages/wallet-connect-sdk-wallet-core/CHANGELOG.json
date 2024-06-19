@@ -2,6 +2,23 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "4.2.1",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.2.1",
+      "date": "Wed, 19 Jun 2024 20:10:20 GMT",
+      "comments": {
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ],
+        "patch": [
+          {
+            "comment": "Revert Web3Wallet implementation due to instabilitity in tests. Posponed for a later update"
+          }
+        ]
+      }
+    },
+    {
       "version": "4.2.0",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.2.0",
       "date": "Fri, 14 Jun 2024 17:37:16 GMT",
