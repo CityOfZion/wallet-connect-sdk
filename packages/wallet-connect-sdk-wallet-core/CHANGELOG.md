@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Wed, 19 Jun 2024 20:50:28 GMT and should not be manually modified.
+This log was last generated on Thu, 20 Jun 2024 21:41:28 GMT and should not be manually modified.
+
+## 4.2.3
+Thu, 20 Jun 2024 21:41:28 GMT
+
+### Patches
+
+- Update neon-dappkit package version
 
 ## 4.2.2
 Wed, 19 Jun 2024 20:50:28 GMT

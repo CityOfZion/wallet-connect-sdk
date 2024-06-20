@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-react
 
-This log was last generated on Wed, 29 May 2024 17:20:40 GMT and should not be manually modified.
+This log was last generated on Thu, 20 Jun 2024 21:41:28 GMT and should not be manually modified.
+
+## 3.3.4
+Thu, 20 Jun 2024 21:41:28 GMT
+
+### Patches
+
+- Update neon-dappkit-types package version
 
 ## 3.3.3
 Wed, 29 May 2024 17:20:40 GMT
