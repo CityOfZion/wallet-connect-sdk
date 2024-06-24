@@ -9,7 +9,10 @@ import {
   TSession,
   TSessionProposal,
   TSessionRequest,
+  TWalletCoreEvents,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
+import TypedEventEmitter from 'typed-emitter'
+import EventEmitter from 'events'
 
 export const WalletConnectWalletContext = React.createContext({} as IWalletConnectWalletContext)
 
@@ -23,6 +26,7 @@ export const WalletConnectWalletContext = React.createContext({} as IWalletConne
  */
 export const WalletConnectWalletProvider = ({ children, options }: TWalletConnectWalletProps) => {
   const sdk = useRef<WcWalletSDK>(new WcWalletSDK(options))
+  const emitter = useRef(new EventEmitter() as TypedEventEmitter<TWalletCoreEvents>)
 
   const [sessions, setSessions] = useState<TSession[]>([])
   const [proposals, setProposals] = useState<TSessionProposal[]>([])
@@ -67,18 +71,22 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
 
   useEffect(() => {
     sdk.current.emitter.on('proposals', (items: TSessionProposal[]) => {
+      emitter.current.emit('proposals', items)
       setProposals(items)
     })
 
     sdk.current.emitter.on('sessions', (items: TSession[]) => {
+      emitter.current.emit('sessions', items)
       setSessions(items)
     })
 
     sdk.current.emitter.on('requests', (items: TSessionRequest[]) => {
+      emitter.current.emit('requests', items)
       setRequests(items)
     })
 
     sdk.current.emitter.on('status', (item: EStatus) => {
+      emitter.current.emit('status', item)
       setStatus(item)
     })
 
@@ -93,6 +101,7 @@ export const WalletConnectWalletProvider = ({ children, options }: TWalletConnec
     <WalletConnectWalletContext.Provider
       value={{
         sdk: sdk.current,
+        emitter: emitter.current,
         sessions,
         proposals,
         requests,

@@ -8,6 +8,7 @@ import WcSdk, {
   NetworkVersion,
   NetworkType,
   Method,
+  CoreEvents,
 } from '@cityofzion/wallet-connect-sdk-core'
 import {
   ContractInvocationMulti,
@@ -16,6 +17,8 @@ import {
   Neo3Signer,
   RpcResponseStackItem,
 } from '@cityofzion/neon-dappkit-types'
+import TypedEventEmitter from 'typed-emitter'
+import EventEmitter from 'events'
 
 interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
   /**
@@ -28,6 +31,11 @@ interface IWalletConnectContext extends Neo3Invoker, Neo3Signer {
    */
   session: SessionTypes.Struct | undefined
   setSession: Dispatch<SetStateAction<SessionTypes.Struct | undefined>>
+
+  /**
+   * The current WalletConnect event emitter
+   */
+  emitter: TypedEventEmitter<CoreEvents>
 
   /**
    * returns if the session is connected
@@ -125,6 +133,7 @@ export const WalletConnectProvider: React.FC<{
 }> = ({ children, options, autoManageSession = false }) => {
   const sdkRef = useRef<WcSdk>()
   const [session, setSession] = useState<SessionTypes.Struct | undefined>()
+  const emitter = useRef(new EventEmitter() as TypedEventEmitter<CoreEvents>)
 
   const getSdkOrError = useCallback(() => {
     if (!sdkRef.current) throw Error('no client')
@@ -277,6 +286,7 @@ export const WalletConnectProvider: React.FC<{
     const wcSdk = await WcSdk.init(options)
     wcSdk.emitter.removeAllListeners()
     wcSdk.emitter.on('session', (session) => {
+      emitter.current.emit('session', session)
       setSession(session ?? undefined)
     })
 
@@ -293,6 +303,7 @@ export const WalletConnectProvider: React.FC<{
 
   const contextValue: IWalletConnectContext = {
     sdk: sdkRef.current,
+    emitter: emitter.current,
     session,
     setSession,
     isConnected,

@@ -2,8 +2,9 @@ import { readFileSync } from 'fs'
 
 import commonjs from '@rollup/plugin-commonjs'
 import autoExternal from 'rollup-plugin-auto-external'
-import dts from 'rollup-plugin-dts'
+import typescript from 'rollup-plugin-ts'
 import esbuild from 'rollup-plugin-esbuild'
+import nodePolyfills from 'rollup-plugin-polyfill-node'
 
 const pkg = JSON.parse(readFileSync('./package.json'))
 
@@ -19,11 +20,11 @@ export default [
     input: 'src/index.ts',
     output: [{ file: pkg.main, format: 'es' }],
     external,
-    plugins: [commonjs(), autoExternal(), esbuild()],
+    plugins: [nodePolyfills(), commonjs(), autoExternal(), esbuild()],
   },
   {
     input: 'src/index.ts',
     output: [{ file: pkg.types, format: 'es' }],
-    plugins: [dts()],
+    plugins: [nodePolyfills(), typescript()],
   },
 ]

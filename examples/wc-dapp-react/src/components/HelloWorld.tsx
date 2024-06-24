@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TypeChecker } from '@cityofzion/neon-dappkit-types'
 import { NetworkType, useWalletConnect, SignMessageVersion } from '@cityofzion/wallet-connect-sdk-react'
 import { dappMethods, networks } from '../Constants'
@@ -9,8 +9,18 @@ import Toastify from 'toastify-js'
 function HelloWorld() {
   const [dappUri, setDappUri] = useState('')
   const [response, setResponse] = useState('')
+  const [hasSession, setHasSession] = useState(false)
   const wcSdk = useWalletConnect()
   const [networkType, setNetworkType] = React.useState<NetworkType>('neo3:testnet')
+
+  useEffect(() => {
+    wcSdk.emitter.on('session', (session) => {
+      setHasSession(!!session)
+    })
+    return () => {
+      wcSdk.emitter.removeAllListeners()
+    }
+  }, [wcSdk.emitter])
 
   const connect = async (): Promise<void> => {
     await wcSdk.connect(networkType, dappMethods)
@@ -467,6 +477,10 @@ function HelloWorld() {
       {!wcSdk && <span>Loading...</span>}
       {wcSdk && (
         <div>
+          <div>
+            <span>The SDK has a session? </span>
+            <span data-testid="hello-world__has-session">{String(hasSession)}</span>
+          </div>
           {!wcSdk.isConnected() && (
             <>
               <select onChange={(e: any) => setNetworkType(e.target.value)} value={networkType}>

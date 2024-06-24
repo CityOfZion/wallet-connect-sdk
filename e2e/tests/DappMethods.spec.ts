@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
-import { DAPP_REACT, WALLET_REACT } from '../src/constants/ProjectsDefinitions'
-import { connectReactDappToNewReactAccount } from '../src/helpers/CommonStepsHelper'
+import { DAPP_REACT, WALLET_REACT, DAPP_VITE_SVELTEKIT } from '../src/constants/ProjectsDefinitions'
+import { connectReactDappToNewReactAccount, connectSvelteDappToNewReactAccount } from '../src/helpers/CommonStepsHelper'
 import { getAnyFromInnerHTML, getCleanInnerHTML } from '../src/helpers/CleanerHelper'
 import { acceptPendingRequestToReactWallet } from '../src/pageCommonSteps/WalletReactSteps'
 import { DAPP_METHOD_CONTEXT_MESSAGE } from '../src/constants/GenericData'
@@ -10,11 +10,49 @@ test('Create a new account and connect with a dapp (React)', async ({ context })
   const dappPage = DAPP_REACT
   const walletPage = WALLET_REACT
 
-  await connectReactDappToNewReactAccount(context, dappPage, walletPage)
-  const dappCard = await walletPage.awaitAndGetTestId('default-card_sesseion-card') // Get the dapp card element
+  await connectReactDappToNewReactAccount(
+    context,
+    dappPage,
+    walletPage,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (dappPageBeforeConnection, walletPageBeforeConnection) => {
+      const hasSession = await getAnyFromInnerHTML(
+        await dappPageBeforeConnection.awaitAndGetTestId('hello-world__has-session'),
+      )
+      expect(hasSession).toBeFalsy()
+    },
+  )
+  const dappCard = await walletPage.awaitAndGetTestId('default-card_session-card') // Get the dapp card element
 
+  const hasSession = await getAnyFromInnerHTML(await dappPage.awaitAndGetTestId('hello-world__has-session'))
   // Check if the dapp card element is defined, indicating successful connection
   expect(dappCard).toBeDefined()
+  expect(hasSession).toBeTruthy()
+})
+
+test('Create a new account and connect with a dapp (Svelte)', async ({ context }) => {
+  // Define the dapp and wallet pages
+  const dappPage = DAPP_VITE_SVELTEKIT
+  const walletPage = WALLET_REACT
+
+  await connectSvelteDappToNewReactAccount(
+    context,
+    dappPage,
+    walletPage,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (dappPageBeforeConnection, walletPageBeforeConnection) => {
+      const hasSession = await getAnyFromInnerHTML(
+        await dappPageBeforeConnection.awaitAndGetTestId('page__has-session'),
+      )
+      expect(hasSession).toBeFalsy()
+    },
+  )
+  const disconnectButton = await dappPage.awaitAndGetTestId('page__get-disconnect') // Get the dapp card element
+
+  const hasSession = await getAnyFromInnerHTML(await dappPage.awaitAndGetTestId('page__has-session'))
+  // Check if the dapp card element is defined, indicating successful connection
+  expect(disconnectButton).toBeDefined()
+  expect(hasSession).toBeTruthy()
 })
 
 test('Test Disconnect on dapp (React)', async ({ context }) => {

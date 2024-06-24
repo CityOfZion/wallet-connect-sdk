@@ -15,7 +15,7 @@ export default class ExampleProject {
   get runCommand(): string {
     if (this.projectPathName.includes('react'))
       return `"cd ${EXAMPLES_PATH}/${this.projectPathName} && cross-env PORT=${this.projectPort} npx serve -s build"`
-    else if (this.projectPathName.includes('vite'))
+    else if (this.projectPathName.includes('vite') || this.projectPathName.includes('sveltekit'))
       return `"cd ${EXAMPLES_PATH}/${this.projectPathName} && pnpm vite preview --port ${this.projectPort}"`
     else throw Error('Unknown project framework')
   }

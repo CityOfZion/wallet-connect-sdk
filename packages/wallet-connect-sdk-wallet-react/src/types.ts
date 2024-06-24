@@ -8,14 +8,21 @@ import {
   TSession,
   TSessionProposal,
   TSessionRequest,
+  TWalletCoreEvents,
 } from '@cityofzion/wallet-connect-sdk-wallet-core'
 import { ReactNode } from 'react'
+import TypedEventEmitter from 'typed-emitter'
 
 export interface IWalletConnectWalletContext {
   /**
    * The list of WcWalletSDK instance
    */
   sdk: WcWalletSDK
+
+  /**
+   * The current WalletConnect event emitter
+   */
+  emitter: TypedEventEmitter<TWalletCoreEvents>
 
   /**
    * The list of WalletConnect connected sessions

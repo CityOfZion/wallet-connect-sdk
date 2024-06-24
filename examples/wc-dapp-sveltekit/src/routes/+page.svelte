@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { get } from 'svelte/store'
   import { WCSDKStore } from '@cityofzion/wallet-connect-sdk-svelte'
   import { SignMessageVersion, TypeChecker } from '@cityofzion/neon-dappkit-types'
-  import type { NetworkType, Method } from '@cityofzion/wallet-connect-sdk-core'
+  import type { NetworkType } from '@cityofzion/wallet-connect-sdk-core'
+  import Toastify from 'toastify-js'
+
   const wcsdk = new WCSDKStore({
     projectId: 'a9ff54e3d56a52230ed8767db4d4a810',
     relayUrl: 'wss://relay.walletconnect.com',
@@ -20,9 +23,33 @@
     { name: 'private', network: 'neo3:private' },
   ]
 
+  $: response = ''
+  $: dappUri = ''
+  $: hasSession = false
+  wcsdk.emitter.on('session', (session) => {
+    hasSession = !!session
+  })
+
   let networlSelectedName: NetworkType = 'neo3:testnet'
   $: networkTypeSelected =
     networkTypes.find(({ network }) => network === networlSelectedName)?.network ?? networkTypes[0].network
+
+  function onError(error: any) {
+    console.log(error)
+    Toastify({
+      text: error.message || error,
+    }).showToast()
+  }
+
+  function setResponse(resp: any) {
+    console.log(resp)
+    if (typeof resp === 'object') {
+      response = JSON.stringify(resp, null, 2)
+    }
+    else {
+      response = resp
+    }
+  }
 
   const connect = async () => {
     try {
@@ -41,7 +68,7 @@
         'signTransaction',
       ])
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -49,7 +76,7 @@
     try {
       await wcsdk.disconnect()
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -71,12 +98,12 @@
       ])
       if (uri) {
         await navigator.clipboard.writeText(uri)
+        dappUri = uri
         const session = await approval()
-        alert(JSON.stringify(uri, null, 2))
-        alert(JSON.stringify(session, null, 2))
+        setResponse(session)
       }
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -98,10 +125,9 @@
         signers: [{ scopes: 1 }],
       })
 
-      console.log(resp)
-      alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -135,10 +161,9 @@
         signers: [{ scopes: 1 }],
       })
 
-      console.log(resp)
-      window.alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -171,8 +196,7 @@
         ],
         signers: [{ scopes: 1 }],
       })
-      console.log(result)
-      alert(JSON.stringify(result))
+      setResponse(result)
     } catch (error) {
       console.log(error)
     }
@@ -210,10 +234,9 @@
         extraNetworkFee: 100000,
       })
 
-      console.log(resp)
-      window.alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -254,10 +277,9 @@
         signers: [{ scopes: 1 }],
       })
 
-      console.log(resp)
-      window.alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -267,13 +289,11 @@
         message: 'Your sign message',
         version: SignMessageVersion.DEFAULT,
       })
-      alert(JSON.stringify(resp, null, 2))
-      console.log(resp)
+      setResponse(resp)
       const resp2 = await wcsdk.verifyMessage(resp)
-      console.log(resp2)
-      alert(JSON.stringify(resp2, null, 2))
+      setResponse(resp2)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -284,15 +304,13 @@
         version: SignMessageVersion.WITHOUT_SALT,
       })
 
-      console.log(resp)
-      alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
 
       const resp2 = await wcsdk.verifyMessage(resp)
 
-      console.log(resp2)
-      JSON.stringify(resp2, null, 2)
+      setResponse(resp2)
     } catch (error) {
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -377,11 +395,9 @@
         randomVector: '1bd2a7e1305a02e3d89dbd277d6272e5',
       }
       const resp = await wcsdk.decrypt(payload)
-      console.log(resp)
-      window.alert(JSON.stringify(resp, null, 2))
+      setResponse(resp)
     } catch (error) {
-      //@ts-ignore
-      window.alert(error.message)
+      onError(error)
     }
   }
 
@@ -410,11 +426,10 @@
         randomVector: '1bd2a7e1305a02e3d89dbd277d6272e5',
       }
       const resp2 = await wcsdk.decryptFromArray([payload])
-      console.log(resp2)
-      window.alert(JSON.stringify(resp2, null, 2))
+      setResponse(resp2)
     } catch (error) {
       console.log(error)
-      alert(error.message)
+      onError(error)
     }
   }
 
@@ -446,8 +461,7 @@
       ],
       signers: [{ scopes: 1 }],
     })
-    console.log(resp)
-    alert(JSON.stringify(resp, null, 2))
+    setResponse(resp)
   }
 </script>
 
@@ -459,6 +473,10 @@
 <div>
   <h1>Sveltekit Dapp Example</h1>
   <div style="width: 100%;">
+    <div>
+      <span>The SDK has a session? </span>
+      <span data-testid="page__has-session">{String(hasSession)}</span>
+    </div>
     {#if !isConnected}
       <div style="display: flex;">
         <select bind:value={networlSelectedName} style="margin-right: 5px;">
@@ -466,14 +484,15 @@
             <option selected={networlSelectedName === name} value={network}>{name}</option>
           {/each}
         </select>
-        <button on:click={connect} disabled={isConnected}>Connect</button>
+        <button on:click={connect} disabled={isConnected} style="margin-right: 5px;">Connect</button>
+        <button data-testid="page__get-uri-button" on:click={getUri} disabled={isConnected} >getUri</button>
       </div>
+      <div data-testid="page__dapp-uri">{dappUri}</div>
     {:else}
-      <button on:click={disconnect} disabled={!isConnected}>Disconnect</button>
+      <button data-testid="page__get-disconnect" on:click={disconnect} disabled={!isConnected}>Disconnect</button>
     {/if}
 
     <div>
-      <button on:click={getUri} disabled={!isConnected}>getUri</button>
       <button on:click={getMyBalance} disabled={!isConnected}>getMyBalance</button>
       <button on:click={transferGas} disabled={!isConnected}>transferGas</button>
       <button on:click={calculateFee} disabled={!isConnected}>CalculateFee</button>
@@ -491,5 +510,9 @@
       <button on:click={decryptFromArray} disabled={!isConnected}>decryptFromArray</button>
       <button on:click={signTransaction} disabled={!isConnected}>signTransaction</button>
     </div>
+    <br/>
+    <span>Response:</span>
+    <br/>
+    <span data-testid="page__method-response">{response}</span>
   </div>
 </div>
