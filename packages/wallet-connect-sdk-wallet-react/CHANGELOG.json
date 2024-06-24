@@ -2,6 +2,23 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-react",
   "entries": [
     {
+      "version": "4.0.13",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-react_v4.0.13",
+      "date": "Mon, 24 Jun 2024 18:58:37 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Fix emitter"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ]
+      }
+    },
+    {
       "version": "4.0.12",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-react_v4.0.12",
       "date": "Thu, 20 Jun 2024 21:41:28 GMT",
