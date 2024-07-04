@@ -1,6 +1,7 @@
-import WalletConnectTypes from '@walletconnect/types'
+import WalletConnectTypes, { CoreTypes } from '@walletconnect/types'
 import { JsonRpcResult, ErrorResponse, JsonRpcError } from '@walletconnect/jsonrpc-utils'
 import { AbstractWalletConnectEIP155Adapter, AbstractWalletConnectNeonAdapter } from './adapters'
+import { Web3WalletTypes } from '@walletconnect/web3wallet'
 
 export type TSession = WalletConnectTypes.SessionTypes.Struct & {
   approvalUnix: number
@@ -24,14 +25,22 @@ export type TWalletCoreEvents = {
   sessions(sessions: TSession[]): void | Promise<void>
   status(status: EStatus): void | Promise<void>
 }
+
 export type TBaseBlockchainOptions<T> = {
   methods: string[]
   events?: string[]
   autoAcceptMethods?: string[]
   adapter?: T
 }
+
+export type TInitClientOptions = {
+  core: CoreTypes.Options
+  metadata: Web3WalletTypes.Options['metadata']
+  signConfig: Web3WalletTypes.Options['signConfig']
+}
+
 export type TInitOptions = {
-  clientOptions: WalletConnectTypes.SignClientTypes.Options
+  clientOptions: TInitClientOptions
   blockchains: {
     neo3?: TBaseBlockchainOptions<AbstractWalletConnectNeonAdapter>
     eip155?: TBaseBlockchainOptions<AbstractWalletConnectEIP155Adapter>
