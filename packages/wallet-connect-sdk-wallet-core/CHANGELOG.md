@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Thu, 20 Jun 2024 21:41:28 GMT and should not be manually modified.
+This log was last generated on Thu, 04 Jul 2024 16:40:05 GMT and should not be manually modified.
+
+## 4.2.4
+Thu, 04 Jul 2024 16:40:05 GMT
+
+### Patches
+
+- Change SignClient to Web3Wallet
 
 ## 4.2.3
 Thu, 20 Jun 2024 21:41:28 GMT
