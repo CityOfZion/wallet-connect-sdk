@@ -1,4 +1,3 @@
-import SignClient from '@walletconnect/sign-client'
 import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
 import EventEmitter from 'events'
 import TypedEmitter from 'typed-emitter'
@@ -22,16 +21,17 @@ import {
 } from './types'
 import { COMPATIBILITY_VERSION } from '@cityofzion/wallet-connect-sdk-core'
 import { sleep } from './utils'
+import Web3Wallet from '@walletconnect/web3wallet'
+import Core from '@walletconnect/core'
 
 const SESSION_EXTENDED_STORAGE_KEY = 'wc-sdk:extended-session'
-const INIT_TIMEOUT = 7000
 const MIN_TIME_OF_EXECUTION = 250
 
 export class WcWalletSDK {
   /**
    * The WalletConnect Library
    */
-  public client: SignClient | undefined
+  public wallet: Web3Wallet | undefined
   /**
    * The EventEmitter to listen for some property changes
    */
@@ -50,7 +50,7 @@ export class WcWalletSDK {
 
   /**
    * To initialize the SDK you need to provide the options
-   * @param options.clientOptions SignClient Startup options of the original WalletConnect library
+   * @param options.clientOptions Web3Wallet Startup options of the original WalletConnect library
    * @param options.adapter [adapter] The initial adapter
    * @param options.methods [methods] An array of valid methods used on your application
    * @param options.autoAcceptMethods [autoAcceptMethods=DEFAULT_AUTO_ACCEPT_METHODS] An array of valid auto accepted methods used on your application
@@ -100,7 +100,7 @@ export class WcWalletSDK {
       approvalUnix,
       wccv,
     }))
-    this.client?.core.storage.setItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY, extendedSession)
+    this.wallet?.core.storage.setItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY, extendedSession)
   }
 
   /**
@@ -117,47 +117,38 @@ export class WcWalletSDK {
   /**
    * It will get WalletConnect Library or throw error
    */
-  private get signClient() {
-    if (!this.client || this.status !== EStatus.STARTED) throw new Error('Client not started')
+  private get web3wallet(): Web3Wallet {
+    if (!this.wallet || this.status !== EStatus.STARTED) throw new Error('Wallet client not started')
 
-    return this.client
+    return this.wallet
   }
 
   /**
-   * It will init the WalletConnect Library SignClient and the SDK
+   * It will init the WalletConnect Library Web3Wallet and the SDK
    * @return {Promise.void}
    */
   public async init(): Promise<void> {
     this.status = EStatus.STARTING
-    const abortController = new AbortController()
 
-    const timeout = setTimeout(() => {
-      if (this.status === EStatus.STARTED) return
-
-      abortController.abort()
-    }, INIT_TIMEOUT)
     try {
-      abortController.signal.addEventListener('abort', () => {
-        this.status = EStatus.ERROR
-        throw new Error('Initialization timeout has been reached')
+      const web3wallet = await Web3Wallet.init({
+        signConfig: this.clientOptions.signConfig,
+        core: new Core({
+          projectId: this.clientOptions.core.projectId,
+          logger: this.clientOptions.core.logger,
+          relayUrl: this.clientOptions.core.relayUrl,
+        }),
+        metadata: this.clientOptions.metadata,
       })
 
-      const client = await SignClient.init({
-        signConfig: {
-          disableRequestQueue: true,
-        },
-        ...this.clientOptions,
-      })
-      clearTimeout(timeout)
+      web3wallet.events.removeAllListeners('session_proposal')
+      web3wallet.events.removeAllListeners('session_request')
+      web3wallet.events.removeAllListeners('session_delete')
 
-      client.events.removeAllListeners('session_proposal')
-      client.events.removeAllListeners('session_request')
-      client.events.removeAllListeners('session_delete')
-
-      client.on('session_proposal', (proposal) => {
+      web3wallet.on('session_proposal', (proposal) => {
         this.proposals = [...this.proposals, proposal]
       })
-      client.on('session_request', async (request) => {
+      web3wallet.on('session_request', async (request) => {
         const [blockchain] = request.params.chainId.split(':')
         const options = this.blockchainsOptions[blockchain]
         if (options && options.autoAcceptMethods && options.autoAcceptMethods.includes(request.params.request.method)) {
@@ -168,16 +159,16 @@ export class WcWalletSDK {
         const filtered = this.requests.filter((item) => item.id !== request.id)
         this.requests = [...filtered, request]
       })
-      client.on('session_delete', ({ topic }) => {
+      web3wallet.on('session_delete', ({ topic }) => {
         const filtered = this.sessions.filter((session) => session.topic !== topic)
         this.sessions = filtered
       })
 
       const extendedSessions =
-        await client.core.storage.getItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY)
+        await web3wallet.core.storage.getItem<TSessionExtendedStorage[]>(SESSION_EXTENDED_STORAGE_KEY)
 
       this.sessions = extendedSessions
-        ? client.session.values
+        ? Object.values(web3wallet.getActiveSessions())
             .map((session) => {
               const storage = extendedSessions.find(({ topic }) => topic === session.topic)
               if (!storage) return undefined
@@ -192,7 +183,7 @@ export class WcWalletSDK {
         : []
 
       this.status = EStatus.STARTED
-      this.client = client
+      this.wallet = web3wallet
     } catch (error) {
       this.status = EStatus.ERROR
       throw error
@@ -214,11 +205,9 @@ export class WcWalletSDK {
       if (wccv > COMPATIBILITY_VERSION) throw new Error('Incompatible WCCV. Update your wallet to use new features.')
     }
 
-    const { topic } = await this.signClient.pair({
+    await this.wallet?.pair({
       uri,
     })
-
-    wccv && this.wccvs.set(topic, wccv)
   }
 
   /**
@@ -228,7 +217,7 @@ export class WcWalletSDK {
    * @return {Promise.void}
    */
   public async disconnect(session: TSession, reason?: TRejectReason): Promise<void> {
-    await this.signClient.disconnect({
+    await this.web3wallet.disconnectSession({
       topic: session.topic,
       reason: reason ?? {
         code: ResponseErrorCode.DISCONNECT,
@@ -263,12 +252,11 @@ export class WcWalletSDK {
         },
       }
 
-      const { acknowledged } = await this.signClient.approve({
+      const session = await this.web3wallet.approveSession({
         id: proposal.id,
         namespaces,
       })
 
-      const session = await acknowledged()
       const approvalUnix = moment.utc().unix()
 
       const wccv = this.wccvs.get(session.pairingTopic)
@@ -297,7 +285,7 @@ export class WcWalletSDK {
    */
   public async rejectProposal(proposal: TSessionProposal, reason?: TRejectReason): Promise<void> {
     try {
-      await this.signClient.reject({
+      await this.web3wallet.rejectSession({
         id: proposal.id,
         reason: reason ?? {
           code: ResponseErrorCode.REJECT,
@@ -363,7 +351,7 @@ export class WcWalletSDK {
       const filteredRequests = this.requests.filter(({ id }) => id !== request.id)
       this.requests = filteredRequests
 
-      await this.signClient.respond({
+      await this.web3wallet.respondSessionRequest({
         topic: request.topic,
         response,
       })
@@ -378,7 +366,7 @@ export class WcWalletSDK {
    */
   public async rejectRequest(request: TSessionRequest, reason?: TRejectReason): Promise<void> {
     try {
-      await this.signClient.respond({
+      await this.web3wallet.respondSessionRequest({
         topic: request.topic,
         response: formatJsonRpcError(
           request.id,
@@ -403,7 +391,7 @@ export class WcWalletSDK {
     await Promise.all(
       dappRequests.map(async (dappRequest) => {
         try {
-          await this.signClient.respond({
+          await this.web3wallet.respondSessionRequest({
             topic: dappRequest.topic,
             response: formatJsonRpcError(dappRequest.id, {
               code: ResponseErrorCode.REJECT,

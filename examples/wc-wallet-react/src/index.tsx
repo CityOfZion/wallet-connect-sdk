@@ -18,10 +18,15 @@ import { AccountContextProvider } from './context/AccountContext'
 
 const wcOptions: TInitOptions = {
   clientOptions: {
-    projectId: DEFAULT_PROJECT_ID,
+    core: {
+      projectId: DEFAULT_PROJECT_ID,
+      logger: DEFAULT_LOGGER,
+      relayUrl: DEFAULT_RELAY_PROVIDER,
+    },
     metadata: DEFAULT_APP_METADATA,
-    logger: DEFAULT_LOGGER,
-    relayUrl: DEFAULT_RELAY_PROVIDER,
+    signConfig: {
+      disableRequestQueue: true,
+    },
   },
   blockchains: {
     neo3: {

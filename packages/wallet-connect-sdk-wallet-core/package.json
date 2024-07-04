@@ -35,12 +35,13 @@
     "@cityofzion/neon-js": "5.5.1",
     "@cityofzion/wallet-connect-sdk-core": "workspace:*",
     "@walletconnect/jsonrpc-utils": "^1.0.8",
-    "@walletconnect/sign-client": "2.13.0",
     "@walletconnect/types": "2.13.0",
     "moment": "^2.29.4",
     "@cityofzion/neon-dappkit": "0.5.1",
     "ethers": "5.7.2",
-    "@ethersproject/abstract-signer": "~5.7.0"
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@walletconnect/web3wallet": "^1.12.3",
+    "@walletconnect/core": "^2.13.3"
   },
   "devDependencies": {
     "@types/node": "^20.1.3",
