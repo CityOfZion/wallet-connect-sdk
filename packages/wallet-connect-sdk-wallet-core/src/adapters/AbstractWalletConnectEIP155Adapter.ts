@@ -103,6 +103,17 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     return undefined
   }
 
+  async calculateFee(args: TAdapterMethodParam): Promise<string> {
+    const param = this.resolveParams(args.request.params.request.params[0])
+    const { wallet, provider } = await this.getServices(args)
+    const connectedWallet = wallet.connect(provider)
+
+    const gasPrice = await provider.getGasPrice()
+    const estimated = await connectedWallet.estimateGas(param)
+
+    return ethers.utils.formatEther(gasPrice.mul(estimated))
+  }
+
   abstract getAccountString(args: TAdapterMethodParam): Promise<string>
 
   abstract getRPCUrl(args: TAdapterMethodParam): Promise<string>

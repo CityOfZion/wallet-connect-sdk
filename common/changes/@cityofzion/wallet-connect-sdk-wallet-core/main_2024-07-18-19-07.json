@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-core",
+      "comment": "Added calculateFee method to AbstractWalletConnectEIP155Adapter",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-core"
+}
