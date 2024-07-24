@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Thu, 04 Jul 2024 16:40:05 GMT and should not be manually modified.
+This log was last generated on Wed, 24 Jul 2024 22:09:51 GMT and should not be manually modified.
+
+## 4.3.0
+Wed, 24 Jul 2024 22:09:51 GMT
+
+### Minor changes
+
+- Added calculateFee method to AbstractWalletConnectEIP155Adapter
 
 ## 4.2.4
 Thu, 04 Jul 2024 16:40:05 GMT
