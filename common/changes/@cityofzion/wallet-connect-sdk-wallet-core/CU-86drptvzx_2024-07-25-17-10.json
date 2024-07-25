@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@cityofzion/wallet-connect-sdk-wallet-core",
+      "comment": "adding eth methods",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@cityofzion/wallet-connect-sdk-wallet-core"
+}
