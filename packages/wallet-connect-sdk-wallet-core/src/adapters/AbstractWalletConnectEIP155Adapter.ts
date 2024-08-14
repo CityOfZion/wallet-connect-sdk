@@ -25,7 +25,10 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     }
   }
 
-  protected resolveParams(param: any) {
+  protected async resolveParams(param: any, args: TAdapterMethodParam) {
+    const { provider, wallet } = await this.getServices(args)
+    const gasPrice = await provider.getGasPrice()
+
     if (typeof param !== 'object') {
       throw new Error('Invalid Params')
     }
@@ -35,7 +38,13 @@ export abstract class AbstractWalletConnectEIP155Adapter {
       delete param.gas
     }
 
-    return param
+    param.gasPrice = gasPrice
+
+    return {
+      param,
+      provider,
+      wallet,
+    }
   }
 
   protected convertHexToUtf8(value: string) {
@@ -61,8 +70,7 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async eth_signTransaction(args: TAdapterMethodParam): Promise<string> {
-    const param = this.resolveParams(args.request.params.request.params[0])
-    const { wallet } = await this.getServices(args)
+    const { param, wallet } = await this.resolveParams(args.request.params.request.params[0], args)
     const signature = await wallet.signTransaction(param)
     return signature
   }
@@ -89,9 +97,8 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async eth_sendTransaction(args: TAdapterMethodParam): Promise<string> {
-    const param = this.resolveParams(args.request.params.request.params[0])
+    const { param, provider, wallet } = await this.resolveParams(args.request.params.request.params[0], args)
 
-    const { wallet, provider } = await this.getServices(args)
     const connectedWallet = wallet.connect(provider)
 
     const { hash } = await connectedWallet.sendTransaction(param)
@@ -99,9 +106,8 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async eth_call(args: TAdapterMethodParam): Promise<string> {
-    const param = this.resolveParams(args.request.params.request.params[0])
+    const { param, provider, wallet } = await this.resolveParams(args.request.params.request.params[0], args)
 
-    const { wallet, provider } = await this.getServices(args)
     const connectedWallet = wallet.connect(provider)
 
     return await connectedWallet.call(param)
@@ -139,8 +145,7 @@ export abstract class AbstractWalletConnectEIP155Adapter {
   }
 
   async calculateFee(args: TAdapterMethodParam): Promise<string> {
-    const param = this.resolveParams(args.request.params.request.params[0])
-    const { wallet, provider } = await this.getServices(args)
+    const { param, wallet, provider } = await this.resolveParams(args.request.params.request.params[0], args)
     const connectedWallet = wallet.connect(provider)
 
     const gasPrice = await provider.getGasPrice()
