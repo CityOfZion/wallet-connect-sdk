@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Tue, 13 Aug 2024 16:12:34 GMT and should not be manually modified.
+This log was last generated on Wed, 14 Aug 2024 19:41:30 GMT and should not be manually modified.
+
+## 4.3.2
+Wed, 14 Aug 2024 19:41:30 GMT
+
+### Patches
+
+- fix error to make a transaction in NeoX using AbstractWalletConnectEIP155Adapter
 
 ## 4.3.1
 Tue, 13 Aug 2024 16:12:34 GMT
