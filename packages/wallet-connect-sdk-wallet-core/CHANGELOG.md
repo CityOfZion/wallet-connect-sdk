@@ -1,6 +1,13 @@
 # Change Log - @cityofzion/wallet-connect-sdk-wallet-core
 
-This log was last generated on Wed, 14 Aug 2024 19:41:30 GMT and should not be manually modified.
+This log was last generated on Thu, 15 Aug 2024 20:32:03 GMT and should not be manually modified.
+
+## 4.4.0
+Thu, 15 Aug 2024 20:32:03 GMT
+
+### Minor changes
+
+- Support type 2 transactions and add eth_estimateGas method
 
 ## 4.3.2
 Wed, 14 Aug 2024 19:41:30 GMT

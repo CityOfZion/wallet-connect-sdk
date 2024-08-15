@@ -2,6 +2,23 @@
   "name": "@cityofzion/wallet-connect-sdk-wallet-core",
   "entries": [
     {
+      "version": "4.4.0",
+      "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.4.0",
+      "date": "Thu, 15 Aug 2024 20:32:03 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Support type 2 transactions and add eth_estimateGas method"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Update package.json version(s)"
+          }
+        ]
+      }
+    },
+    {
       "version": "4.3.2",
       "tag": "@cityofzion/wallet-connect-sdk-wallet-core_v4.3.2",
       "date": "Wed, 14 Aug 2024 19:41:30 GMT",
