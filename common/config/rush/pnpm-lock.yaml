@@ -182,7 +182,7 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
       '@walletconnect/core':
-        specifier: ^2.13.3
+        specifier: 2.13.3
         version: 2.13.3
       '@walletconnect/jsonrpc-utils':
         specifier: ^1.0.8
@@ -191,7 +191,7 @@ importers:
         specifier: 2.13.0
         version: 2.13.0
       '@walletconnect/web3wallet':
-        specifier: ^1.12.3
+        specifier: 1.12.3
         version: 1.12.3
       ethers:
         specifier: 5.7.2

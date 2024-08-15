@@ -4,6 +4,8 @@ import { ethers } from 'ethers'
 
 export type TCustomSigner = ethers.Signer & TypedDataSigner
 
+const DEFAULT_GAS_LIMIT = 0x5208
+
 /* Some methods are named in snakecase, as Ethereum methods are in snakecase and the SDK does not make any transformer for the method called by the dapp. */
 export abstract class AbstractWalletConnectEIP155Adapter {
   protected async getServices(args: TAdapterMethodParam) {
@@ -27,7 +29,6 @@ export abstract class AbstractWalletConnectEIP155Adapter {
 
   protected async resolveParams(param: any, args: TAdapterMethodParam) {
     const { provider, wallet } = await this.getServices(args)
-    const gasPrice = await provider.getGasPrice()
 
     if (typeof param !== 'object') {
       throw new Error('Invalid Params')
@@ -38,7 +39,29 @@ export abstract class AbstractWalletConnectEIP155Adapter {
       delete param.gas
     }
 
-    param.gasPrice = gasPrice
+    if (param.type && typeof param.type !== 'number') {
+      param.type = parseInt(param.type)
+    }
+
+    const gasPrice = await provider.getGasPrice()
+
+    if (param.type === 2) {
+      param.maxPriorityFeePerGas = param.maxPriorityFeePerGas ?? gasPrice
+      param.maxFeePerGas = param.maxPriorityFeePerGas ?? gasPrice
+    } else {
+      param.gasPrice = param.gasPrice ?? gasPrice
+    }
+
+    let gasLimit = param.gasLimit
+
+    if (!gasLimit) {
+      const connectedWallet = wallet.connect(provider)
+      try {
+        gasLimit = await connectedWallet.estimateGas({ ...param, gasLimit: DEFAULT_GAS_LIMIT })
+      } catch (error) {
+        gasLimit = DEFAULT_GAS_LIMIT
+      }
+    }
 
     return {
       param,
@@ -124,6 +147,13 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     const { hash } = await provider.sendTransaction(args.request.params.request.params[0])
 
     return hash
+  }
+
+  async eth_estimateGas(args: TAdapterMethodParam) {
+    const { param, provider, wallet } = await this.resolveParams(args.request.params.request.params[0], args)
+    const connectedWallet = wallet.connect(provider)
+
+    return await connectedWallet.estimateGas(param)
   }
 
   // TODO: It'll be implemented in this issue: #86du71hh4 WC - Ghostmarket via WC asks for wallet methods we don't support
