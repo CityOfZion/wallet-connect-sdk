@@ -156,17 +156,28 @@ export abstract class AbstractWalletConnectEIP155Adapter {
     return await connectedWallet.estimateGas(param)
   }
 
-  // TODO: It'll be implemented in this issue: #86du71hh4 WC - Ghostmarket via WC asks for wallet methods we don't support
-  wallet_switchEthereumChain(): Promise<boolean> {
-    throw new Error('It is impossible to switch the Ethereum chain')
+  async wallet_switchEthereumChain(): Promise<string> {
+    return 'null'
   }
 
-  wallet_getPermissions(): Promise<string[]> {
-    throw new Error('It is impossible to get the permissions')
+  async eth_addEthereumChain(): Promise<string> {
+    return 'null'
   }
 
-  wallet_requestPermissions(): Promise<string[]> {
-    throw new Error('It is impossible to request the permissions')
+  async eth_switchEthereumChain(): Promise<string> {
+    return 'null'
+  }
+
+  async wallet_getPermissions(): Promise<any[]> {
+    return []
+  }
+
+  async wallet_requestPermissions(): Promise<any[]> {
+    return []
+  }
+
+  async wallet_addEthereumChain(): Promise<string> {
+    return 'null'
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
