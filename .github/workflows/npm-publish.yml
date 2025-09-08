@@ -41,11 +41,11 @@ jobs:
       - name: Merge Docs
         run: rush docs
       - name: Publish Docs
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './docs'
       - name: Deploy GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
       # Adding all modified files to ensure 'rush change --verify' correctly identifies changes.
       # This is because the command only recognizes changes in files that were added in the commit.
       - name: Rush Change
